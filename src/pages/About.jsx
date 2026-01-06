@@ -29,30 +29,6 @@ const About = () => {
     },
   ]
 
-  const team = [
-    {
-        name: 'Rakesh',
-        role: 'Master Developer - Solution Architect',
-      },
-    {
-      name: 'Cheshta',
-      role: 'Full Stack Developer',
-    },
-    {
-      name: 'Ananya',
-      role: 'LEAD DEVELOPER',
-    },
-    {
-      name: 'Amit',
-      role: 'Full Stack Developer',
-    },
-    {
-      name: 'Karan ',
-      role: 'Full Stack Developer',
-    }
-
-  ]
-
   return (
     <div className="pt-20">
       {/* Hero Section */}
@@ -158,52 +134,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Meet Our <span className="gradient-text">Master Developers</span>
-            </h2>
-            <p className="text-xl text-white/70">
-              The talented developers behind our success
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="bg-black/40 backdrop-blur-sm border border-red-500/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <div className="p-8 text-center">
-                  <motion.div
-                    className="inline-block px-3 py-1 bg-red-500/20 border border-red-500/30 rounded-full mb-3"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <span className="text-red-400 text-xs font-semibold">MASTER DEVELOPER</span>
-                  </motion.div>
-                  <h3 className="text-xl font-bold mb-2 text-white">
-                    {member.name}
-                  </h3>
-                  <p className="text-red-500 font-medium text-sm">{member.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
