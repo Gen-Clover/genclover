@@ -42,9 +42,17 @@ const StatsSection = () => {
             >
               <motion.div
                 className="text-5xl md:text-6xl font-bold mb-2"
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ duration: 1, delay: index * 0.1 + 0.2 }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={
+                  isInView
+                    ? {
+                        opacity: 1,
+                        scale: [0, 1.2, 1],
+                      }
+                    : {}
+                }
+                transition={{ duration: 0.8, delay: index * 0.1 + 0.2 }}
+                whileHover={{ scale: 1.1, y: -5 }}
               >
                 {stat.value}
                 {stat.suffix}

@@ -41,9 +41,20 @@ const Header = () => {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-2xl font-bold gradient-text"
+              className="text-2xl font-bold gradient-text relative"
             >
-              GenClover
+              <motion.span
+                animate={{
+                  textShadow: [
+                    '0 0 10px rgba(220, 38, 38, 0.5)',
+                    '0 0 20px rgba(220, 38, 38, 0.8)',
+                    '0 0 10px rgba(220, 38, 38, 0.5)',
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                GenClover
+              </motion.span>
             </motion.div>
           </Link>
 

@@ -31,25 +31,26 @@ const About = () => {
 
   const team = [
     {
-      name: 'Alex Johnson',
-      role: 'Lead Data Engineer',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+        name: 'Rakesh',
+        role: 'Master Developer - Solution Architect',
+      },
+    {
+      name: 'Cheshta',
+      role: 'Full Stack Developer',
     },
     {
-      name: 'Sarah Chen',
-      role: 'Senior Data Scientist',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
+      name: 'Ananya',
+      role: 'LEAD DEVELOPER',
     },
     {
-      name: 'Michael Rodriguez',
-      role: 'Full-Stack Developer',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
+      name: 'Amit',
+      role: 'Full Stack Developer',
     },
     {
-      name: 'Emily Davis',
-      role: 'Project Manager',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400',
-    },
+      name: 'Karan ',
+      role: 'Full Stack Developer',
+    }
+
   ]
 
   return (
@@ -89,7 +90,7 @@ const About = () => {
                 Our Story
               </h2>
               <p className="text-lg text-white/70 mb-6">
-                Founded in 2019, GenClover started with a simple mission: to
+                Founded in 2020, GenClover started with a simple mission: to
                 help businesses harness the power of data and technology to
                 achieve their goals. What began as a small team of passionate
                 developers has grown into a trusted partner for companies across
@@ -168,14 +169,14 @@ const About = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Meet Our <span className="gradient-text">Team</span>
+              Meet Our <span className="gradient-text">Master Developers</span>
             </h2>
             <p className="text-xl text-white/70">
-              The talented individuals behind our success
+              The talented developers behind our success
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
             {team.map((member, index) => (
               <motion.div
                 key={member.name}
@@ -186,18 +187,17 @@ const About = () => {
                 whileHover={{ y: -10 }}
                 className="bg-black/40 backdrop-blur-sm border border-red-500/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-6 text-center">
+                <div className="p-8 text-center">
+                  <motion.div
+                    className="inline-block px-3 py-1 bg-red-500/20 border border-red-500/30 rounded-full mb-3"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <span className="text-red-400 text-xs font-semibold">MASTER DEVELOPER</span>
+                  </motion.div>
                   <h3 className="text-xl font-bold mb-2 text-white">
                     {member.name}
                   </h3>
-                  <p className="text-red-500 font-medium">{member.role}</p>
+                  <p className="text-red-500 font-medium text-sm">{member.role}</p>
                 </div>
               </motion.div>
             ))}

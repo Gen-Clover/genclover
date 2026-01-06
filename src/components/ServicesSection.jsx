@@ -103,21 +103,42 @@ const ServicesSection = () => {
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}
                 />
-                <div
-                  className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                <motion.div
+                  className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden`}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  <Icon className="w-8 h-8 text-white" />
-                </div>
+                  <Icon className="w-8 h-8 text-white relative z-10" />
+                  <motion.div
+                    className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100`}
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0, 0.5, 0],
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </motion.div>
                 <h3 className="text-2xl font-bold mb-4 text-white">
                   {service.title}
                 </h3>
                 <p className="text-white/70 mb-6">{service.description}</p>
                 <ul className="space-y-2 mb-6">
-                  {service.features.map((feature) => (
-                    <li key={feature} className="flex items-center text-sm text-white/70">
-                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2" />
+                  {service.features.map((feature, idx) => (
+                    <motion.li
+                      key={feature}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="flex items-center text-sm text-white/70"
+                    >
+                      <motion.span
+                        className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: idx * 0.2 }}
+                      />
                       {feature}
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
                 <Link

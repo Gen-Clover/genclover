@@ -12,7 +12,6 @@ const Portfolio = () => {
       category: 'data-engineering',
       description:
         'Built a comprehensive data pipeline processing millions of transactions daily with real-time analytics dashboard.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
       technologies: ['Python', 'Apache Airflow', 'PostgreSQL', 'Tableau'],
       link: '#',
       github: '#',
@@ -24,7 +23,6 @@ const Portfolio = () => {
       category: 'data-science',
       description:
         'Developed ML models to predict customer churn with 92% accuracy, helping reduce churn by 35%.',
-      image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800',
       technologies: ['Python', 'Scikit-learn', 'TensorFlow', 'Pandas'],
       link: '#',
       github: '#',
@@ -36,7 +34,6 @@ const Portfolio = () => {
       category: 'web-development',
       description:
         'Modern, responsive website with improved UX, resulting in 40% increase in conversions.',
-      image: 'https://images.unsplash.com/photo-1467232004584-a241de8b9b3d?w=800',
       technologies: ['React', 'Next.js', 'Tailwind CSS', 'TypeScript'],
       link: '#',
       github: '#',
@@ -48,7 +45,6 @@ const Portfolio = () => {
       category: 'data-engineering',
       description:
         'Implemented Kafka-based streaming architecture for processing real-time events at scale.',
-      image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800',
       technologies: ['Kafka', 'Python', 'AWS', 'Docker'],
       link: '#',
       github: '#',
@@ -60,7 +56,6 @@ const Portfolio = () => {
       category: 'data-science',
       description:
         'AI-powered recommendation system that increased user engagement by 60% and sales by 25%.',
-      image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800',
       technologies: ['Python', 'TensorFlow', 'Redis', 'FastAPI'],
       link: '#',
       github: '#',
@@ -72,7 +67,6 @@ const Portfolio = () => {
       category: 'web-development',
       description:
         'Full-stack SaaS application with user authentication, subscription management, and analytics.',
-      image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800',
       technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
       link: '#',
       github: '#',
@@ -84,7 +78,6 @@ const Portfolio = () => {
       category: 'data-engineering',
       description:
         'Migrated legacy data warehouse to cloud-based solution, reducing costs by 45% and improving query performance.',
-      image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800',
       technologies: ['Snowflake', 'dbt', 'Python', 'AWS'],
       link: '#',
       github: '#',
@@ -96,7 +89,6 @@ const Portfolio = () => {
       category: 'data-science',
       description:
         'Deep learning model for automated image classification with 96% accuracy for quality control.',
-      image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=800',
       technologies: ['PyTorch', 'OpenCV', 'Flask', 'Docker'],
       link: '#',
       github: '#',
@@ -108,7 +100,6 @@ const Portfolio = () => {
       category: 'web-development',
       description:
         'Beautiful, animated portfolio website with modern design and smooth user experience.',
-      image: 'https://images.unsplash.com/photo-1467232004584-a241de8b9b3d?w=800',
       technologies: ['React', 'Framer Motion', 'Tailwind CSS', 'Vite'],
       link: '#',
       github: '#',
@@ -196,20 +187,10 @@ const Portfolio = () => {
                     whileHover={{ y: -10 }}
                     className="bg-black/40 backdrop-blur-sm border border-red-500/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group"
                   >
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute top-4 right-4">
-                        <div className="w-12 h-12 bg-red-500/20 backdrop-blur-sm rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-red-500/30">
-                          <Icon className="w-6 h-6 text-red-500" />
-                        </div>
-                      </div>
-                    </div>
                     <div className="p-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-4">
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
                       <h3 className="text-2xl font-bold mb-2 text-white">
                         {project.title}
                       </h3>

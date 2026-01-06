@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
+import ParticleBackground from './ParticleBackground'
+import AIFloatingElements from './AIFloatingElements'
 
 const Hero = () => {
   const containerVariants = {
@@ -26,6 +28,12 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-20">
+      {/* Particle Background */}
+      <ParticleBackground />
+      
+      {/* AI Floating Elements */}
+      <AIFloatingElements />
+      
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -75,9 +83,31 @@ const Hero = () => {
             variants={itemVariants}
             className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-white"
           >
-            Intelligent IT Solutions
+            <motion.span
+              animate={{
+                textShadow: [
+                  '0 0 20px rgba(220, 38, 38, 0.5)',
+                  '0 0 40px rgba(220, 38, 38, 0.8)',
+                  '0 0 20px rgba(220, 38, 38, 0.5)',
+                ],
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              Intelligent IT Solutions
+            </motion.span>
             <br />
-            <span className="gradient-text">For Modern Businesses</span>
+            <motion.span
+              className="gradient-text"
+              animate={{
+                backgroundPosition: ['0%', '100%', '0%'],
+              }}
+              transition={{ duration: 5, repeat: Infinity }}
+              style={{
+                backgroundSize: '200% auto',
+              }}
+            >
+              For Modern Businesses
+            </motion.span>
           </motion.h1>
 
           <motion.p
@@ -123,11 +153,23 @@ const Hero = () => {
               <div className="text-sm">Projects Delivered</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary-600">30+</div>
+              <motion.div
+                className="text-3xl font-bold text-red-500"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                30+
+              </motion.div>
               <div className="text-sm">Happy Clients</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary-600">5+</div>
+              <motion.div
+                className="text-3xl font-bold text-red-500"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
+              >
+                5+
+              </motion.div>
               <div className="text-sm">Years Experience</div>
             </div>
           </motion.div>
