@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
-import { BookOpen, Users, Eye, Handshake, Heart, TrendingUp, Sparkles, Building2 } from 'lucide-react'
+import { BookOpen, Users, Eye, UserCheck, Heart, TrendingUp, Sparkles, Building2 } from 'lucide-react'
 
 const AboutFloating = () => {
   const elements = [
     { icon: BookOpen, delay: 0, x: '8%', y: '15%', color: 'text-red-500/40', label: 'Story' },
     { icon: Users, delay: 0.5, x: '90%', y: '25%', color: 'text-red-500/40', label: 'Clients' },
     { icon: Eye, delay: 1, x: '12%', y: '75%', color: 'text-red-500/40', label: 'Vision' },
-    { icon: Handshake, delay: 1.5, x: '88%', y: '70%', color: 'text-red-500/40', label: 'Partnership' },
+    { icon: UserCheck, delay: 1.5, x: '88%', y: '70%', color: 'text-red-500/40', label: 'Partnership' },
     { icon: Heart, delay: 2, x: '50%', y: '8%', color: 'text-red-500/40', label: 'Care' },
     { icon: TrendingUp, delay: 2.5, x: '3%', y: '50%', color: 'text-red-500/40', label: 'Growth' },
     { icon: Sparkles, delay: 3, x: '95%', y: '55%', color: 'text-red-500/40', label: 'Innovation' },
