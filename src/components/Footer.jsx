@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Linkedin, Twitter, Github, Mail } from 'lucide-react'
+import { Linkedin, Twitter, Github, Mail, Phone, MapPin, ArrowRight, Clock } from 'lucide-react'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   const footerLinks = {
     Services: [
-      { name: 'Data Engineering', path: '/services#data-engineering' },
-      { name: 'Data Science', path: '/services#data-science' },
-      { name: 'Website Development', path: '/services#web-development' },
+      { name: 'Business Intelligence & Insights', path: '/services/bi-solutions' },
+      { name: 'AI Assistants (bots)', path: '/services/ai-bots' },
+      { name: 'Artificial Intelligence & Analytics', path: '/services/data-science' },
+      { name: 'Data Platforms & Engineering', path: '/services/data-engineering' },
+      { name: 'Web & Digital Experiences', path: '/services/web-development' },
     ],
     Company: [
       { name: 'About Us', path: '/about' },
@@ -19,11 +21,17 @@ const Footer = () => {
   }
 
   const socialLinks = [
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Mail, href: '#', label: 'Email' },
+    // { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    // { icon: Twitter, href: '#', label: 'Twitter' },
+    // { icon: Github, href: '#', label: 'GitHub' },
+    { icon: Mail, href: 'mailto:gencloverai@gmail.com', label: 'Email' },
   ]
+
+  const contactInfo = {
+    email: 'gencloverai@gmail.com',
+    phone: '8872253994',
+    location: 'Chandigarh',
+  }
 
   return (
     <footer className="bg-black/80 backdrop-blur-xl border-t border-red-500/20 text-white/80">
@@ -36,7 +44,30 @@ const Footer = () => {
               Intelligent IT Solutions for Modern Businesses. We transform data
               into insights and ideas into digital experiences.
             </p>
-            <div className="flex space-x-4">
+            
+            {/* Contact Info */}
+            <div className="space-y-2 pt-2">
+              <a
+                href={`mailto:${contactInfo.email}`}
+                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                <span>{contactInfo.email}</span>
+              </a>
+              <a
+                href={`tel:${contactInfo.phone}`}
+                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                <span>{contactInfo.phone}</span>
+              </a>
+              <div className="flex items-center space-x-2 text-sm text-gray-400">
+                <MapPin className="w-4 h-4" />
+                <span>{contactInfo.location}</span>
+              </div>
+            </div>
+
+            <div className="flex space-x-4 pt-2">
               {socialLinks.map((social) => {
                 const Icon = social.icon
                 return (
@@ -89,27 +120,31 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* Get Started */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Newsletter</h4>
+            <h4 className="text-white font-semibold mb-4">Get Started</h4>
             <p className="text-sm text-gray-400 mb-4">
-              Stay updated with our latest projects and insights.
+              Ready to transform your business? Let's discuss your project and create a solution that drives results.
             </p>
-            <form className="space-y-2">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="w-full px-4 py-2 bg-white/10 border border-red-500/30 rounded-lg focus:outline-none focus:border-red-500 text-white placeholder-white/50"
-              />
+            <Link to="/contact">
               <motion.button
-                type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
               >
-                Subscribe
+                <span>Contact Us</span>
+                <ArrowRight className="w-4 h-4" />
               </motion.button>
-            </form>
+            </Link>
+            <div className="mt-4 pt-4 border-t border-red-500/20">
+              <div className="flex items-center space-x-2 text-sm text-gray-400 mb-2">
+                <Clock className="w-4 h-4" />
+                <span>Business Hours</span>
+              </div>
+              <p className="text-xs text-gray-500">
+                Mon - Fri: 9:00 AM - 6:00 PM IST
+              </p>
+            </div>
           </div>
         </div>
 

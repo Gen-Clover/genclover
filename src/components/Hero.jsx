@@ -144,7 +144,7 @@ const Hero = () => {
           </motion.div>
 
           {/* Trust Indicators */}
-          <motion.div
+          {/* <motion.div
             variants={itemVariants}
             className="mt-16 flex flex-wrap justify-center items-center gap-8 text-white/70"
           >
@@ -172,7 +172,7 @@ const Hero = () => {
               </motion.div>
               <div className="text-sm">Years Experience</div>
             </div>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
       </div>
 

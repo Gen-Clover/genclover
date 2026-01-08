@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { Target, Users, Award, Zap } from 'lucide-react'
+import ServiceBackground from '../components/ServiceBackground'
+import AboutFloating from '../components/AboutFloating'
 
 const About = () => {
   const values = [
@@ -7,33 +9,64 @@ const About = () => {
       icon: Target,
       title: 'Mission-Driven',
       description:
-        'We are committed to delivering solutions that drive real business value and measurable results.',
+        'We focus on solving real problems and delivering meaningful outcomes, not just features.',
     },
     {
       icon: Users,
-      title: 'Client-Focused',
+      title: 'Transparency & Ownership',
       description:
-        'Your success is our success. We work closely with clients to understand their unique needs.',
+        'We believe in honest communication, clear expectations, and taking full responsibility for what we build.',
     },
     {
       icon: Award,
-      title: 'Excellence',
+      title: 'Excellence by Design',
       description:
-        'We maintain the highest standards in everything we do, from code quality to client communication.',
+        'From architecture to execution, we maintain high standards in quality, security, and performance.',
     },
     {
       icon: Zap,
-      title: 'Innovation',
+      title: 'Continuous Learning & Innovation',
       description:
-        'We stay at the forefront of technology, constantly learning and adopting new tools and methodologies.',
+        'Technology evolves fast and so do we. We continuously learn, adapt, and adopt better ways of building solutions.',
     },
   ]
 
   return (
-    <div className="pt-20">
+    <div className="pt-20 overflow-hidden">
       {/* Hero Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-black relative overflow-hidden">
+        <ServiceBackground color="red" />
+        <AboutFloating />
+        {/* Animated Background Blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-20 left-10 w-96 h-96 bg-red-500/20 rounded-full filter blur-3xl"
+            animate={{
+              x: [0, 100, 0],
+              y: [0, -100, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-96 h-96 bg-red-600/20 rounded-full filter blur-3xl"
+            animate={{
+              x: [0, -100, 0],
+              y: [0, 100, 0],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -44,16 +77,34 @@ const About = () => {
               About <span className="gradient-text">GenClover</span>
             </h1>
             <p className="text-xl text-white/70">
-              We are a team of passionate technologists dedicated to transforming
-              businesses through innovative IT solutions
+              GenClover is a technology-driven team focused on building intelligent, scalable, and future-ready digital solutions. We believe technology should not just function. It should create clarity, efficiency, and long-term value for businesses.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Story Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative">
+        {/* Subtle background animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-72 h-72 bg-red-500/10 rounded-full filter blur-3xl"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full filter blur-3xl"
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{ duration: 10, repeat: Infinity, delay: 2 }}
+          />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -63,26 +114,45 @@ const About = () => {
               className="prose prose-lg max-w-none"
             >
               <h2 className="text-4xl font-bold mb-6 text-white">
+                Our Vision
+              </h2>
+              <p className="text-lg text-white/70 mb-8">
+                Our vision is to empower organizations by simplifying complexity through data, analytics, and modern digital experiences.
+              </p>
+
+              <h2 className="text-4xl font-bold mb-6 text-white mt-12">
                 Our Story
               </h2>
               <p className="text-lg text-white/70 mb-6">
-                Founded in 2020, GenClover started with a simple mission: to
-                help businesses harness the power of data and technology to
-                achieve their goals. What began as a small team of passionate
-                developers has grown into a trusted partner for companies across
-                various industries.
+                GenClover was born from a shared belief: data and technology, when used thoughtfully, can transform how businesses operate and grow.
               </p>
               <p className="text-lg text-white/70 mb-6">
-                We specialize in three core areas: Data Engineering, Data
-                Science, and Website Development. Our team combines deep
-                technical expertise with a keen understanding of business needs,
-                ensuring that every solution we deliver drives real value.
+                What started as a group of passionate technologists with strong foundations in data, analytics, and engineering has evolved into a focused team building real-world solutions across multiple problem domains. Rather than chasing volume, we prioritize quality, learning, and impact in everything we build.
               </p>
-              <p className="text-lg text-white/70">
-                Today, we've completed over 50 projects, served 30+ clients, and
-                continue to push the boundaries of what's possible with modern
-                technology. Our commitment to excellence and innovation remains
-                as strong as ever.
+              <p className="text-lg text-white/70 mb-6">
+                We work at the intersection of data platforms, intelligent analytics, AI-driven solutions, and web technologies, translating complex requirements into practical, scalable systems. Our approach blends deep technical expertise with a strong understanding of business workflows, ensuring solutions are not just technically sound, but genuinely useful.
+              </p>
+              <p className="text-lg text-white/70 mb-8">
+                With over 50+ projects and use cases delivered, we continue to refine our craft, strengthen our processes, and push boundaries with modern technologies. Guided by our long-term vision rather than short-term metrics.
+              </p>
+
+              <h2 className="text-4xl font-bold mb-6 text-white mt-12">
+                What We Focus On
+              </h2>
+              <div className="space-y-4 mb-8">
+                <p className="text-lg text-white/70">
+                  <strong className="text-white">Data Engineering & Platforms</strong> - Building reliable, scalable data foundations
+                </p>
+                <p className="text-lg text-white/70">
+                  <strong className="text-white">Advanced Analytics & AI</strong> - Turning data into insights and intelligent decision systems
+                </p>
+                <p className="text-lg text-white/70">
+                  <strong className="text-white">Web & Digital Experiences</strong> - Creating clean, functional, and scalable digital products
+                </p>
+              </div>
+
+              <p className="text-lg text-white/80 font-medium italic mt-8">
+                At GenClover, we're not just building solutions for today—we're shaping systems that are ready for tomorrow.
               </p>
             </motion.div>
           </div>

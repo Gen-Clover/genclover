@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown, BarChart3, Globe, Database, Brain, Bot } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
   const location = useLocation()
 
   useEffect(() => {
@@ -16,12 +18,30 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsServicesDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const navLinks = [
     { path: '/', label: 'Home' },
-    { path: '/services', label: 'Services' },
     { path: '/portfolio', label: 'Portfolio' },
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
+  ]
+
+  const servicesMenu = [
+    { path: '/services', label: 'All Services', icon: null },
+    { path: '/services/bi-solutions', label: 'Business Intelligence & Insights', icon: BarChart3 },
+    { path: '/services/ai-bots', label: 'AI Assistants (bots)', icon: Bot },
+    { path: '/services/data-science', label: 'Artificial Intelligence & Analytics', icon: Brain },
+    { path: '/services/data-engineering', label: 'Data Platforms & Engineering', icon: Database },
+    { path: '/services/web-development', label: 'Web & Digital Experiences', icon: Globe },
   ]
 
   return (
@@ -60,7 +80,86 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
+            <Link
+              to="/"
+              className={`relative text-sm font-medium transition-colors ${
+                location.pathname === '/'
+                  ? 'text-red-500'
+                  : 'text-white/80 hover:text-red-500'
+              }`}
+            >
+              Home
+              {location.pathname === '/' && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-red-500"
+                  initial={false}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                />
+              )}
+            </Link>
+
+            {/* Services Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+                className={`relative text-sm font-medium transition-colors flex items-center space-x-1 ${
+                  location.pathname.startsWith('/services')
+                    ? 'text-red-500'
+                    : 'text-white/80 hover:text-red-500'
+                }`}
+              >
+                <span>Services</span>
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${
+                    isServicesDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+                {location.pathname.startsWith('/services') && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-red-500"
+                    initial={false}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </button>
+
+              <AnimatePresence>
+                {isServicesDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 mt-2 w-64 bg-black/95 backdrop-blur-lg rounded-lg shadow-xl border border-red-500/20 py-2 z-50"
+                  >
+                    {servicesMenu.map((service) => {
+                      const Icon = service.icon
+                      const isActive = location.pathname === service.path
+                      
+                      return (
+                        <Link
+                          key={service.path}
+                          to={service.path}
+                          onClick={() => setIsServicesDropdownOpen(false)}
+                          className={`flex items-center space-x-3 px-4 py-3 text-sm transition-colors ${
+                            isActive
+                              ? 'text-red-500 bg-red-500/10'
+                              : 'text-white/80 hover:text-red-500 hover:bg-white/5'
+                          }`}
+                        >
+                          {Icon && <Icon className="w-4 h-4" />}
+                          <span>{service.label}</span>
+                        </Link>
+                      )
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {navLinks.slice(1).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -115,7 +214,72 @@ const Header = () => {
             className="md:hidden bg-black/95 backdrop-blur-lg border-t border-red-500/20"
           >
             <div className="container mx-auto px-4 py-4 space-y-4">
-              {navLinks.map((link) => (
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block py-2 text-base font-medium ${
+                  location.pathname === '/'
+                    ? 'text-red-500'
+                    : 'text-white/80'
+                }`}
+              >
+                Home
+              </Link>
+
+              {/* Mobile Services Dropdown */}
+              <div>
+                <button
+                  onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+                  className={`w-full flex items-center justify-between py-2 text-base font-medium ${
+                    location.pathname.startsWith('/services')
+                      ? 'text-red-500'
+                      : 'text-white/80'
+                  }`}
+                >
+                  <span>Services</span>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform ${
+                      isServicesDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {isServicesDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pl-4 space-y-2 mt-2"
+                    >
+                      {servicesMenu.map((service) => {
+                        const Icon = service.icon
+                        const isActive = location.pathname === service.path
+                        
+                        return (
+                          <Link
+                            key={service.path}
+                            to={service.path}
+                            onClick={() => {
+                              setIsMobileMenuOpen(false)
+                              setIsServicesDropdownOpen(false)
+                            }}
+                            className={`flex items-center space-x-2 py-2 text-sm ${
+                              isActive
+                                ? 'text-red-500'
+                                : 'text-white/70'
+                            }`}
+                          >
+                            {Icon && <Icon className="w-4 h-4" />}
+                            <span>{service.label}</span>
+                          </Link>
+                        )
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {navLinks.slice(1).map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}

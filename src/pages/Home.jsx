@@ -4,7 +4,6 @@ import { ArrowRight, Database, Brain, Globe, CheckCircle } from 'lucide-react'
 import Hero from '../components/Hero'
 import ServicesSection from '../components/ServicesSection'
 import StatsSection from '../components/StatsSection'
-import Testimonials from '../components/Testimonials'
 import CTA from '../components/CTA'
 
 const Home = () => {
@@ -13,7 +12,6 @@ const Home = () => {
       <Hero />
       <ServicesSection />
       <StatsSection />
-      <Testimonials />
       <CTA />
     </div>
   )

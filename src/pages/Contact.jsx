@@ -33,19 +33,19 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      content: 'hello@gencloverai.com',
-      link: 'mailto:hello@gencloverai.com',
+      content: 'gencloverai@gmail.com',
+      link: 'mailto:gencloverai@gmail.com',
     },
     {
       icon: Phone,
       title: 'Phone',
-      content: '+1 (555) 123-4567',
-      link: 'tel:+15551234567',
+      content: '8872253994',
+      link: 'tel:8872253994',
     },
     {
       icon: MapPin,
       title: 'Location',
-      content: 'San Francisco, CA',
+      content: 'Chandigarh',
       link: '#',
     },
   ]
@@ -166,7 +166,7 @@ const Contact = () => {
                           required
                           value={formData.name}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all"
+                          className="w-full px-4 py-3 bg-black/60 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-white placeholder-white/50"
                           placeholder="Your name"
                         />
                       </div>
@@ -184,7 +184,7 @@ const Contact = () => {
                           required
                           value={formData.email}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all"
+                          className="w-full px-4 py-3 bg-black/60 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-white placeholder-white/50"
                           placeholder="your@email.com"
                         />
                       </div>
@@ -202,7 +202,7 @@ const Contact = () => {
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all"
+                        className="w-full px-4 py-3 bg-black/60 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-white placeholder-white/50"
                         placeholder="Your company"
                       />
                     </div>
@@ -220,7 +220,7 @@ const Contact = () => {
                         rows={6}
                         value={formData.message}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all resize-none"
+                        className="w-full px-4 py-3 bg-black/60 border border-red-500/30 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all resize-none text-white placeholder-white/50"
                         placeholder="Tell us about your project..."
                       />
                     </div>

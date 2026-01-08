@@ -1,93 +1,71 @@
 import { motion } from 'framer-motion'
-import { Database, Brain, Globe, CheckCircle, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Database, Brain, Globe, BarChart3, Bot, ArrowRight } from 'lucide-react'
 
 const Services = () => {
   const services = [
     {
-      id: 'data-engineering',
-      icon: Database,
-      title: 'Data Engineering',
+      path: '/services/bi-solutions',
+      icon: BarChart3,
+      title: 'Business Intelligence & Insights',
       description:
-        'We design and build robust data infrastructure that enables your business to collect, process, and analyze data at scale.',
-      features: [
-        'Custom Data Pipeline Development',
-        'ETL/ELT Process Design',
-        'Data Warehouse Architecture',
-        'Real-time Data Streaming',
-        'Data Quality & Governance',
-        'Cloud Data Solutions (AWS, GCP, Azure)',
-        'Database Optimization',
-        'Data Integration Services',
-      ],
-      color: 'from-red-500 to-red-600',
-      bgColor: 'bg-black/40 backdrop-blur-sm border border-red-500/20',
+        "We help businesses make better decisions by turning data into clear, meaningful insights. Our BI solutions focus on visibility, reporting, and performance tracking. So leaders can understand what's happening and act with confidence.",
+      color: 'from-green-500 to-green-600',
     },
     {
-      id: 'data-science',
+      path: '/services/ai-bots',
+      icon: Bot,
+      title: 'AI Assistants (bots)',
+      description:
+        'We design AI-powered assistants that help automate tasks, improve customer interactions, and support internal teams. These solutions are built to be practical, reliable, and aligned with real business needs.',
+      color: 'from-red-500 to-red-600',
+    },
+    {
+      path: '/services/data-science',
       icon: Brain,
-      title: 'Data Science',
+      title: 'Artificial Intelligence & Analytics',
       description:
-        'Transform your data into actionable insights with advanced analytics, machine learning, and AI solutions.',
-      features: [
-        'Machine Learning Model Development',
-        'Predictive Analytics',
-        'Statistical Analysis',
-        'Data Visualization & Dashboards',
-        'Natural Language Processing',
-        'Computer Vision Solutions',
-        'Recommendation Systems',
-        'AI Strategy Consulting',
-      ],
-      color: 'from-red-600 to-red-700',
-      bgColor: 'bg-black/40 backdrop-blur-sm border border-red-500/20',
+        'We use advanced analytics and AI models to uncover patterns, predict outcomes, and support smarter business strategies. Our focus is on solving real problems and enabling better planning.',
+      color: 'from-purple-500 to-purple-600',
     },
     {
-      id: 'web-development',
-      icon: Globe,
-      title: 'Website Development',
+      path: '/services/data-engineering',
+      icon: Database,
+      title: 'Data Platforms & Engineering',
       description:
-        'Create stunning, high-performance websites and web applications that engage users and drive business growth.',
-      features: [
-        'Custom Web Application Development',
-        'Responsive & Mobile-First Design',
-        'E-commerce Solutions',
-        'Content Management Systems',
-        'API Development & Integration',
-        'Performance Optimization',
-        'SEO & Digital Marketing',
-        'Maintenance & Support',
-      ],
-      color: 'from-red-500 to-red-600',
-      bgColor: 'bg-black/40 backdrop-blur-sm border border-red-500/20',
+        'We build strong data foundations that ensure your information is reliable, accessible, and ready to scale. Our data platforms are designed to support analytics, AI, and reporting.',
+      color: 'from-blue-500 to-blue-600',
+    },
+    {
+      path: '/services/web-development',
+      icon: Globe,
+      title: 'Web & Digital Experiences',
+      description:
+        'We create modern websites and digital platforms that reflect your brand, communicate clearly, and support business growth. Our focus is on thoughtful design, usability, and performance.',
+      color: 'from-orange-500 to-orange-600',
     },
   ]
 
-  const process = [
-    {
-      step: '01',
-      title: 'Discovery & Planning',
-      description:
-        'We analyze your requirements and create a comprehensive plan tailored to your business goals.',
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
     },
-    {
-      step: '02',
-      title: 'Design & Development',
-      description:
-        'Our team builds your solution using best practices and cutting-edge technologies.',
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
     },
-    {
-      step: '03',
-      title: 'Testing & Quality Assurance',
-      description:
-        'Rigorous testing ensures your solution meets the highest standards of quality and performance.',
-    },
-    {
-      step: '04',
-      title: 'Deployment & Support',
-      description:
-        'We deploy your solution and provide ongoing support to ensure continued success.',
-    },
-  ]
+  }
 
   return (
     <div className="pt-20">
@@ -104,113 +82,63 @@ const Services = () => {
               Our <span className="gradient-text">Services</span>
             </h1>
             <p className="text-xl text-white/70">
-              Comprehensive IT solutions designed to transform your business and
-              drive growth
+              Comprehensive IT solutions designed to transform your business and drive growth
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Services Details */}
+      {/* Services Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-32">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {services.map((service, index) => {
               const Icon = service.icon
               return (
                 <motion.div
-                  key={service.id}
-                  id={service.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                  className={`${service.bgColor} rounded-3xl p-8 md:p-12`}
+                  key={service.path}
+                  variants={itemVariants}
+                  whileHover={{ y: -10 }}
+                  className="group relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-red-500/20 hover:border-red-500/40"
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div>
-                      <div
-                        className={`w-20 h-20 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mb-6`}
-                      >
-                        <Icon className="w-10 h-10 text-white" />
-                      </div>
-                      <h2 className="text-4xl font-bold mb-4 text-white">
-                        {service.title}
-                      </h2>
-                      <p className="text-xl text-white/70 mb-8">
-                        {service.description}
-                      </p>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-6 py-3 bg-red-600 text-white rounded-lg font-semibold flex items-center space-x-2"
-                      >
-                        <span>Get Started</span>
-                        <ArrowRight className="w-5 h-5" />
-                      </motion.button>
+                  <Link to={service.path} className="block">
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}
+                    />
+                    <motion.div
+                      className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden`}
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <Icon className="w-8 h-8 text-white relative z-10" />
+                      <motion.div
+                        className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100`}
+                        animate={{
+                          scale: [1, 1.5, 1],
+                          opacity: [0, 0.5, 0],
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    </motion.div>
+                    <h2 className="text-2xl font-bold mb-4 text-white group-hover:text-red-400 transition-colors">
+                      {service.title}
+                    </h2>
+                    <p className="text-white/70 mb-6">{service.description}</p>
+                    <div className="flex items-center text-red-500 font-semibold group-hover:text-red-400 transition-colors">
+                      <span>Learn More</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-bold mb-6 text-white">
-                        What We Offer
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {service.features.map((feature) => (
-                          <div
-                            key={feature}
-                            className="flex items-start space-x-3"
-                          >
-                    <CheckCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-white/80">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  </Link>
                 </motion.div>
               )
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Process Section */}
-      <section className="py-20 bg-black/80">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Our <span className="gradient-text">Process</span>
-            </h2>
-            <p className="text-xl text-white/70">
-              A proven methodology that ensures success
-            </p>
           </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {process.map((item, index) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-black/40 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-red-500/20"
-              >
-                <div className="text-5xl font-bold text-red-500 mb-4">
-                  {item.step}
-                </div>
-                      <h3 className="text-2xl font-bold mb-4 text-white">
-                  {item.title}
-                </h3>
-                      <p className="text-white/70">{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
     </div>

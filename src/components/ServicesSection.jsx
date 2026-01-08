@@ -1,47 +1,78 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Database, Brain, Globe, ArrowRight } from 'lucide-react'
+import { Database, Brain, Globe, BarChart3, Bot, ArrowRight } from 'lucide-react'
 
 const ServicesSection = () => {
   const services = [
     {
-      icon: Database,
-      title: 'Data Engineering',
+      icon: BarChart3,
+      title: 'Business Intelligence & Insights',
+      path: '/services/bi-solutions',
       description:
-        'Build robust data pipelines, ETL processes, and data warehouses that scale with your business needs.',
+        "We help businesses make better decisions by turning data into clear, meaningful insights. Our BI solutions focus on visibility, reporting, and performance tracking. So leaders can understand what's happening and act with confidence.",
       features: [
-        'Data Pipeline Design',
-        'ETL/ELT Processes',
-        'Data Warehousing',
-        'Real-time Data Processing',
+        'Executive Dashboards & Reports',
+        'Business Performance Tracking',
+        'Data-Driven Decision Support',
+        'Custom Insights',
+      ],
+      color: 'from-green-500 to-green-600',
+    },
+    {
+      icon: Bot,
+      title: 'AI Assistants (bots)',
+      path: '/services/ai-bots',
+      description:
+        'We design AI-powered assistants that help automate tasks, improve customer interactions, and support internal teams. These solutions are built to be practical, reliable, and aligned with real business needs.',
+      features: [
+        'AI Assistants & Virtual Agents',
+        'Process Automation',
+        'Customer Support Solutions',
+        'Intelligent Systems',
       ],
       color: 'from-red-500 to-red-600',
     },
     {
       icon: Brain,
-      title: 'Data Science',
+      title: 'Artificial Intelligence & Analytics',
+      path: '/services/data-science',
       description:
-        'Leverage machine learning and AI to extract valuable insights from your data and make data-driven decisions.',
+        'We use advanced analytics and AI models to uncover patterns, predict outcomes, and support smarter business strategies. Our focus is on solving real problems and enabling better planning.',
       features: [
-        'Machine Learning Models',
-        'Predictive Analytics',
-        'Data Visualization',
-        'AI Solutions',
+        'Predictive Solutions',
+        'Advanced Analytics',
+        'AI-Driven Insights',
+        'Data-Backed Strategy',
       ],
-      color: 'from-red-600 to-red-700',
+      color: 'from-purple-500 to-purple-600',
+    },
+    {
+      icon: Database,
+      title: 'Data Platforms & Engineering',
+      path: '/services/data-engineering',
+      description:
+        'We build strong data foundations that ensure your information is reliable, accessible, and ready to scale. Our data platforms are designed to support analytics, AI, and reporting.',
+      features: [
+        'Scalable Data Platforms',
+        'Data Integration',
+        'Reliable Pipelines',
+        'Foundations for Analytics',
+      ],
+      color: 'from-blue-500 to-blue-600',
     },
     {
       icon: Globe,
-      title: 'Website Development',
+      title: 'Web & Digital Experiences',
+      path: '/services/web-development',
       description:
-        'Create stunning, responsive websites and web applications that engage users and drive conversions.',
+        'We create modern websites and digital platforms that reflect your brand, communicate clearly, and support business growth. Our focus is on thoughtful design, usability, and performance.',
       features: [
-        'Custom Web Development',
-        'Responsive Design',
-        'E-commerce Solutions',
+        'Business Websites',
+        'Custom Web Platforms',
+        'User-Focused Design',
         'Performance Optimization',
       ],
-      color: 'from-red-500 to-red-600',
+      color: 'from-orange-500 to-orange-600',
     },
   ]
 
@@ -142,7 +173,7 @@ const ServicesSection = () => {
                   ))}
                 </ul>
                 <Link
-                  to="/services"
+                  to={service.path}
                   className="inline-flex items-center text-red-500 font-semibold group-hover:text-red-400 transition-colors"
                 >
                   Learn More

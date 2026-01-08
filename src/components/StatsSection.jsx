@@ -8,8 +8,8 @@ const StatsSection = () => {
 
   const stats = [
     { value: '50+', label: 'Projects Completed', suffix: '' },
-    { value: '30+', label: 'Happy Clients', suffix: '' },
-    { value: '95%', label: 'Client Satisfaction', suffix: '' },
+    { value: '5+', label: 'Years of Experience', suffix: '' },
+    { value: '100%', label: 'On-Time Delivery', suffix: '' },
     { value: '24/7', label: 'Support Available', suffix: '' },
   ]
 
