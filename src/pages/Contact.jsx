@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react'
+import { Mail, MapPin, Send, CheckCircle } from 'lucide-react'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,13 +13,35 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', formData)
+    
+    // Format email subject
+    const subject = encodeURIComponent(`Contact Form Submission from ${formData.name}`)
+    
+    // Format email body with all form data
+    const body = encodeURIComponent(
+      `Hello GenClover Team,\n\n` +
+      `I would like to get in touch regarding a project.\n\n` +
+      `--- Contact Information ---\n` +
+      `Name: ${formData.name}\n` +
+      `Email: ${formData.email}\n` +
+      `Company: ${formData.company || 'Not provided'}\n\n` +
+      `--- Message ---\n` +
+      `${formData.message}\n\n` +
+      `Best regards,\n${formData.name}`
+    )
+    
+    // Create mailto link
+    const mailtoLink = `mailto:gencloverai@gmail.com?subject=${subject}&body=${body}`
+    
+    // Open email client
+    window.location.href = mailtoLink
+    
+    // Show success message
     setSubmitted(true)
     setTimeout(() => {
       setSubmitted(false)
       setFormData({ name: '', email: '', company: '', message: '' })
-    }, 3000)
+    }, 5000)
   }
 
   const handleChange = (e) => {
@@ -35,12 +57,6 @@ const Contact = () => {
       title: 'Email',
       content: 'gencloverai@gmail.com',
       link: 'mailto:gencloverai@gmail.com',
-    },
-    {
-      icon: Phone,
-      title: 'Phone',
-      content: '8872253994',
-      link: 'tel:8872253994',
     },
     {
       icon: MapPin,
@@ -139,14 +155,14 @@ const Contact = () => {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-green-50 border border-green-200 rounded-lg p-6 text-center"
+                    className="bg-green-500/20 border border-green-500/30 rounded-lg p-6 text-center"
                   >
-                    <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-green-900 mb-2">
-                      Message Sent!
+                    <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-white mb-2">
+                      Opening Email Client...
                     </h3>
-                    <p className="text-green-700">
-                      We'll get back to you as soon as possible.
+                    <p className="text-white/70">
+                      Your email client should open with the message pre-filled. If it doesn't open automatically, please send your message to gencloverai@gmail.com
                     </p>
                   </motion.div>
                 ) : (

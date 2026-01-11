@@ -74,7 +74,7 @@ const About = () => {
             className="max-w-3xl mx-auto text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              About <span className="gradient-text">GenClover</span>
+              About <span className="text-white font-bold">Gen</span><span className="text-red-500 font-bold">Clover</span>
             </h1>
             <p className="text-xl text-white/70">
               GenClover is a technology-driven team focused on building intelligent, scalable, and future-ready digital solutions. We believe technology should not just function. It should create clarity, efficiency, and long-term value for businesses.
@@ -145,8 +145,8 @@ const About = () => {
                 </p>
                 <p className="text-lg text-white/70">
                   <strong className="text-white">Advanced Analytics & AI</strong> - Turning data into insights and intelligent decision systems
-                </p>
-                <p className="text-lg text-white/70">
+              </p>
+              <p className="text-lg text-white/70">
                   <strong className="text-white">Web & Digital Experiences</strong> - Creating clean, functional, and scalable digital products
                 </p>
               </div>

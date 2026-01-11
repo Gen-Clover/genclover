@@ -223,7 +223,7 @@ const Portfolio = () => {
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-black/90 backdrop-blur-sm border border-red-500/30 rounded-lg text-xs text-white whitespace-nowrap z-50 shadow-lg"
-                            >
+                        >
                               Not shown as per company policy
                               <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/90"></div>
                             </motion.div>

@@ -32,6 +32,7 @@ const Header = () => {
     { path: '/', label: 'Home' },
     { path: '/portfolio', label: 'Portfolio' },
     { path: '/about', label: 'About' },
+    { path: '/career', label: 'Career' },
     { path: '/contact', label: 'Contact' },
   ]
 
@@ -73,7 +74,8 @@ const Header = () => {
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                GenClover
+                  <span className="text-white font-bold">Gen</span>
+                  <span className="text-red-500 font-bold">Clover</span>
               </motion.span>
             </motion.div>
           </Link>

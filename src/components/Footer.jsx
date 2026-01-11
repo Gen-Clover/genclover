@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Linkedin, Twitter, Github, Mail, Phone, MapPin, ArrowRight, Clock } from 'lucide-react'
+import { Linkedin, Twitter, Github, Mail, MapPin, ArrowRight, Clock } from 'lucide-react'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -16,6 +16,7 @@ const Footer = () => {
     Company: [
       { name: 'About Us', path: '/about' },
       { name: 'Portfolio', path: '/portfolio' },
+      { name: 'Career', path: '/career' },
       { name: 'Contact', path: '/contact' },
     ],
   }
@@ -39,7 +40,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-white">GenClover</h3>
+            <h3 className="text-2xl font-bold">
+              <span className="text-white">Gen</span>
+              <span className="text-red-500">Clover</span>
+            </h3>
             <p className="text-sm text-gray-400">
               Intelligent IT Solutions for Modern Businesses. We transform data
               into insights and ideas into digital experiences.
@@ -53,13 +57,6 @@ const Footer = () => {
               >
                 <Mail className="w-4 h-4" />
                 <span>{contactInfo.email}</span>
-              </a>
-              <a
-                href={`tel:${contactInfo.phone}`}
-                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors"
-              >
-                <Phone className="w-4 h-4" />
-                <span>{contactInfo.phone}</span>
               </a>
               <div className="flex items-center space-x-2 text-sm text-gray-400">
                 <MapPin className="w-4 h-4" />

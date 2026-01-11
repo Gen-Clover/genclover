@@ -63,7 +63,7 @@ const Services = () => {
       y: 0,
       transition: {
         duration: 0.5,
-      },
+    },
     },
   }
 
@@ -115,7 +115,7 @@ const Services = () => {
                       className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden`}
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.6 }}
-                    >
+                      >
                       <Icon className="w-8 h-8 text-white relative z-10" />
                       <motion.div
                         className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100`}
@@ -127,8 +127,8 @@ const Services = () => {
                       />
                     </motion.div>
                     <h2 className="text-2xl font-bold mb-4 text-white group-hover:text-red-400 transition-colors">
-                      {service.title}
-                    </h2>
+                        {service.title}
+                      </h2>
                     <p className="text-white/70 mb-6">{service.description}</p>
                     <div className="flex items-center text-red-500 font-semibold group-hover:text-red-400 transition-colors">
                       <span>Learn More</span>
