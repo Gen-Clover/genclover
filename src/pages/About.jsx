@@ -77,7 +77,7 @@ const About = () => {
               About <span className="text-white font-bold">Gen</span><span className="text-red-500 font-bold">Clover</span>
             </h1>
             <p className="text-xl text-white/70">
-              GenClover is a technology-driven team focused on building intelligent, scalable, and future-ready digital solutions. We believe technology should not just function. It should create clarity, efficiency, and long-term value for businesses.
+              Gen Clover is a technology-driven team focused on building intelligent, scalable, and future-ready digital solutions. We believe technology should not just function. It should create clarity, efficiency, and long-term value for businesses.
             </p>
           </motion.div>
         </div>
