@@ -1,0 +1,125 @@
+import { useSearchParams } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowRight, FolderOpen } from 'lucide-react'
+import { PageHero, Section } from '../components/ui/Section'
+import Button from '../components/ui/Button'
+import WorkFilters from '../components/work/WorkFilters'
+import WorkCard from '../components/work/WorkCard'
+import FinalCTA from '../components/home/FinalCTA'
+import { getProjectsByCategory } from '../data/projects'
+import { workFilters, projectStatuses, getWorkCategory } from '../data/taxonomy'
+import { routes } from '../data/site'
+import { usePageMeta, pageMeta } from '../lib/seo'
+import { useMotionVariants } from '../lib/motion'
+
+/**
+ * Work hub. (Spec §7, §21)
+ *
+ * The active filter lives in the URL (?category=) rather than component state,
+ * so a filtered view is linkable, shareable and survives a back button — and
+ * the header's Work dropdown can link straight into a category.
+ */
+const Work = () => {
+  usePageMeta(pageMeta.work)
+  const v = useMotionVariants()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const requested = searchParams.get('category') ?? 'all'
+  const active = workFilters.some((f) => f.id === requested) ? requested : 'all'
+  const projects = getProjectsByCategory(active)
+  const activeCategory = getWorkCategory(active)
+
+  const setActive = (id) => {
+    const next = new URLSearchParams(searchParams)
+    if (id === 'all') next.delete('category')
+    else next.set('category', id)
+    setSearchParams(next, { replace: true })
+  }
+
+  return (
+    <>
+      <PageHero
+        eyebrow="Work"
+        title="Selected work and concepts."
+        description="Projects across websites, applications, commerce, AI, data and platforms. Every item carries its real status, so you always know what you are looking at."
+      >
+        <Button to={routes.startProject} size="lg">
+          Start a Project
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Button>
+      </PageHero>
+
+      {/* Status key — makes the labelling system legible up front (Spec §7.2) */}
+      <div className="border-b border-ink-800 bg-ink-900">
+        <div className="container py-5">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-silver-500">
+            <span className="font-display uppercase tracking-brand text-silver-400">
+              Status key
+            </span>
+            {Object.values(projectStatuses).map((status) => (
+              <span key={status.id} className="inline-flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent-600" aria-hidden="true" />
+                {status.publicLabel}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Section>
+        <div className="mb-10">
+          <WorkFilters active={active} onChange={setActive} />
+          <p className="mt-5 text-sm text-silver-500" aria-live="polite">
+            Showing {projects.length} {projects.length === 1 ? 'project' : 'projects'}
+            {activeCategory ? ` in ${activeCategory.label}` : ''}.
+          </p>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial="hidden"
+            animate="visible"
+            exit={{ opacity: 0 }}
+            variants={v.stagger(0.05)}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {projects.map((project, i) => (
+              <WorkCard key={project.slug} project={project} priority={i < 3} />
+            ))}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* An empty category is stated honestly rather than padded out. */}
+        {projects.length === 0 && (
+          <div className="rounded-xl border border-dashed border-ink-700 bg-ink-900/50 px-6 py-16 text-center">
+            <FolderOpen className="mx-auto h-8 w-8 text-silver-600" aria-hidden="true" />
+            <h2 className="mt-5 text-lg font-semibold text-silver-200">
+              Nothing published here yet
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-silver-500">
+              We have not published work in this category yet. We would rather show you an empty
+              shelf than fill it with something we cannot stand behind.
+            </p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <Button variant="secondary" size="sm" onClick={() => setActive('all')}>
+                View all work
+              </Button>
+              <Button to={routes.startProject} size="sm">
+                Discuss a project
+              </Button>
+            </div>
+          </div>
+        )}
+      </Section>
+
+      <FinalCTA
+        title="Want to see how this would work for you?"
+        description="Tell us about the project and we will show you the closest thing we have built, and what we would do differently for your situation."
+        location="work_hub"
+      />
+    </>
+  )
+}
+
+export default Work

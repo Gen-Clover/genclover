@@ -1,212 +1,177 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Target, Users, Award, Zap } from 'lucide-react'
-import ServiceBackground from '../components/ServiceBackground'
-import AboutFloating from '../components/AboutFloating'
+import { ArrowRight } from 'lucide-react'
+import { PageHero, Section, SectionHeader } from '../components/ui/Section'
+import Button from '../components/ui/Button'
+import { CloverMark } from '../components/brand/Logo'
+import FinalCTA from '../components/home/FinalCTA'
+import { site, routes } from '../data/site'
+import { brandPillars } from '../data/taxonomy'
+import { differentiators } from '../data/process'
+import { services } from '../data/services'
+import { capabilityProof, PROOF_POLICY_NOTE } from '../data/proof'
+import { usePageMeta, pageMeta } from '../lib/seo'
+import { useMotionVariants, revealOnce } from '../lib/motion'
 
+/**
+ * About. (Spec §14)
+ * Capability-led. No company-size, headcount or years-of-experience claims,
+ * because none of those are substantiated.
+ */
 const About = () => {
-  const values = [
-    {
-      icon: Target,
-      title: 'Mission-Driven',
-      description:
-        'We focus on solving real problems and delivering meaningful outcomes, not just features.',
-    },
-    {
-      icon: Users,
-      title: 'Transparency & Ownership',
-      description:
-        'We believe in honest communication, clear expectations, and taking full responsibility for what we build.',
-    },
-    {
-      icon: Award,
-      title: 'Excellence by Design',
-      description:
-        'From architecture to execution, we maintain high standards in quality, security, and performance.',
-    },
-    {
-      icon: Zap,
-      title: 'Continuous Learning & Innovation',
-      description:
-        'Technology evolves fast and so do we. We continuously learn, adapt, and adopt better ways of building solutions.',
-    },
-  ]
+  usePageMeta(pageMeta.about)
+  const v = useMotionVariants()
 
   return (
-    <div className="pt-20 overflow-hidden">
-      {/* Hero Section */}
-      <section className="py-20 bg-black relative overflow-hidden">
-        <ServiceBackground color="red" />
-        <AboutFloating />
-        {/* Animated Background Blobs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-20 left-10 w-96 h-96 bg-red-500/20 rounded-full filter blur-3xl"
-            animate={{
-              x: [0, 100, 0],
-              y: [0, -100, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-          <motion.div
-            className="absolute bottom-20 right-10 w-96 h-96 bg-red-600/20 rounded-full filter blur-3xl"
-            animate={{
-              x: [0, -100, 0],
-              y: [0, 100, 0],
-              scale: [1, 1.3, 1],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              About <span className="text-white font-bold">Gen</span><span className="text-red-500 font-bold">Clover</span>
-            </h1>
-            <p className="text-xl text-white/70">
-              Gen Clover is a technology-driven team focused on building intelligent, scalable, and future-ready digital solutions. We believe technology should not just function. It should create clarity, efficiency, and long-term value for businesses.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <>
+      <PageHero
+        eyebrow="About"
+        title="A technology and digital product company."
+        description="Gen Clover builds practical, high-quality digital experiences and solutions for modern businesses. We would rather do a smaller number of things properly than claim a longer list."
+      >
+        <Button to={routes.startProject} size="lg">
+          Start a Project
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Button>
+        <Button to={routes.work} size="lg" variant="secondary">
+          View Our Work
+        </Button>
+      </PageHero>
 
-      {/* Story Section */}
-      <section className="py-20 relative">
-        {/* Subtle background animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-1/4 right-1/4 w-72 h-72 bg-red-500/10 rounded-full filter blur-3xl"
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{ duration: 8, repeat: Infinity }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full filter blur-3xl"
-            animate={{
-              scale: [1, 1.4, 1],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-          />
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="prose prose-lg max-w-none"
-            >
-              <h2 className="text-4xl font-bold mb-6 text-white">
-                Our Vision
-              </h2>
-              <p className="text-lg text-white/70 mb-8">
-                Our vision is to empower organizations by simplifying complexity through data, analytics, and modern digital experiences.
-              </p>
-
-              <h2 className="text-4xl font-bold mb-6 text-white mt-12">
-                Our Story
-              </h2>
-              <p className="text-lg text-white/70 mb-6">
-                GenClover was born from a shared belief: data and technology, when used thoughtfully, can transform how businesses operate and grow.
-              </p>
-              <p className="text-lg text-white/70 mb-6">
-                What started as a group of passionate technologists with strong foundations in data, analytics, and engineering has evolved into a focused team building real-world solutions across multiple problem domains. Rather than chasing volume, we prioritize quality, learning, and impact in everything we build.
-              </p>
-              <p className="text-lg text-white/70 mb-6">
-                We work at the intersection of data platforms, intelligent analytics, AI-driven solutions, and web technologies, translating complex requirements into practical, scalable systems. Our approach blends deep technical expertise with a strong understanding of business workflows, ensuring solutions are not just technically sound, but genuinely useful.
-              </p>
-              <p className="text-lg text-white/70 mb-8">
-                With over 50+ projects and use cases delivered, we continue to refine our craft, strengthen our processes, and push boundaries with modern technologies. Guided by our long-term vision rather than short-term metrics.
-              </p>
-
-              <h2 className="text-4xl font-bold mb-6 text-white mt-12">
-                What We Focus On
-              </h2>
-              <div className="space-y-4 mb-8">
-                <p className="text-lg text-white/70">
-                  <strong className="text-white">Data Engineering & Platforms</strong> - Building reliable, scalable data foundations
-                </p>
-                <p className="text-lg text-white/70">
-                  <strong className="text-white">Advanced Analytics & AI</strong> - Turning data into insights and intelligent decision systems
-              </p>
-              <p className="text-lg text-white/70">
-                  <strong className="text-white">Web & Digital Experiences</strong> - Creating clean, functional, and scalable digital products
-                </p>
+      {/* The name */}
+      <Section>
+        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <SectionHeader eyebrow="The name" title="Gen + Clover." className="mb-8" />
+            <div className="flex justify-start">
+              <div className="relative">
+                <div
+                  className="absolute -inset-8 rounded-full bg-accent-900/20 blur-3xl"
+                  aria-hidden="true"
+                />
+                <CloverMark className="relative h-28 w-28" />
               </div>
-
-              <p className="text-lg text-white/80 font-medium italic mt-8">
-                At GenClover, we're not just building solutions for today—we're shaping systems that are ready for tomorrow.
-              </p>
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Values Section */}
-      <section className="py-20 bg-black/80">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Our <span className="gradient-text">Values</span>
-            </h2>
-            <p className="text-xl text-white/70">
-              The principles that guide everything we do
+          <div className="space-y-6 text-base leading-relaxed text-silver-400">
+            <p>
+              <span className="font-medium text-silver-200">Gen</span> stands for generation,
+              generative, and the generation of intelligence - which is a fair description of a
+              company working in AI, software, automation and next-generation technology.
             </p>
-          </motion.div>
+            <p>
+              <span className="font-medium text-silver-200">Clover</span> traditionally represents
+              growth, opportunity and prosperity. We position it less around luck and more around
+              four interconnected ideas, one per leaf.
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => {
-              const Icon = value.icon
-              return (
-                <motion.div
-                  key={value.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ y: -10 }}
-                  className="bg-black/40 backdrop-blur-sm border border-red-500/20 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-                >
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-6">
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-white">
-                    {value.title}
+            <motion.ol
+              variants={v.stagger(0.07)}
+              {...revealOnce}
+              className="grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2"
+            >
+              {brandPillars.map((pillar, i) => (
+                <motion.li key={pillar.label} variants={v.fadeUp} className="bg-ink-950 p-6">
+                  <span className="font-display text-xs font-semibold tracking-brand text-silver-600">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="mt-3 font-display text-sm font-semibold uppercase tracking-brand text-silver-100">
+                    {pillar.label}
                   </h3>
-                  <p className="text-white/70">{value.description}</p>
-                </motion.div>
-              )
-            })}
+                  <p className="mt-2 text-sm leading-relaxed text-silver-400">
+                    {pillar.description}
+                  </p>
+                </motion.li>
+              ))}
+            </motion.ol>
+
+            <p className="rounded-xl border border-ink-700 bg-ink-850 p-6 font-display text-base text-silver-200">
+              {site.meaning}
+              <span className="mt-2 block text-sm text-silver-400">{site.tagline}</span>
+            </p>
           </div>
         </div>
-      </section>
+      </Section>
 
-    </div>
+      {/* How we operate */}
+      <Section muted>
+        <SectionHeader
+          eyebrow="How we operate"
+          title="What you can expect from working with us."
+          description="These are commitments about process and engineering practice - things we control and can be held to."
+        />
+        <motion.ul
+          variants={v.stagger(0.06)}
+          {...revealOnce}
+          className="grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {differentiators.map((item) => (
+            <motion.li key={item.title} variants={v.fadeUp} className="bg-ink-950 p-7">
+              <h3 className="text-base font-semibold text-silver-100">{item.title}</h3>
+              <p className="mt-2.5 text-sm leading-relaxed text-silver-400">{item.description}</p>
+            </motion.li>
+          ))}
+        </motion.ul>
+      </Section>
+
+      {/* Capability proof, in place of unverified social proof */}
+      <Section>
+        <SectionHeader
+          eyebrow="Proof"
+          title="Where our claims come from."
+          description="We do not publish client counts, satisfaction scores or performance figures we cannot evidence. Here is what we can point to instead."
+        />
+        <motion.ul
+          variants={v.stagger(0.06)}
+          {...revealOnce}
+          className="grid gap-5 sm:grid-cols-2"
+        >
+          {capabilityProof.map((item) => {
+            const Icon = item.icon
+            return (
+              <motion.li key={item.title} variants={v.fadeUp} className="surface p-7">
+                <Icon className="h-5 w-5 text-accent-500" aria-hidden="true" />
+                <h3 className="mt-4 text-base font-semibold text-silver-100">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-silver-400">{item.description}</p>
+              </motion.li>
+            )
+          })}
+        </motion.ul>
+        <p className="mt-8 max-w-prose text-sm leading-relaxed text-silver-500">
+          {PROOF_POLICY_NOTE}
+        </p>
+      </Section>
+
+      {/* What we do */}
+      <Section muted>
+        <SectionHeader
+          eyebrow="Capabilities"
+          title="What we build."
+          action={
+            <Button to={routes.services} variant="secondary" size="md">
+              All services
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          }
+        />
+        <motion.ul variants={v.stagger(0.04)} {...revealOnce} className="flex flex-wrap gap-2.5">
+          {services.map((service) => (
+            <motion.li key={service.slug} variants={v.fadeUp}>
+              <Link
+                to={`${routes.services}/${service.slug}`}
+                className="inline-block rounded-lg border border-ink-700 bg-ink-850 px-4 py-2.5 text-sm text-silver-300 transition-colors hover:border-accent-700/60 hover:text-silver-100"
+              >
+                {service.title}
+              </Link>
+            </motion.li>
+          ))}
+        </motion.ul>
+      </Section>
+
+      <FinalCTA location="about" />
+    </>
   )
 }
 
 export default About
-

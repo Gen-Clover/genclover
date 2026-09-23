@@ -2,14 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GenClover - Intelligent IT Solutions</title>
-    <meta name="description" content="GenClover provides cutting-edge IT services including Data Engineering, Data Science, and Website Development." />
+
+    <link rel="icon" type="image/png" href="/brand/gen-clover-logo.png" />
+    <link rel="apple-touch-icon" href="/brand/gen-clover-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <meta name="theme-color" content="#050506" />
+
+    <!--
+      Applies the saved theme before first paint so a returning light-mode
+      visitor never sees a dark flash. Deliberately ignores prefers-color-scheme:
+      a first-time visitor always gets dark. Mirrors src/lib/theme.jsx.
+    -->
+    <script>
+      (function () {
+        var theme = 'dark'
+        try {
+          var stored = localStorage.getItem('gc-theme')
+          if (stored === 'light' || stored === 'dark') theme = stored
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', theme)
+      })()
+    </script>
+
+    <title>Gen Clover | Digital Products, Technology &amp; AI Solutions</title>
+    <meta
+      name="description"
+      content="Gen Clover designs and builds digital products that move businesses forward - websites, web applications, e-commerce, AI and automation, data, DevOps and digital growth."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Gen Clover" />
+    <meta property="og:title" content="Gen Clover | Digital Products, Technology &amp; AI Solutions" />
+    <meta
+      property="og:description"
+      content="Next-generation intelligence. Growing possibilities. We design and build digital products that move businesses forward."
+    />
+    <meta property="og:image" content="/brand/gen-clover-banner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-
