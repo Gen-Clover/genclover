@@ -8,7 +8,7 @@ straight into `src/data/projects.js`.
 You do not need to write any code. Fill in prose and pick values from the lists provided.
 
 - **Generated from:** `src/data/projects.js` on branch `feat/website-v1-rebuild`
-- **Projects currently in the system:** 9 (all labelled Gen Clover Concept)
+- **Projects currently in the system:** 15 - 6 delivered client engagements (confidential) and 9 concepts
 - **Where this shows up:** the Work hub at `/work`, a dedicated page per project at
   `/work/<slug>`, the Selected Work block on the homepage, and the Related Work block on
   each service and industry page
@@ -231,13 +231,404 @@ so spelling matters.
 
 ## 5. What is in the system today
 
-All nine are carried over from the previous site and relabelled as concepts. The narrative
-text was written to replace the unverifiable percentage claims that were there before.
+**The first six are real delivered engagements**, onboarded from the portfolio repository and
+published as Confidential Client Projects. Client names, imprint names and internal product
+names have been removed; the sector is kept because it describes rather than identifies.
 
-**Please review each one for accuracy** - especially whether the challenge, approach and
-solution describe work we can genuinely speak to.
+**The remaining nine are concepts** carried over from the previous site, with narrative text
+written to replace the unverifiable percentage claims that were there before.
 
-### 1. E-Commerce Analytics Platform
+**Please review each one for accuracy** - for the delivered work, check that nothing
+identifying has slipped through; for the concepts, check whether they still earn their place
+now that there is real work to show.
+
+### 1. Autonomous AI Log Monitoring & Observability Platform
+
+| Field | Current value |
+| --- | --- |
+| `slug` | `ai-log-monitoring-observability-platform` |
+| `status` | `confidential` -> **Confidential Client Project** |
+| `category` | `ai-automation` -> AI & Automation |
+| `industry` | `healthcare` -> Healthcare |
+| `primaryService` | `ai-automation` -> AI & Automation |
+| `additionalServices` | `devops-mlops`, `technology-solutions` |
+| `featured` | `true` (shows on homepage) |
+| `heroImage` | _(not set)_ |
+| `gallery` | _(empty)_ |
+| `clientName` | _(not set)_ |
+| `clientLogo` | _(not set)_ |
+| `externalUrl` | _(not set)_ |
+| `githubUrl` | _(not set)_ |
+| `published` | `true` |
+| `permissionsApproved` | `true` |
+
+**`summary`** _(card + page intro, 1-2 sentences)_
+> For a healthcare media and clinician engagement platform, a five-agent system that reads a production error, writes the fix and opens a reviewed pull request, with an engineer still deciding what ships.
+
+**`challenge`** _(the problem, no client named)_
+> A microservice estate produces thousands of log lines a minute. When something breaks, an on-call engineer has to notice the alert, find the right logs, reconstruct the failing request, locate the responsible file and commit, then write, test and ship a fix. Logs, source code and deployment state live in three different systems, so the mechanical middle of an incident is where most of the hours go. Traditional dashboards report that something broke; they never propose a fix.
+
+**`approach`** _(how we decided to tackle it)_
+> Instrument once, let agents do the mechanical work, and keep people in charge of the decision. A standard tracing library across every service means an agent can always start from one identifier and find everything related to a failure. The workflow deliberately ends at a pull request rather than a deployment, so the AI prepares work and a person merges it.
+
+**`solution`** _(what was actually built)_
+> A shared tracing library across all Node and Python services, a five-agent remediation swarm running on Cloud Run, and a dashboard that shows what the system did, why, what it changed and what it cost. Agents hand off through strict typed schemas and the pipeline fails closed if any stage does not report success.
+
+**`features`** _(bullet list on the case-study page)_
+- Shared tracing library stamping every log line with a standard trace ID, with no call-site changes
+- Five specialist agents: log triage, code retrieval, fix authoring, independent review and Git operations
+- Independent review agent that must approve before any change reaches source control
+- Token circuit breaker that halts a run at a per-incident budget
+- Fail-closed pipeline with typed hand-offs between every stage
+- Incident dashboard with agent timeline, before-and-after diff and per-agent cost
+
+**`capabilities`** _(must match capability labels from the service taxonomy)_
+- Workflow Automation
+- AI Integrations
+- Monitoring & Observability
+- Cloud Solutions
+- Architecture
+
+**`technologies`** _(shown as tags on the card and page)_
+- Google ADK
+- Claude via Vertex AI
+- FastAPI
+- Cloud Run
+- OpenTelemetry
+- Next.js
+
+**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
+- Engineers receive a reviewed pull request with a root-cause explanation, rather than only an alert.
+- Every automated change is checked by a separate review agent before it reaches source control, so the author of a change is never its only reviewer.
+- Token spend is capped per incident and reported per agent, so an autonomous run cannot produce an open-ended bill.
+
+**`scope`** _(one line, what we were engaged to do)_
+> Product ownership, solution architecture, agent workflow design, observability dashboard, delivery.
+
+---
+
+### 2. Data & BI Modernization
+
+| Field | Current value |
+| --- | --- |
+| `slug` | `data-bi-modernization` |
+| `status` | `confidential` -> **Confidential Client Project** |
+| `category` | `data-analytics` -> Data & Analytics |
+| `industry` | `other` -> Other / Custom |
+| `primaryService` | `data-analytics` -> Data & Analytics |
+| `additionalServices` | `technology-solutions`, `devops-mlops`, `web-applications` |
+| `featured` | `true` (shows on homepage) |
+| `heroImage` | _(not set)_ |
+| `gallery` | _(empty)_ |
+| `clientName` | _(not set)_ |
+| `clientLogo` | _(not set)_ |
+| `externalUrl` | _(not set)_ |
+| `githubUrl` | _(not set)_ |
+| `published` | `true` |
+| `permissionsApproved` | `true` |
+
+**`summary`** _(card + page intro, 1-2 sentences)_
+> For an established independent book publisher, a decade of accumulated ETL, warehouse and dashboard tools replaced with one governed cloud platform, without breaking a single number the business depended on.
+
+**`challenge`** _(the problem, no client named)_
+> Four disconnected systems had accumulated over a decade: an ETL tool running more than two hundred largely undocumented pipelines, a warehouse with business logic buried in stored procedures, dashboards isolated from daily operations, and a mountain of claims, allocations and reconciliations run by hand in spreadsheets over email. The same question could be answered four different ways, and access was managed separately in every system.
+
+**`approach`** _(how we decided to tackle it)_
+> Reverse-engineer before replacing. Every pipeline was documented and its output validated against the legacy system, so each migration step was a small verified move rather than a leap of faith. Analytics was embedded inside the company portal rather than delivered as a separate tool, and the spreadsheet processes were rebuilt as auditable applications instead of being carried over.
+
+**`solution`** _(what was actually built)_
+> A six-layer platform: orchestrated cloud pipelines with validation, logging and retry built in, a single enterprise warehouse holding one set of business rules, embedded analytics and custom APIs, and one portal carrying reports, operational applications and user administration behind role-based access and row-level security.
+
+**`features`** _(bullet list on the case-study page)_
+- More than 200 legacy pipelines reverse-engineered, validated against legacy output and re-platformed
+- Single enterprise warehouse replacing four disconnected tools
+- Embedded analytics delivered inside the company portal rather than a standalone tool
+- Spreadsheet and email processes rebuilt as auditable workflow applications with roles and approvals
+- Role-based access and row-level security administered centrally
+- Three environments with automated CI/CD, build validation and sign-off before every release
+
+**`capabilities`** _(must match capability labels from the service taxonomy)_
+- Data Engineering
+- Data Platforms
+- Data Pipelines
+- Business Intelligence
+- Technology Modernization
+- Dashboards & Reporting
+
+**`technologies`** _(shown as tags on the card and page)_
+- BigQuery
+- Cloud Composer
+- Power BI Embedded
+- React
+- Node.js
+- Python
+
+**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
+- Four disconnected systems consolidated into one governed platform, with business logic living once instead of in four places.
+- Manual claims, allocations and reconciliation processes moved from email and spreadsheets into standardized, auditable workflows.
+- Reporting delivered through the existing portal, removing the need for a separate per-seat analytics licence for every business user.
+
+**`scope`** _(one line, what we were engaged to do)_
+> Solution architecture, programme leadership, data platform engineering, embedded analytics, application delivery.
+
+---
+
+### 3. Drug Competitor Identification
+
+| Field | Current value |
+| --- | --- |
+| `slug` | `drug-competitor-identification` |
+| `status` | `confidential` -> **Confidential Client Project** |
+| `category` | `ai-automation` -> AI & Automation |
+| `industry` | `healthcare` -> Healthcare |
+| `primaryService` | `ai-automation` -> AI & Automation |
+| `additionalServices` | `data-analytics`, `technology-solutions` |
+| `featured` | `true` (shows on homepage) |
+| `heroImage` | _(not set)_ |
+| `gallery` | _(empty)_ |
+| `clientName` | _(not set)_ |
+| `clientLogo` | _(not set)_ |
+| `externalUrl` | _(not set)_ |
+| `githubUrl` | _(not set)_ |
+| `published` | `true` |
+| `permissionsApproved` | `true` |
+
+**`summary`** _(card + page intro, 1-2 sentences)_
+> A brand-intelligence tool that asks a language model who a drug competes with, then checks the answer against regulatory reference data before anyone is asked to trust it.
+
+**`challenge`** _(the problem, no client named)_
+> Establishing that two products genuinely compete takes knowing active ingredient, therapeutic class, route, dosage form and regulatory pathway well enough to defend the judgement. Done by hand, two analysts researching the same drug could reach two different answers. Authoritative pharmacological facts sat in public regulatory data while the organisation’s own competitive knowledge sat in a separate internal list, and nothing reconciled the two.
+
+**`approach`** _(how we decided to tackle it)_
+> Separate recall from trust. Let the language model propose candidates from everything on the web, because that is what it is good at, then let an explainable point system decide which candidates count as verified, because that has to be repeatable. Keep every unverified candidate visible rather than quietly dropping it, and give the analyst the final edit.
+
+**`solution`** _(what was actually built)_
+> A three-node analysis workflow behind a single search box: look the seed drug up in regulatory reference data, ask a search-grounded model for candidates, then score each candidate against the seed on identifier, class, route and pathway. Candidates reaching the scoring threshold are marked verified; the rest stay on screen, flagged.
+
+**`features`** _(bullet list on the case-study page)_
+- Search-grounded model proposes candidates but never decides which ones count
+- Explainable point-based rubric scored against regulatory reference data
+- Unverified candidates stay visible and flagged rather than being dropped
+- Analyst edits write straight back to the organisation’s ground-truth list
+- Strictly linear workflow where any error stops the run rather than degrading silently
+- Reconciliation between public regulatory facts and internal competitive intelligence
+
+**`capabilities`** _(must match capability labels from the service taxonomy)_
+- Generative AI
+- Intelligent Search
+- AI Integrations
+- Data Integration
+- Data Analytics
+
+**`technologies`** _(shown as tags on the card and page)_
+- LangGraph
+- Gemini
+- BigQuery
+- FastAPI
+- React
+
+**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
+- A competitor list is produced from a single drug name, with the evidence behind each verification visible on screen.
+- The same drug scored twice returns the same result, because the decision rubric is fixed rather than left to the model.
+- Analyst corrections update the organisation’s ground-truth list directly, so curation and research happen in one place.
+
+**`scope`** _(one line, what we were engaged to do)_
+> Product ownership, solution architecture, retrieval and verification design, analyst experience, delivery.
+
+---
+
+### 4. AI Agents Platform
+
+| Field | Current value |
+| --- | --- |
+| `slug` | `ai-agents-platform` |
+| `status` | `confidential` -> **Confidential Client Project** |
+| `category` | `ai-automation` -> AI & Automation |
+| `industry` | `healthcare` -> Healthcare |
+| `primaryService` | `ai-automation` -> AI & Automation |
+| `additionalServices` | `technology-solutions`, `devops-mlops` |
+| `featured` | `true` (shows on homepage) |
+| `heroImage` | _(not set)_ |
+| `gallery` | _(empty)_ |
+| `clientName` | _(not set)_ |
+| `clientLogo` | _(not set)_ |
+| `externalUrl` | _(not set)_ |
+| `githubUrl` | _(not set)_ |
+| `published` | `true` |
+| `permissionsApproved` | `true` |
+
+**`summary`** _(card + page intro, 1-2 sentences)_
+> Seven agents that turn one upload into a recorded, print-ready batch of personalized posters, with a reviewer approving anything that carries commercial risk.
+
+**`challenge`** _(the problem, no client named)_
+> Every personalized poster was assembled by hand. Up to a dozen sections had to fit a fixed layout to the pixel, for every single recipient, and each one needed its own set of tracked codes. Nothing reliably recorded which poster or which incentive went to whom, and a single wrong incentive code awards the wrong points to the wrong person, which is a commercial error rather than a cosmetic one.
+
+**`approach`** _(how we decided to tackle it)_
+> Automate aggressively in the mechanical middle and stay deliberately conservative at the two points where a mistake is expensive: an incentive that awards points, and a poster that prints without a working code. Store layouts and validation rules as data rather than design files, so the business can change what a valid poster looks like without waiting for a release.
+
+**`solution`** _(what was actually built)_
+> Seven agents sharing one blueprint, each with its own screen and a single job: dashboard, template management, input validation, code generation, poster assembly, incentive activation and a metadata registry. An upload returns a job number immediately and the heavy work runs in the background, ending in one recorded, downloadable batch.
+
+**`features`** _(bullet list on the case-study page)_
+- Layouts and input validation rules stored as configuration, changeable by the business without a release
+- Tracked codes generated per recipient and location, with the run stopping rather than printing without one
+- Background execution returning a job number immediately on upload
+- Idempotent generation, so re-running the same file replaces rather than duplicates a batch
+- Human approval gate before any incentive is sent onward
+- Registry recording every code, poster and layout version for support and audit
+
+**`capabilities`** _(must match capability labels from the service taxonomy)_
+- Workflow Automation
+- AI Integrations
+- Document Intelligence
+- Custom Systems
+- Backend Engineering
+
+**`technologies`** _(shown as tags on the card and page)_
+- Google Cloud
+- Python
+- React
+- Cloud Storage
+- Agent workflows
+
+**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
+- A batch that previously required a designer per recipient now starts from one upload and returns a print-ready package.
+- Every code, poster and layout version is recorded, so any run can be reconstructed after the fact.
+- Incentives cannot reach the partner without a named reviewer approving them first.
+
+**`scope`** _(one line, what we were engaged to do)_
+> Product ownership, solution architecture, agent design, validation and approval workflow, delivery.
+
+---
+
+### 5. Recruitment Analytics & Decision Support
+
+| Field | Current value |
+| --- | --- |
+| `slug` | `recruitment-analytics-decision-support` |
+| `status` | `confidential` -> **Confidential Client Project** |
+| `category` | `data-analytics` -> Data & Analytics |
+| `industry` | `professional-services` -> Professional Services |
+| `primaryService` | `data-analytics` -> Data & Analytics |
+| `additionalServices` | `ai-automation` |
+| `featured` | `true` (shows on homepage) |
+| `heroImage` | _(not set)_ |
+| `gallery` | _(empty)_ |
+| `clientName` | _(not set)_ |
+| `clientLogo` | _(not set)_ |
+| `externalUrl` | _(not set)_ |
+| `githubUrl` | _(not set)_ |
+| `published` | `true` |
+| `permissionsApproved` | `true` |
+
+**`summary`** _(card + page intro, 1-2 sentences)_
+> A decision-support layer over a staffing platform, turning candidate, requirement and recruiter activity into KPIs that mean the same thing whoever is looking at them.
+
+**`challenge`** _(the problem, no client named)_
+> Recruiters could source, submit and place candidates every day, but management could not see the funnel behind those actions: which requirements were aging, which clients were slow to respond, or why a requirement with plenty of submissions still had not closed. Three teams computed time-to-fill three different ways and all three defended their number.
+
+**`approach`** _(how we decided to tackle it)_
+> Model once and let the KPI layer drive every dashboard. Define each metric centrally, compute it in one place, and have every report consume it rather than recalculate it. Then use the same governed model that reports what happened to score which open requirements are likely to miss their target date.
+
+**`solution`** _(what was actually built)_
+> A star schema covering the recruitment lifecycle, a central measure layer holding more than fifty standardized KPIs, data quality rules that run before data reaches a dashboard, and predictive models scoring fill probability, candidate success and at-risk requirements. Six role-scoped dashboards read from the same model.
+
+**`features`** _(bullet list on the case-study page)_
+- Star schema of fact and dimension tables covering the full recruitment lifecycle
+- More than 50 standardized KPIs computed centrally and consumed, never recalculated per report
+- Data quality rules for duplicates, missing fields, orphans and invalid dates, run before reporting
+- Stage-level conversion and drop-off visible per requirement
+- Predictive scoring for fill probability, candidate success and at-risk requirements
+- Six role-scoped dashboards reading from one governed model
+
+**`capabilities`** _(must match capability labels from the service taxonomy)_
+- Business Intelligence
+- Dashboards & Reporting
+- Data Analytics
+- Data Science / Machine Learning
+- Data Engineering
+
+**`technologies`** _(shown as tags on the card and page)_
+- SQL
+- Power BI
+- DAX
+- Python
+- scikit-learn
+
+**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
+- One definition per KPI, enforced centrally and traceable back to its source tables, replacing three competing versions of time-to-fill.
+- Aging cohorts and escalation flags refresh daily instead of being rebuilt by hand each week.
+- The same governed layer that reports the funnel also scores which requirements are at risk, so reporting and prediction share one model.
+
+**`scope`** _(one line, what we were engaged to do)_
+> Data modelling, KPI definition, BI development, predictive modelling, product analytics.
+
+---
+
+### 6. Medical Data Intelligence Platform
+
+| Field | Current value |
+| --- | --- |
+| `slug` | `medical-data-intelligence-platform` |
+| `status` | `confidential` -> **Confidential Client Project** |
+| `category` | `data-analytics` -> Data & Analytics |
+| `industry` | `healthcare` -> Healthcare |
+| `primaryService` | `data-analytics` -> Data & Analytics |
+| `additionalServices` | `ai-automation` |
+| `featured` | `true` (shows on homepage) |
+| `heroImage` | _(not set)_ |
+| `gallery` | _(empty)_ |
+| `clientName` | _(not set)_ |
+| `clientLogo` | _(not set)_ |
+| `externalUrl` | _(not set)_ |
+| `githubUrl` | _(not set)_ |
+| `published` | `true` |
+| `permissionsApproved` | `true` |
+
+**`summary`** _(card + page intro, 1-2 sentences)_
+> Reporting, prediction and document processing for a medical data platform, delivered with a cross-functional business intelligence, data engineering and machine learning team.
+
+**`challenge`** _(the problem, no client named)_
+> Medical data arrives in formats built for people rather than systems: documents, attachments and email threads alongside structured records. Reporting, forecasting and document handling had grown up separately, so the same information was re-entered and re-reconciled in several places before anyone could act on it.
+
+**`approach`** _(how we decided to tackle it)_
+> Treat the document pipeline and the reporting layer as one problem rather than two. Extract structure from documents at the point of arrival, validate and reconcile it against existing records, and build the reporting and prediction layers on the governed result rather than on raw feeds.
+
+**`solution`** _(what was actually built)_
+> Optical character recognition and automated processing for inbound documents and email, validation and reconciliation workflows, a governed reporting layer, and sales prediction models built on top of the same data foundation.
+
+**`features`** _(bullet list on the case-study page)_
+- Optical character recognition for inbound document processing
+- Automated email and document handling workflows
+- Validation and reconciliation before data reaches reporting
+- Sales prediction models built on the governed data layer
+- Reporting suite covering operational and commercial views
+- Data governance layer defining ownership and quality rules
+
+**`capabilities`** _(must match capability labels from the service taxonomy)_
+- Document Intelligence
+- Business Intelligence
+- Data Engineering
+- Data Science / Machine Learning
+- Workflow Automation
+
+**`technologies`** _(shown as tags on the card and page)_
+- Power BI
+- Python
+- OCR
+- SQL
+
+**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
+- Inbound documents are converted into structured, validated records instead of being re-keyed by hand.
+- Reporting and prediction read from one governed data layer rather than from separate feeds.
+- Validation and reconciliation run as defined workflow steps with an auditable trail.
+
+**`scope`** _(one line, what we were engaged to do)_
+> Requirements, solution design, BI development, document processing pipeline, predictive modelling.
+
+---
+
+### 7. E-Commerce Analytics Platform
 
 | Field | Current value |
 | --- | --- |
@@ -247,7 +638,7 @@ solution describe work we can genuinely speak to.
 | `industry` | `retail-commerce` -> Retail & Commerce |
 | `primaryService` | `data-analytics` -> Data & Analytics |
 | `additionalServices` | `technology-solutions` |
-| `featured` | `true` (shows on homepage) |
+| `featured` | `false`  |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -298,7 +689,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 2. Customer Churn Prediction Model
+### 8. Customer Churn Prediction Model
 
 | Field | Current value |
 | --- | --- |
@@ -308,7 +699,7 @@ solution describe work we can genuinely speak to.
 | `industry` | `technology-saas` -> Technology & SaaS |
 | `primaryService` | `ai-automation` -> AI & Automation |
 | `additionalServices` | `data-analytics`, `devops-mlops` |
-| `featured` | `true` (shows on homepage) |
+| `featured` | `false`  |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -359,7 +750,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 3. Corporate Website Redesign
+### 9. Corporate Website Redesign
 
 | Field | Current value |
 | --- | --- |
@@ -369,7 +760,7 @@ solution describe work we can genuinely speak to.
 | `industry` | `professional-services` -> Professional Services |
 | `primaryService` | `websites` -> Websites & Web Experiences |
 | `additionalServices` | `digital-marketing-seo` |
-| `featured` | `true` (shows on homepage) |
+| `featured` | `false`  |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -420,7 +811,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 4. Real-Time Data Streaming Platform
+### 10. Real-Time Data Streaming Platform
 
 | Field | Current value |
 | --- | --- |
@@ -430,7 +821,7 @@ solution describe work we can genuinely speak to.
 | `industry` | `logistics` -> Logistics |
 | `primaryService` | `technology-solutions` -> Technology Solutions |
 | `additionalServices` | `data-analytics`, `devops-mlops` |
-| `featured` | `true` (shows on homepage) |
+| `featured` | `false`  |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -482,7 +873,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 5. Recommendation Engine
+### 11. Recommendation Engine
 
 | Field | Current value |
 | --- | --- |
@@ -492,7 +883,7 @@ solution describe work we can genuinely speak to.
 | `industry` | `retail-commerce` -> Retail & Commerce |
 | `primaryService` | `ai-automation` -> AI & Automation |
 | `additionalServices` | `ecommerce`, `data-analytics` |
-| `featured` | `true` (shows on homepage) |
+| `featured` | `false`  |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -543,7 +934,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 6. SaaS Dashboard Application
+### 12. SaaS Dashboard Application
 
 | Field | Current value |
 | --- | --- |
@@ -553,7 +944,7 @@ solution describe work we can genuinely speak to.
 | `industry` | `technology-saas` -> Technology & SaaS |
 | `primaryService` | `web-applications` -> Web Applications |
 | `additionalServices` | `technology-solutions`, `devops-mlops` |
-| `featured` | `true` (shows on homepage) |
+| `featured` | `false`  |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -605,7 +996,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 7. Data Warehouse Migration
+### 13. Data Warehouse Migration
 
 | Field | Current value |
 | --- | --- |
@@ -666,7 +1057,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 8. Image Classification System
+### 14. Image Classification System
 
 | Field | Current value |
 | --- | --- |
@@ -727,7 +1118,7 @@ solution describe work we can genuinely speak to.
 
 ---
 
-### 9. Creative Portfolio Website
+### 15. Creative Portfolio Website
 
 | Field | Current value |
 | --- | --- |
@@ -801,52 +1192,54 @@ This is where new projects would do the most good.
 | Websites | `websites` | 2 |  |
 | Web Applications | `web-applications` | 1 |  |
 | E-Commerce | `ecommerce` | 0 | **empty - filter shows an empty state** |
-| AI & Automation | `ai-automation` | 3 |  |
-| Data & Analytics | `data-analytics` | 2 |  |
+| AI & Automation | `ai-automation` | 6 |  |
+| Data & Analytics | `data-analytics` | 5 |  |
 | Digital Platforms | `digital-platforms` | 1 |  |
 
 ### By industry
 
 | Industry | Value | Projects | Gap |
 | --- | --- | --- | --- |
-| Professional Services | `professional-services` | 1 |  |
+| Professional Services | `professional-services` | 2 |  |
 | Technology & SaaS | `technology-saas` | 2 |  |
 | Financial Services | `financial-services` | 1 |  |
 | Real Estate | `real-estate` | 0 | **empty** |
-| Healthcare | `healthcare` | 0 | **empty** |
+| Healthcare | `healthcare` | 4 |  |
 | Education | `education` | 0 | **empty** |
 | Retail & Commerce | `retail-commerce` | 2 |  |
 | Manufacturing | `manufacturing` | 1 |  |
 | Logistics | `logistics` | 1 |  |
 | Hospitality | `hospitality` | 0 | **empty** |
-| Other / Custom | `other` | 1 |  |
+| Other / Custom | `other` | 2 |  |
 
 ### By service (primary or additional)
 
 | Service | Value | Projects | Gap |
 | --- | --- | --- | --- |
 | Websites & Web Experiences | `websites` | 2 |  |
-| Web Applications | `web-applications` | 1 |  |
+| Web Applications | `web-applications` | 2 |  |
 | E-Commerce | `ecommerce` | 1 |  |
-| AI & Automation | `ai-automation` | 3 |  |
-| Data & Analytics | `data-analytics` | 5 |  |
-| Technology Solutions | `technology-solutions` | 4 |  |
-| DevOps & MLOps | `devops-mlops` | 5 |  |
+| AI & Automation | `ai-automation` | 8 |  |
+| Data & Analytics | `data-analytics` | 9 |  |
+| Technology Solutions | `technology-solutions` | 8 |  |
+| DevOps & MLOps | `devops-mlops` | 8 |  |
 | Digital Marketing & SEO | `digital-marketing-seo` | 2 |  |
 
 **Priority order, based on the tables above:**
 
-1. **E-Commerce work category has zero projects.** That filter on the Work hub currently shows
-   an honest empty state. This is the most visible gap, and E-Commerce is a service we sell.
-   The specification (section 20) suggests 1-2 e-commerce projects.
-2. **Four industries have nothing:** Real Estate, Healthcare, Education and Hospitality. Their
-   landing pages currently say so rather than padding. Section 20 asks for 4-6 industry pages
-   backed by work; we have 6 backed and 4 bare.
-3. **Every service page has at least one related project**, so no service page is empty. The
-   thinnest are Web Applications and E-Commerce at one each.
+1. **E-Commerce still has zero projects.** That filter on the Work hub shows an honest empty
+   state, and E-Commerce is a service we sell. This is the most visible remaining gap.
+2. **Real Estate, Education and Hospitality have nothing.** Their landing pages say so rather
+   than padding.
+3. **Publishing has no home in the industry taxonomy.** The Data & BI Modernization engagement
+   is filed under Other / Custom because the list has no Publishing or Media entry. Say the
+   word and I will add one.
 
-One well-chosen e-commerce project would close gap 1 and, depending on the sector, part of
-gap 2 at the same time.
+A duplication worth deciding on: the concept **Data Warehouse Migration** now overlaps heavily
+with the real **Data & BI Modernization** engagement - same problem, same shape, one real and
+one imagined. Specification section 23, phase 7 calls for replacing concepts with verified
+proof. My recommendation is to retire that concept, and to review the other concepts on the
+same basis now that there is real work to show.
 
 ---
 

@@ -4,18 +4,24 @@ import { getStatus, getIndustry, getWorkCategory } from './taxonomy'
  * Single source of truth for the Work area. (Spec §8)
  *
  * TRUTHFULNESS POLICY — Spec §1.2 / §2.1 / §7.2.
- * Every entry below is a Gen Clover Concept: a demonstration of the type of work
- * Gen Clover can deliver. None of them may be presented as delivered client
- * work, and none may carry an invented client name, revenue, conversion,
- * accuracy, cost-saving or performance figure. The unverified percentages that
- * previously shipped in Portfolio.jsx (92% accuracy, 35% churn reduction, 40%
- * conversion increase, 60% engagement, 25% sales, 45% cost reduction, 96%
- * classification accuracy) have been removed and replaced with conceptual
- * outcome wording.
  *
- * To publish a real project: set `status: 'client'`, fill `clientName` and
- * `outcomes` with verified figures, set `permissionsApproved: true`, and only
- * then set `published: true`.
+ * This file holds two kinds of entry, and they must never be confused:
+ *
+ * 1. `status: 'confidential'` — REAL delivered work, approved for publication by
+ *    the Product Owner, where the client's identity cannot be disclosed. These
+ *    carry no client name, no imprint or product names that would identify the
+ *    account, and no invented figures. Everything stated is a property of the
+ *    system as built.
+ *
+ * 2. `status: 'concept'` — demonstration projects. None may be presented as
+ *    delivered client work. The unverified percentages that previously shipped
+ *    in Portfolio.jsx (92% accuracy, 35% churn reduction, 40% conversion
+ *    increase, 60% engagement, 25% sales, 45% cost reduction, 96% classification
+ *    accuracy) were removed and replaced with conceptual outcome wording.
+ *
+ * To publish a NAMED client project: set `status: 'client'`, fill `clientName`
+ * and `outcomes` with verified figures, set `permissionsApproved: true`, and
+ * only then set `published: true`.
  *
  * Shape — Project {
  *   slug, title, status, category, industry, primaryService, additionalServices[],
@@ -33,6 +39,313 @@ export const REPO_POLICY_NOTE = 'Repository not shown as per company policy'
 const conceptual = (text) => `Conceptual outcome - ${text}`
 
 export const projects = [
+  /* ==================================================================
+   * DELIVERED WORK — confidential client engagements.
+   * Approved for publication by the Product Owner. Client names, imprint
+   * names and internal product names have been removed; sector remains
+   * because it is descriptive rather than identifying.
+   * ================================================================== */
+
+  {
+    slug: 'ai-log-monitoring-observability-platform',
+    title: 'Autonomous AI Log Monitoring & Observability Platform',
+    status: 'confidential',
+    category: 'ai-automation',
+    industry: 'healthcare',
+    primaryService: 'ai-automation',
+    additionalServices: ['devops-mlops', 'technology-solutions'],
+    featured: true,
+    summary:
+      'For a healthcare media and clinician engagement platform, a five-agent system that reads a production error, writes the fix and opens a reviewed pull request, with an engineer still deciding what ships.',
+    challenge:
+      'A microservice estate produces thousands of log lines a minute. When something breaks, an on-call engineer has to notice the alert, find the right logs, reconstruct the failing request, locate the responsible file and commit, then write, test and ship a fix. Logs, source code and deployment state live in three different systems, so the mechanical middle of an incident is where most of the hours go. Traditional dashboards report that something broke; they never propose a fix.',
+    approach:
+      'Instrument once, let agents do the mechanical work, and keep people in charge of the decision. A standard tracing library across every service means an agent can always start from one identifier and find everything related to a failure. The workflow deliberately ends at a pull request rather than a deployment, so the AI prepares work and a person merges it.',
+    solution:
+      'A shared tracing library across all Node and Python services, a five-agent remediation swarm running on Cloud Run, and a dashboard that shows what the system did, why, what it changed and what it cost. Agents hand off through strict typed schemas and the pipeline fails closed if any stage does not report success.',
+    features: [
+      'Shared tracing library stamping every log line with a standard trace ID, with no call-site changes',
+      'Five specialist agents: log triage, code retrieval, fix authoring, independent review and Git operations',
+      'Independent review agent that must approve before any change reaches source control',
+      'Token circuit breaker that halts a run at a per-incident budget',
+      'Fail-closed pipeline with typed hand-offs between every stage',
+      'Incident dashboard with agent timeline, before-and-after diff and per-agent cost',
+    ],
+    capabilities: [
+      'Workflow Automation',
+      'AI Integrations',
+      'Monitoring & Observability',
+      'Cloud Solutions',
+      'Architecture',
+    ],
+    technologies: ['Google ADK', 'Claude via Vertex AI', 'FastAPI', 'Cloud Run', 'OpenTelemetry', 'Next.js'],
+    outcomes: [
+      'Engineers receive a reviewed pull request with a root-cause explanation, rather than only an alert.',
+      'Every automated change is checked by a separate review agent before it reaches source control, so the author of a change is never its only reviewer.',
+      'Token spend is capped per incident and reported per agent, so an autonomous run cannot produce an open-ended bill.',
+    ],
+    scope:
+      'Product ownership, solution architecture, agent workflow design, observability dashboard, delivery.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: true,
+    permissionsApproved: true,
+  },
+  {
+    slug: 'data-bi-modernization',
+    title: 'Data & BI Modernization',
+    status: 'confidential',
+    category: 'data-analytics',
+    industry: 'other',
+    primaryService: 'data-analytics',
+    additionalServices: ['technology-solutions', 'devops-mlops', 'web-applications'],
+    featured: true,
+    summary:
+      'For an established independent book publisher, a decade of accumulated ETL, warehouse and dashboard tools replaced with one governed cloud platform, without breaking a single number the business depended on.',
+    challenge:
+      'Four disconnected systems had accumulated over a decade: an ETL tool running more than two hundred largely undocumented pipelines, a warehouse with business logic buried in stored procedures, dashboards isolated from daily operations, and a mountain of claims, allocations and reconciliations run by hand in spreadsheets over email. The same question could be answered four different ways, and access was managed separately in every system.',
+    approach:
+      'Reverse-engineer before replacing. Every pipeline was documented and its output validated against the legacy system, so each migration step was a small verified move rather than a leap of faith. Analytics was embedded inside the company portal rather than delivered as a separate tool, and the spreadsheet processes were rebuilt as auditable applications instead of being carried over.',
+    solution:
+      'A six-layer platform: orchestrated cloud pipelines with validation, logging and retry built in, a single enterprise warehouse holding one set of business rules, embedded analytics and custom APIs, and one portal carrying reports, operational applications and user administration behind role-based access and row-level security.',
+    features: [
+      'More than 200 legacy pipelines reverse-engineered, validated against legacy output and re-platformed',
+      'Single enterprise warehouse replacing four disconnected tools',
+      'Embedded analytics delivered inside the company portal rather than a standalone tool',
+      'Spreadsheet and email processes rebuilt as auditable workflow applications with roles and approvals',
+      'Role-based access and row-level security administered centrally',
+      'Three environments with automated CI/CD, build validation and sign-off before every release',
+    ],
+    capabilities: [
+      'Data Engineering',
+      'Data Platforms',
+      'Data Pipelines',
+      'Business Intelligence',
+      'Technology Modernization',
+      'Dashboards & Reporting',
+    ],
+    technologies: ['BigQuery', 'Cloud Composer', 'Power BI Embedded', 'React', 'Node.js', 'Python'],
+    outcomes: [
+      'Four disconnected systems consolidated into one governed platform, with business logic living once instead of in four places.',
+      'Manual claims, allocations and reconciliation processes moved from email and spreadsheets into standardized, auditable workflows.',
+      'Reporting delivered through the existing portal, removing the need for a separate per-seat analytics licence for every business user.',
+    ],
+    scope:
+      'Solution architecture, programme leadership, data platform engineering, embedded analytics, application delivery.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: true,
+    permissionsApproved: true,
+  },
+  {
+    slug: 'drug-competitor-identification',
+    title: 'Drug Competitor Identification',
+    status: 'confidential',
+    category: 'ai-automation',
+    industry: 'healthcare',
+    primaryService: 'ai-automation',
+    additionalServices: ['data-analytics', 'technology-solutions'],
+    featured: true,
+    summary:
+      'A brand-intelligence tool that asks a language model who a drug competes with, then checks the answer against regulatory reference data before anyone is asked to trust it.',
+    challenge:
+      'Establishing that two products genuinely compete takes knowing active ingredient, therapeutic class, route, dosage form and regulatory pathway well enough to defend the judgement. Done by hand, two analysts researching the same drug could reach two different answers. Authoritative pharmacological facts sat in public regulatory data while the organisation’s own competitive knowledge sat in a separate internal list, and nothing reconciled the two.',
+    approach:
+      'Separate recall from trust. Let the language model propose candidates from everything on the web, because that is what it is good at, then let an explainable point system decide which candidates count as verified, because that has to be repeatable. Keep every unverified candidate visible rather than quietly dropping it, and give the analyst the final edit.',
+    solution:
+      'A three-node analysis workflow behind a single search box: look the seed drug up in regulatory reference data, ask a search-grounded model for candidates, then score each candidate against the seed on identifier, class, route and pathway. Candidates reaching the scoring threshold are marked verified; the rest stay on screen, flagged.',
+    features: [
+      'Search-grounded model proposes candidates but never decides which ones count',
+      'Explainable point-based rubric scored against regulatory reference data',
+      'Unverified candidates stay visible and flagged rather than being dropped',
+      'Analyst edits write straight back to the organisation’s ground-truth list',
+      'Strictly linear workflow where any error stops the run rather than degrading silently',
+      'Reconciliation between public regulatory facts and internal competitive intelligence',
+    ],
+    capabilities: [
+      'Generative AI',
+      'Intelligent Search',
+      'AI Integrations',
+      'Data Integration',
+      'Data Analytics',
+    ],
+    technologies: ['LangGraph', 'Gemini', 'BigQuery', 'FastAPI', 'React'],
+    outcomes: [
+      'A competitor list is produced from a single drug name, with the evidence behind each verification visible on screen.',
+      'The same drug scored twice returns the same result, because the decision rubric is fixed rather than left to the model.',
+      'Analyst corrections update the organisation’s ground-truth list directly, so curation and research happen in one place.',
+    ],
+    scope:
+      'Product ownership, solution architecture, retrieval and verification design, analyst experience, delivery.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: true,
+    permissionsApproved: true,
+  },
+  {
+    slug: 'ai-agents-platform',
+    title: 'AI Agents Platform',
+    status: 'confidential',
+    category: 'ai-automation',
+    industry: 'healthcare',
+    primaryService: 'ai-automation',
+    additionalServices: ['technology-solutions', 'devops-mlops'],
+    featured: true,
+    summary:
+      'Seven agents that turn one upload into a recorded, print-ready batch of personalized posters, with a reviewer approving anything that carries commercial risk.',
+    challenge:
+      'Every personalized poster was assembled by hand. Up to a dozen sections had to fit a fixed layout to the pixel, for every single recipient, and each one needed its own set of tracked codes. Nothing reliably recorded which poster or which incentive went to whom, and a single wrong incentive code awards the wrong points to the wrong person, which is a commercial error rather than a cosmetic one.',
+    approach:
+      'Automate aggressively in the mechanical middle and stay deliberately conservative at the two points where a mistake is expensive: an incentive that awards points, and a poster that prints without a working code. Store layouts and validation rules as data rather than design files, so the business can change what a valid poster looks like without waiting for a release.',
+    solution:
+      'Seven agents sharing one blueprint, each with its own screen and a single job: dashboard, template management, input validation, code generation, poster assembly, incentive activation and a metadata registry. An upload returns a job number immediately and the heavy work runs in the background, ending in one recorded, downloadable batch.',
+    features: [
+      'Layouts and input validation rules stored as configuration, changeable by the business without a release',
+      'Tracked codes generated per recipient and location, with the run stopping rather than printing without one',
+      'Background execution returning a job number immediately on upload',
+      'Idempotent generation, so re-running the same file replaces rather than duplicates a batch',
+      'Human approval gate before any incentive is sent onward',
+      'Registry recording every code, poster and layout version for support and audit',
+    ],
+    capabilities: [
+      'Workflow Automation',
+      'AI Integrations',
+      'Document Intelligence',
+      'Custom Systems',
+      'Backend Engineering',
+    ],
+    technologies: ['Google Cloud', 'Python', 'React', 'Cloud Storage', 'Agent workflows'],
+    outcomes: [
+      'A batch that previously required a designer per recipient now starts from one upload and returns a print-ready package.',
+      'Every code, poster and layout version is recorded, so any run can be reconstructed after the fact.',
+      'Incentives cannot reach the partner without a named reviewer approving them first.',
+    ],
+    scope:
+      'Product ownership, solution architecture, agent design, validation and approval workflow, delivery.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: true,
+    permissionsApproved: true,
+  },
+  {
+    slug: 'recruitment-analytics-decision-support',
+    title: 'Recruitment Analytics & Decision Support',
+    status: 'confidential',
+    category: 'data-analytics',
+    industry: 'professional-services',
+    primaryService: 'data-analytics',
+    additionalServices: ['ai-automation'],
+    featured: true,
+    summary:
+      'A decision-support layer over a staffing platform, turning candidate, requirement and recruiter activity into KPIs that mean the same thing whoever is looking at them.',
+    challenge:
+      'Recruiters could source, submit and place candidates every day, but management could not see the funnel behind those actions: which requirements were aging, which clients were slow to respond, or why a requirement with plenty of submissions still had not closed. Three teams computed time-to-fill three different ways and all three defended their number.',
+    approach:
+      'Model once and let the KPI layer drive every dashboard. Define each metric centrally, compute it in one place, and have every report consume it rather than recalculate it. Then use the same governed model that reports what happened to score which open requirements are likely to miss their target date.',
+    solution:
+      'A star schema covering the recruitment lifecycle, a central measure layer holding more than fifty standardized KPIs, data quality rules that run before data reaches a dashboard, and predictive models scoring fill probability, candidate success and at-risk requirements. Six role-scoped dashboards read from the same model.',
+    features: [
+      'Star schema of fact and dimension tables covering the full recruitment lifecycle',
+      'More than 50 standardized KPIs computed centrally and consumed, never recalculated per report',
+      'Data quality rules for duplicates, missing fields, orphans and invalid dates, run before reporting',
+      'Stage-level conversion and drop-off visible per requirement',
+      'Predictive scoring for fill probability, candidate success and at-risk requirements',
+      'Six role-scoped dashboards reading from one governed model',
+    ],
+    capabilities: [
+      'Business Intelligence',
+      'Dashboards & Reporting',
+      'Data Analytics',
+      'Data Science / Machine Learning',
+      'Data Engineering',
+    ],
+    technologies: ['SQL', 'Power BI', 'DAX', 'Python', 'scikit-learn'],
+    outcomes: [
+      'One definition per KPI, enforced centrally and traceable back to its source tables, replacing three competing versions of time-to-fill.',
+      'Aging cohorts and escalation flags refresh daily instead of being rebuilt by hand each week.',
+      'The same governed layer that reports the funnel also scores which requirements are at risk, so reporting and prediction share one model.',
+    ],
+    scope:
+      'Data modelling, KPI definition, BI development, predictive modelling, product analytics.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: true,
+    permissionsApproved: true,
+  },
+  {
+    slug: 'medical-data-intelligence-platform',
+    title: 'Medical Data Intelligence Platform',
+    status: 'confidential',
+    category: 'data-analytics',
+    industry: 'healthcare',
+    primaryService: 'data-analytics',
+    additionalServices: ['ai-automation'],
+    featured: true,
+    summary:
+      'Reporting, prediction and document processing for a medical data platform, delivered with a cross-functional business intelligence, data engineering and machine learning team.',
+    challenge:
+      'Medical data arrives in formats built for people rather than systems: documents, attachments and email threads alongside structured records. Reporting, forecasting and document handling had grown up separately, so the same information was re-entered and re-reconciled in several places before anyone could act on it.',
+    approach:
+      'Treat the document pipeline and the reporting layer as one problem rather than two. Extract structure from documents at the point of arrival, validate and reconcile it against existing records, and build the reporting and prediction layers on the governed result rather than on raw feeds.',
+    solution:
+      'Optical character recognition and automated processing for inbound documents and email, validation and reconciliation workflows, a governed reporting layer, and sales prediction models built on top of the same data foundation.',
+    features: [
+      'Optical character recognition for inbound document processing',
+      'Automated email and document handling workflows',
+      'Validation and reconciliation before data reaches reporting',
+      'Sales prediction models built on the governed data layer',
+      'Reporting suite covering operational and commercial views',
+      'Data governance layer defining ownership and quality rules',
+    ],
+    capabilities: [
+      'Document Intelligence',
+      'Business Intelligence',
+      'Data Engineering',
+      'Data Science / Machine Learning',
+      'Workflow Automation',
+    ],
+    technologies: ['Power BI', 'Python', 'OCR', 'SQL'],
+    outcomes: [
+      'Inbound documents are converted into structured, validated records instead of being re-keyed by hand.',
+      'Reporting and prediction read from one governed data layer rather than from separate feeds.',
+      'Validation and reconciliation run as defined workflow steps with an auditable trail.',
+    ],
+    scope:
+      'Requirements, solution design, BI development, document processing pipeline, predictive modelling.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: true,
+    permissionsApproved: true,
+  },
+
+  /* ==================================================================
+   * CONCEPTS — demonstration projects. Never presented as client work.
+   * ================================================================== */
+
   {
     slug: 'ecommerce-analytics-platform',
     title: 'E-Commerce Analytics Platform',
@@ -41,7 +354,7 @@ export const projects = [
     industry: 'retail-commerce',
     primaryService: 'data-analytics',
     additionalServices: ['technology-solutions'],
-    featured: true,
+    featured: false,
     summary:
       'An analytics platform concept for an online retailer, designed to bring order, product and customer data into a single reliable view.',
     challenge:
@@ -82,7 +395,7 @@ export const projects = [
     industry: 'technology-saas',
     primaryService: 'ai-automation',
     additionalServices: ['data-analytics', 'devops-mlops'],
-    featured: true,
+    featured: false,
     summary:
       'A machine-learning concept that identifies which subscription customers are drifting away, early enough for a team to do something about it.',
     challenge:
@@ -123,7 +436,7 @@ export const projects = [
     industry: 'professional-services',
     primaryService: 'websites',
     additionalServices: ['digital-marketing-seo'],
-    featured: true,
+    featured: false,
     summary:
       'A corporate website concept for an established professional services firm, built around clarity, credibility and a single obvious next step.',
     challenge:
@@ -164,7 +477,7 @@ export const projects = [
     industry: 'logistics',
     primaryService: 'technology-solutions',
     additionalServices: ['data-analytics', 'devops-mlops'],
-    featured: true,
+    featured: false,
     summary:
       'A streaming platform concept for a logistics operator, designed so events from vehicles, depots and orders are usable the moment they happen.',
     challenge:
@@ -205,7 +518,7 @@ export const projects = [
     industry: 'retail-commerce',
     primaryService: 'ai-automation',
     additionalServices: ['ecommerce', 'data-analytics'],
-    featured: true,
+    featured: false,
     summary:
       'A recommendation concept for a retail catalogue, built to help customers find relevant products without burying the ones the business needs to move.',
     challenge:
@@ -246,7 +559,7 @@ export const projects = [
     industry: 'technology-saas',
     primaryService: 'web-applications',
     additionalServices: ['technology-solutions', 'devops-mlops'],
-    featured: true,
+    featured: false,
     summary:
       'A full-stack SaaS product concept covering the parts every subscription application needs: accounts, roles, billing and a dashboard people return to.',
     challenge:

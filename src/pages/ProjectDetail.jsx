@@ -45,6 +45,7 @@ const ProjectDetail = () => {
   const additionalServices = (project.additionalServices ?? []).map(getService).filter(Boolean)
   const related = getRelatedProjects(project)
   const isConcept = project.status === 'concept'
+  const isConfidential = project.status === 'confidential'
 
   const metaRows = [
     { label: 'Status', value: status.publicLabel },
@@ -100,6 +101,23 @@ const ProjectDetail = () => {
               It is a demonstration project created to show the type of work we deliver. It is not
               a completed client engagement, and the organisation described is not a Gen Clover
               client.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Confidential disclosure — says why no client is named. (Spec §7.2) */}
+      {isConfidential && (
+        <div className="border-b border-ink-800 bg-ink-900">
+          <div className="container flex items-start gap-3 py-4">
+            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-silver-400" aria-hidden="true" />
+            <p className="text-sm leading-relaxed text-silver-300">
+              <span className="font-medium text-silver-100">
+                This is delivered client work.
+              </span>{' '}
+              The client is not named and identifying details have been removed at their
+              request. Everything described here is a property of the system as built, not an
+              estimate.
             </p>
           </div>
         </div>
