@@ -73,6 +73,7 @@ export const industries = [
   { id: 'real-estate', label: 'Real Estate' },
   { id: 'healthcare', label: 'Healthcare' },
   { id: 'education', label: 'Education' },
+  { id: 'media-publishing', label: 'Media & Publishing' },
   { id: 'retail-commerce', label: 'Retail & Commerce' },
   { id: 'manufacturing', label: 'Manufacturing' },
   { id: 'logistics', label: 'Logistics' },

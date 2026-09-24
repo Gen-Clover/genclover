@@ -190,7 +190,7 @@ export const services = [
       { label: 'Data Science / Machine Learning', description: 'Forecasting, segmentation and prediction.' },
     ],
     deliverables: baseDeliverables,
-    relatedIndustries: ['financial-services', 'retail-commerce', 'manufacturing', 'technology-saas'],
+    relatedIndustries: ['financial-services', 'media-publishing', 'retail-commerce', 'manufacturing'],
     seo: {
       title: 'Data & Analytics Solutions | Gen Clover',
       description:
@@ -282,7 +282,7 @@ export const services = [
       { label: 'Analytics & Measurement', description: 'Events and attribution defined before launch.' },
     ],
     deliverables: baseDeliverables,
-    relatedIndustries: ['professional-services', 'retail-commerce', 'real-estate', 'education'],
+    relatedIndustries: ['professional-services', 'retail-commerce', 'media-publishing', 'real-estate'],
     seo: {
       title: 'Digital Marketing & SEO Services | Gen Clover',
       description:

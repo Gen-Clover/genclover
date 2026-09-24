@@ -8,7 +8,7 @@ straight into `src/data/projects.js`.
 You do not need to write any code. Fill in prose and pick values from the lists provided.
 
 - **Generated from:** `src/data/projects.js` on branch `feat/website-v1-rebuild`
-- **Projects currently in the system:** 15 - 6 delivered client engagements (confidential) and 9 concepts
+- **Projects currently in the system:** 14 - 6 delivered client engagements (confidential) and 8 concepts
 - **Where this shows up:** the Work hub at `/work`, a dedicated page per project at
   `/work/<slug>`, the Selected Work block on the homepage, and the Related Work block on
   each service and industry page
@@ -124,6 +124,7 @@ Fields marked **Required** must be filled for a project to publish.
 `real-estate` - Real Estate
 `healthcare` - Healthcare
 `education` - Education
+`media-publishing` - Media & Publishing
 `retail-commerce` - Retail & Commerce
 `manufacturing` - Manufacturing
 `logistics` - Logistics
@@ -235,7 +236,7 @@ so spelling matters.
 published as Confidential Client Projects. Client names, imprint names and internal product
 names have been removed; the sector is kept because it describes rather than identifies.
 
-**The remaining nine are concepts** carried over from the previous site, with narrative text
+**The remaining eight are concepts** carried over from the previous site, with narrative text
 written to replace the unverifiable percentage claims that were there before.
 
 **Please review each one for accuracy** - for the delivered work, check that nothing
@@ -314,7 +315,7 @@ now that there is real work to show.
 | `slug` | `data-bi-modernization` |
 | `status` | `confidential` -> **Confidential Client Project** |
 | `category` | `data-analytics` -> Data & Analytics |
-| `industry` | `other` -> Other / Custom |
+| `industry` | `media-publishing` -> Media & Publishing |
 | `primaryService` | `data-analytics` -> Data & Analytics |
 | `additionalServices` | `technology-solutions`, `devops-mlops`, `web-applications` |
 | `featured` | `true` (shows on homepage) |
@@ -996,68 +997,7 @@ now that there is real work to show.
 
 ---
 
-### 13. Data Warehouse Migration
-
-| Field | Current value |
-| --- | --- |
-| `slug` | `data-warehouse-migration` |
-| `status` | `concept` -> **Gen Clover Concept** |
-| `category` | `data-analytics` -> Data & Analytics |
-| `industry` | `financial-services` -> Financial Services |
-| `primaryService` | `data-analytics` -> Data & Analytics |
-| `additionalServices` | `technology-solutions`, `devops-mlops` |
-| `featured` | `false`  |
-| `heroImage` | _(not set)_ |
-| `gallery` | _(empty)_ |
-| `clientName` | _(not set)_ |
-| `clientLogo` | _(not set)_ |
-| `externalUrl` | _(not set)_ |
-| `githubUrl` | _(not set)_ |
-| `published` | `true` |
-| `permissionsApproved` | `false` |
-
-**`summary`** _(card + page intro, 1-2 sentences)_
-> A migration concept moving a legacy on-premise warehouse to a cloud platform without asking the business to stop reporting while it happens.
-
-**`challenge`** _(the problem, no client named)_
-> Legacy warehouses are load-bearing. Years of undocumented logic sit inside them, and a migration that breaks a regulatory report is far worse than one that takes longer.
-
-**`approach`** _(how we decided to tackle it)_
-> Run both platforms in parallel and migrate by domain, reconciling output at every step, so each cutover is a small verified move rather than one large irreversible one.
-
-**`solution`** _(what was actually built)_
-> Transformation logic rebuilt as version-controlled, tested models on a cloud warehouse, with automated reconciliation against the legacy system and a domain-by-domain cutover plan.
-
-**`features`** _(bullet list on the case-study page)_
-- Domain-by-domain phased migration plan
-- Transformation logic rebuilt as tested, version-controlled models
-- Automated reconciliation against the legacy warehouse
-- Lineage and documentation generated from the models
-- Parallel running until each domain is signed off
-
-**`capabilities`** _(must match capability labels from the service taxonomy)_
-- Data Platforms
-- Data Engineering
-- Technology Modernization
-- Architecture
-
-**`technologies`** _(shown as tags on the card and page)_
-- Snowflake
-- dbt
-- Python
-- AWS
-
-**`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
-- Conceptual outcome - move off legacy infrastructure without a reporting freeze.
-- Conceptual outcome - replace undocumented logic with tested, version-controlled models.
-- Conceptual outcome - give each domain a verifiable sign-off before cutover.
-
-**`scope`** _(one line, what we were engaged to do)_
-> Migration strategy, transformation modelling, reconciliation tooling, cutover planning.
-
----
-
-### 14. Image Classification System
+### 13. Image Classification System
 
 | Field | Current value |
 | --- | --- |
@@ -1118,7 +1058,7 @@ now that there is real work to show.
 
 ---
 
-### 15. Creative Portfolio Website
+### 14. Creative Portfolio Website
 
 | Field | Current value |
 | --- | --- |
@@ -1193,7 +1133,7 @@ This is where new projects would do the most good.
 | Web Applications | `web-applications` | 1 |  |
 | E-Commerce | `ecommerce` | 0 | **empty - filter shows an empty state** |
 | AI & Automation | `ai-automation` | 6 |  |
-| Data & Analytics | `data-analytics` | 5 |  |
+| Data & Analytics | `data-analytics` | 4 |  |
 | Digital Platforms | `digital-platforms` | 1 |  |
 
 ### By industry
@@ -1202,15 +1142,16 @@ This is where new projects would do the most good.
 | --- | --- | --- | --- |
 | Professional Services | `professional-services` | 2 |  |
 | Technology & SaaS | `technology-saas` | 2 |  |
-| Financial Services | `financial-services` | 1 |  |
+| Financial Services | `financial-services` | 0 | **empty** |
 | Real Estate | `real-estate` | 0 | **empty** |
 | Healthcare | `healthcare` | 4 |  |
 | Education | `education` | 0 | **empty** |
+| Media & Publishing | `media-publishing` | 1 |  |
 | Retail & Commerce | `retail-commerce` | 2 |  |
 | Manufacturing | `manufacturing` | 1 |  |
 | Logistics | `logistics` | 1 |  |
 | Hospitality | `hospitality` | 0 | **empty** |
-| Other / Custom | `other` | 2 |  |
+| Other / Custom | `other` | 1 |  |
 
 ### By service (primary or additional)
 
@@ -1220,26 +1161,28 @@ This is where new projects would do the most good.
 | Web Applications | `web-applications` | 2 |  |
 | E-Commerce | `ecommerce` | 1 |  |
 | AI & Automation | `ai-automation` | 8 |  |
-| Data & Analytics | `data-analytics` | 9 |  |
-| Technology Solutions | `technology-solutions` | 8 |  |
-| DevOps & MLOps | `devops-mlops` | 8 |  |
+| Data & Analytics | `data-analytics` | 8 |  |
+| Technology Solutions | `technology-solutions` | 7 |  |
+| DevOps & MLOps | `devops-mlops` | 7 |  |
 | Digital Marketing & SEO | `digital-marketing-seo` | 2 |  |
 
 **Priority order, based on the tables above:**
 
 1. **E-Commerce still has zero projects.** That filter on the Work hub shows an honest empty
    state, and E-Commerce is a service we sell. This is the most visible remaining gap.
-2. **Real Estate, Education and Hospitality have nothing.** Their landing pages say so rather
+2. **Financial Services is now empty.** Retiring the Data Warehouse Migration concept removed
+   the only project filed under it, so that landing page currently has no work to show. A real
+   financial-services engagement would be the strongest fix.
+3. **Real Estate, Education and Hospitality have nothing.** Their landing pages say so rather
    than padding.
-3. **Publishing has no home in the industry taxonomy.** The Data & BI Modernization engagement
-   is filed under Other / Custom because the list has no Publishing or Media entry. Say the
-   word and I will add one.
 
-A duplication worth deciding on: the concept **Data Warehouse Migration** now overlaps heavily
-with the real **Data & BI Modernization** engagement - same problem, same shape, one real and
-one imagined. Specification section 23, phase 7 calls for replacing concepts with verified
-proof. My recommendation is to retire that concept, and to review the other concepts on the
-same basis now that there is real work to show.
+Media & Publishing was added to the industry taxonomy so the Data & BI Modernization
+engagement has a proper home instead of sitting under Other / Custom.
+
+**Worth reviewing:** now that six real engagements are published, each remaining concept should
+earn its place. Specification section 23, phase 7 calls for replacing concepts with verified
+proof. Data Warehouse Migration has already been retired because it duplicated a real
+engagement; the same question applies to the rest.
 
 ---
 

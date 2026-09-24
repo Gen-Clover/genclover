@@ -83,6 +83,18 @@ const industryContent = {
     ],
     services: ['web-applications', 'websites', 'data-analytics'],
   },
+  'media-publishing': {
+    headline: 'A catalogue is only an asset if you can see it.',
+    description:
+      'Publishers and media businesses run on title, rights, inventory and royalty data that accumulates across decades and several systems. The work is usually less about new features than about making what already exists agree with itself.',
+    focusAreas: [
+      'Title, inventory and distribution data brought into one view',
+      'Royalty, allocation and reconciliation workflows moved off spreadsheets',
+      'Reporting that finance and operations can both trust',
+      'Modernising long-lived platforms without a reporting freeze',
+    ],
+    services: ['data-analytics', 'technology-solutions', 'web-applications', 'websites'],
+  },
   'retail-commerce': {
     headline: 'From discovery to checkout, without friction.',
     description:
