@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
-import ScrollToTop from './components/ScrollToTop'
+import ScrollRestoration from './components/ScrollRestoration'
 import Home from './pages/Home'
 import { routes } from './data/site'
 import { captureAttribution } from './lib/analytics'
@@ -56,7 +56,7 @@ const AttributionCapture = () => {
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <ScrollToTop />
+      <ScrollRestoration />
       <AttributionCapture />
 
       <div className="flex min-h-screen flex-col">

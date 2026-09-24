@@ -17,8 +17,8 @@ const WhatWeDo = () => {
       <SectionHeader
         index="03"
         eyebrow="What We Do"
-        title="Eight service domains, one engineering team."
-        description="Website development is one major service line. The same team also builds applications, commerce, AI, data platforms, infrastructure and digital growth capability."
+        title="Multiple service domains, one way of working."
+        description="Website development is one major service line. Gen Clover also builds web applications, commerce, AI and automation, data platforms, infrastructure and digital growth capability."
         action={
           <Button to={routes.services} variant="secondary" size="md">
             All services
@@ -63,8 +63,13 @@ const WhatWeDo = () => {
                   {service.shortDescription}
                 </p>
 
-                <p className="mt-5 text-xs text-silver-600">
-                  {service.capabilities.length} capabilities
+                {/* Capabilities are named, never counted - a count says nothing
+                    useful and invites comparison between service lines. */}
+                <p className="mt-5 line-clamp-1 text-xs text-silver-600">
+                  {service.capabilities
+                    .slice(0, 3)
+                    .map((c) => c.label)
+                    .join(' · ')}
                 </p>
               </Link>
             </motion.li>

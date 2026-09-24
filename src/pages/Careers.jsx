@@ -58,7 +58,7 @@ const Careers = () => {
                       <Icon className="h-5 w-5 text-accent-500" aria-hidden="true" />
                     </span>
                     <span
-                      className={`rounded-md border px-2.5 py-1 font-display text-[10px] font-semibold uppercase tracking-brand ${
+                      className={`rounded-md border px-2.5 py-1 font-display text-[11px] font-semibold uppercase tracking-brand ${
                         isClosed
                           ? 'border-ink-600 bg-ink-800 text-silver-400'
                           : 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-700/50 dark:bg-emerald-950/50 dark:text-emerald-300'

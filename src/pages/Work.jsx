@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, FolderOpen } from 'lucide-react'
@@ -29,11 +30,39 @@ const Work = () => {
   const projects = getProjectsByCategory(active)
   const activeCategory = getWorkCategory(active)
 
+  const resultsRef = useRef(null)
+
   const setActive = (id) => {
     const next = new URLSearchParams(searchParams)
     if (id === 'all') next.delete('category')
     else next.set('category', id)
     setSearchParams(next, { replace: true })
+
+    /**
+     * Narrowing the filter makes the page shorter, and the browser clamps the
+     * scroll position to the new maximum. That can leave the filter bar itself
+     * scrolled off the top, so the visitor cannot see the control they just
+     * used or the results it produced.
+     *
+     * Correct only that case, and only after the new list has been laid out.
+     * Scrolling before the re-render would race the clamp, and a smooth scroll
+     * would be interrupted by it mid-flight, which is how a filter click ends
+     * up dumping someone at the very top of the page.
+     */
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = resultsRef.current
+        if (!el) return
+        const HEADER = 96
+        const { top } = el.getBoundingClientRect()
+        if (top >= HEADER) return
+        window.scrollTo({
+          top: Math.max(0, top + window.scrollY - HEADER),
+          left: 0,
+          behavior: 'instant',
+        })
+      })
+    })
   }
 
   return (
@@ -67,7 +96,13 @@ const Work = () => {
       </div>
 
       <Section>
-        <div className="mb-10">
+        {/* An h2 for the results region: without it the page jumps h1 -> h3
+            (the card headings), which breaks the document outline. */}
+        <h2 className="sr-only">
+          {activeCategory ? `${activeCategory.label} projects` : 'All work'}
+        </h2>
+
+        <div ref={resultsRef} className="mb-10">
           <WorkFilters active={active} onChange={setActive} />
           <p className="mt-5 text-sm text-silver-500" aria-live="polite">
             Showing {projects.length} {projects.length === 1 ? 'project' : 'projects'}

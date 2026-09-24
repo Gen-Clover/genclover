@@ -58,7 +58,7 @@ const StartProject = () => {
                 <li>
                   <a
                     href={`mailto:${contact.email}`}
-                    className="inline-flex items-start gap-3 text-silver-300 transition-colors hover:text-accent-400"
+                    className="-my-1 inline-flex items-start gap-3 py-1 text-silver-300 transition-colors hover:text-accent-400"
                   >
                     <Mail className="mt-0.5 h-4 w-4 shrink-0 text-accent-500" aria-hidden="true" />
                     {contact.email}

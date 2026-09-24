@@ -25,7 +25,7 @@ const Services = () => {
       <PageHero
         eyebrow="Services"
         title="What Gen Clover does."
-        description="Eight commercial service domains, each with its own capabilities and delivery approach. Most engagements draw on more than one."
+        description="Commercial service domains, each with its own capabilities and delivery approach. Most engagements draw on more than one."
       >
         <Button to={routes.startProject} size="lg">
           Start a Project
@@ -72,8 +72,10 @@ const Services = () => {
                     {service.shortDescription}
                   </p>
 
+                  {/* Every capability is named. No "+N more" counter - the point
+                      is what we do, not how many boxes it fills. */}
                   <ul className="mt-6 flex flex-wrap gap-1.5">
-                    {service.capabilities.slice(0, 5).map((cap) => (
+                    {service.capabilities.map((cap) => (
                       <li
                         key={cap.label}
                         className="rounded border border-ink-700 bg-ink-900 px-2 py-0.5 text-[11px] text-silver-400"
@@ -81,11 +83,6 @@ const Services = () => {
                         {cap.label}
                       </li>
                     ))}
-                    {service.capabilities.length > 5 && (
-                      <li className="px-1 py-0.5 text-[11px] text-silver-600">
-                        +{service.capabilities.length - 5} more
-                      </li>
-                    )}
                   </ul>
                 </Link>
               </motion.li>
@@ -115,7 +112,7 @@ const Services = () => {
           {processSteps.map((step, i) => (
             <motion.li key={step.number} variants={v.fadeUp} className="flex items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-lg border border-ink-700 bg-ink-850 px-3.5 py-2">
-                <span className="font-display text-[10px] font-semibold tracking-brand text-silver-600">
+                <span className="font-display text-[11px] font-semibold tracking-brand text-silver-600">
                   {step.number}
                 </span>
                 <span className="text-sm font-medium text-silver-200">{step.title}</span>

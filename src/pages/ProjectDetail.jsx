@@ -63,7 +63,7 @@ const ProjectDetail = () => {
         <div className="container relative pb-14 pt-32 md:pt-40">
           <Link
             to={routes.work}
-            className="inline-flex items-center gap-2 text-sm text-silver-500 transition-colors hover:text-accent-400"
+            className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             All work
@@ -142,7 +142,10 @@ const ProjectDetail = () => {
                 </dt>
                 <dd className="text-right text-sm font-medium text-silver-200">
                   {row.to ? (
-                    <Link to={row.to} className="transition-colors hover:text-accent-400">
+                    <Link
+                      to={row.to}
+                      className="-my-1 inline-block py-1 transition-colors hover:text-accent-400"
+                    >
                       {row.value}
                     </Link>
                   ) : (

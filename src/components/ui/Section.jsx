@@ -42,7 +42,7 @@ export const SectionHeader = ({
     <motion.div
       variants={v.fadeUp}
       {...revealOnce}
-      className={`mb-12 flex flex-col gap-5 md:mb-16 ${
+      className={`mb-10 flex flex-col gap-5 md:mb-14 ${
         centered ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between'
       } ${className}`}
     >
@@ -83,7 +83,7 @@ export const PageHero = ({ eyebrow, title, description, children, className = ''
         className="pointer-events-none absolute -right-40 -top-40 h-[28rem] w-[28rem] rounded-full bg-accent-900/25 blur-[120px]"
         aria-hidden="true"
       />
-      <div className="container relative pb-16 pt-32 md:pb-24 md:pt-40">
+      <div className="container relative pb-14 pt-32 md:pb-20 md:pt-36">
         <motion.div initial="hidden" animate="visible" variants={v.stagger(0.09)} className="max-w-3xl">
           {eyebrow && (
             <motion.div variants={v.fadeUp}>

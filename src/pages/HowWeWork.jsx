@@ -30,6 +30,9 @@ const HowWeWork = () => {
 
       {/* The flow, played as a rail — the same component the homepage uses */}
       <Section className="!pb-10">
+        {/* Gives the rail's stage headings an h2 to sit under, so the outline
+            does not jump straight from the page h1 to an h3. */}
+        <h2 className="sr-only">The delivery process at a glance</h2>
         <motion.div variants={v.fadeUp} {...revealOnce}>
           <ProcessRail />
         </motion.div>

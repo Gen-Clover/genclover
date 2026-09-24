@@ -38,7 +38,7 @@ const JobDetail = () => {
         <div className="container relative pb-14 pt-32 md:pt-40">
           <Link
             to={routes.careers}
-            className="inline-flex items-center gap-2 text-sm text-silver-500 transition-colors hover:text-accent-400"
+            className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             All roles
@@ -50,7 +50,7 @@ const JobDetail = () => {
                 <Icon className="h-5 w-5 text-accent-500" aria-hidden="true" />
               </span>
               <span
-                className={`rounded-md border px-2.5 py-1 font-display text-[10px] font-semibold uppercase tracking-brand ${
+                className={`rounded-md border px-2.5 py-1 font-display text-[11px] font-semibold uppercase tracking-brand ${
                   isClosed
                     ? 'border-ink-600 bg-ink-800 text-silver-400'
                     : 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-700/50 dark:bg-emerald-950/50 dark:text-emerald-300'
@@ -168,7 +168,7 @@ const JobDetail = () => {
             <div className="mt-7 border-t border-ink-800 pt-6">
               <Link
                 to={routes.careers}
-                className="text-sm text-silver-400 transition-colors hover:text-accent-400"
+                className="-my-1.5 inline-block py-1.5 text-sm text-silver-400 transition-colors hover:text-accent-400"
               >
                 ← View all roles
               </Link>

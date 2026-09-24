@@ -44,7 +44,7 @@ const IndustryDetail = () => {
         <div className="container relative pb-16 pt-32 md:pb-20 md:pt-40">
           <Link
             to={routes.industries}
-            className="inline-flex items-center gap-2 text-sm text-silver-500 transition-colors hover:text-accent-400"
+            className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             All industries

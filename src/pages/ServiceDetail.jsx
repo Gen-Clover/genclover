@@ -72,16 +72,23 @@ const ServiceDetail = () => {
         <SectionHeader
           eyebrow="Capabilities"
           title="What this covers."
-          description={`${service.capabilities.length} capabilities within ${service.title}. Most projects use several.`}
+          description={`The capabilities that make up ${service.title}. Most projects draw on several of them.`}
         />
 
+        {/* Real gaps rather than a gap-px table: capability counts vary by
+            service (6 to 11), so a seamless grid leaves visible empty cells on
+            the last row. Separate cards just end where the list ends. */}
         <motion.ul
           variants={v.stagger(0.04)}
           {...revealOnce}
-          className="grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {service.capabilities.map((cap) => (
-            <motion.li key={cap.label} variants={v.fadeUp} className="bg-ink-950 p-6">
+            <motion.li
+              key={cap.label}
+              variants={v.fadeUp}
+              className="surface surface-hover h-full p-6"
+            >
               <h3 className="text-sm font-semibold text-silver-100">{cap.label}</h3>
               <p className="mt-2 text-sm leading-relaxed text-silver-400">{cap.description}</p>
             </motion.li>

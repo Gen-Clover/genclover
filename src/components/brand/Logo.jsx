@@ -1,3 +1,5 @@
+import { useId } from 'react'
+
 /**
  * Gen Clover brand marks, drawn as SVG so they stay crisp at any size.
  * (Spec §2 visual system)
@@ -15,39 +17,51 @@
 const PETAL_PATH =
   'M0 0 C -20 -10, -34 -26, -28 -41 C -22 -56, 22 -56, 28 -41 C 34 -26, 20 -10, 0 0 Z'
 
-export const CloverMark = ({ className = 'h-8 w-8', title }) => (
-  <svg
-    viewBox="-72 -72 144 144"
-    className={className}
-    role={title ? 'img' : 'presentation'}
-    aria-label={title}
-    aria-hidden={title ? undefined : 'true'}
-    focusable="false"
-  >
-    <defs>
-      {/* Neutral petals follow the theme — white petals would vanish on a light
-          page. The red petal is fixed brand red in both themes. */}
-      <linearGradient id="gc-petal-silver" x1="0.1" y1="0" x2="0.75" y2="1">
-        <stop offset="0%" stopColor="var(--clover-1)" />
-        <stop offset="50%" stopColor="var(--clover-2)" />
-        <stop offset="100%" stopColor="var(--clover-3)" />
-      </linearGradient>
-      <linearGradient id="gc-petal-accent" x1="0.1" y1="0" x2="0.75" y2="1">
-        <stop offset="0%" stopColor="#FF5F64" />
-        <stop offset="50%" stopColor="#E01F26" />
-        <stop offset="100%" stopColor="#8E0F14" />
-      </linearGradient>
-    </defs>
+export const CloverMark = ({ className = 'h-8 w-8', title }) => {
+  /**
+   * The mark renders several times per page (header, footer, CTA, project
+   * visuals). Hard-coded gradient ids would therefore be duplicated across the
+   * document, which is invalid HTML and lets one instance resolve another
+   * instance's gradient. useId gives each instance its own.
+   */
+  const uid = useId().replace(/:/g, '')
+  const silver = `gc-petal-silver-${uid}`
+  const accent = `gc-petal-accent-${uid}`
 
-    {/* Rotated 45° so the petals read as a pinwheel, accent petal upper-right */}
-    <g transform="rotate(45)">
-      <path d={PETAL_PATH} fill="url(#gc-petal-accent)" />
-      <path d={PETAL_PATH} fill="url(#gc-petal-silver)" transform="rotate(90)" />
-      <path d={PETAL_PATH} fill="url(#gc-petal-silver)" transform="rotate(180)" />
-      <path d={PETAL_PATH} fill="url(#gc-petal-silver)" transform="rotate(270)" />
-    </g>
-  </svg>
-)
+  return (
+    <svg
+      viewBox="-72 -72 144 144"
+      className={className}
+      role={title ? 'img' : 'presentation'}
+      aria-label={title}
+      aria-hidden={title ? undefined : 'true'}
+      focusable="false"
+    >
+      <defs>
+        {/* Neutral petals follow the theme — white petals would vanish on a light
+            page. The red petal is fixed brand red in both themes. */}
+        <linearGradient id={silver} x1="0.1" y1="0" x2="0.75" y2="1">
+          <stop offset="0%" stopColor="var(--clover-1)" />
+          <stop offset="50%" stopColor="var(--clover-2)" />
+          <stop offset="100%" stopColor="var(--clover-3)" />
+        </linearGradient>
+        <linearGradient id={accent} x1="0.1" y1="0" x2="0.75" y2="1">
+          <stop offset="0%" stopColor="#FF5F64" />
+          <stop offset="50%" stopColor="#E01F26" />
+          <stop offset="100%" stopColor="#8E0F14" />
+        </linearGradient>
+      </defs>
+
+      {/* Rotated 45° so the petals read as a pinwheel, accent petal upper-right */}
+      <g transform="rotate(45)">
+        <path d={PETAL_PATH} fill={`url(#${accent})`} />
+        <path d={PETAL_PATH} fill={`url(#${silver})`} transform="rotate(90)" />
+        <path d={PETAL_PATH} fill={`url(#${silver})`} transform="rotate(180)" />
+        <path d={PETAL_PATH} fill={`url(#${silver})`} transform="rotate(270)" />
+      </g>
+    </svg>
+  )
+}
 
 /**
  * The three-red-bar E from the wordmark.

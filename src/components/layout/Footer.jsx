@@ -50,7 +50,7 @@ const Footer = () => {
               <li>
                 <a
                   href={`mailto:${contact.email}`}
-                  className="inline-flex items-center gap-2.5 text-silver-400 transition-colors hover:text-accent-400"
+                  className="-my-1 inline-flex items-center gap-2.5 py-1 text-silver-400 transition-colors hover:text-accent-400"
                 >
                   <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
                   {contact.email}
@@ -60,7 +60,7 @@ const Footer = () => {
                 <li>
                   <a
                     href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                    className="inline-flex items-center gap-2.5 text-silver-400 transition-colors hover:text-accent-400"
+                    className="-my-1 inline-flex items-center gap-2.5 py-1 text-silver-400 transition-colors hover:text-accent-400"
                   >
                     {contact.phone}
                   </a>
@@ -110,12 +110,14 @@ const Footer = () => {
                 >
                   {column.title}
                 </h2>
-                <ul className="mt-4 space-y-2.5">
+                {/* -my-1 keeps the visual rhythm while py-1 gives each link a
+                    24px+ tap target, which bare 17px text does not. */}
+                <ul className="-my-1 mt-3 space-y-0.5">
                   {column.links.map((link) => (
                     <li key={link.to + link.label}>
                       <Link
                         to={link.to}
-                        className="text-sm text-silver-400 transition-colors hover:text-accent-400"
+                        className="inline-block py-1.5 text-sm text-silver-400 transition-colors hover:text-accent-400"
                       >
                         {link.label}
                       </Link>
@@ -155,7 +157,7 @@ const Footer = () => {
           <ul className="flex items-center gap-5">
             {legalNav.map((link) => (
               <li key={link.to}>
-                <Link to={link.to} className="transition-colors hover:text-silver-300">
+                <Link to={link.to} className="-my-1.5 inline-block py-1.5 transition-colors hover:text-silver-300">
                   {link.label}
                 </Link>
               </li>

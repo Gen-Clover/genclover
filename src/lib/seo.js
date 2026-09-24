@@ -80,7 +80,7 @@ export const pageMeta = {
   services: {
     title: 'Gen Clover Services | Digital Products & Technology Solutions',
     description:
-      'Eight service domains: websites, web applications, e-commerce, AI and automation, data and analytics, technology solutions, DevOps and MLOps, and digital marketing and SEO.',
+      'Websites, web applications, e-commerce, AI and automation, data and analytics, technology solutions, DevOps and MLOps, and digital marketing and SEO.',
     path: '/services',
   },
   work: {

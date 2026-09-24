@@ -27,8 +27,14 @@ export const contact = {
   email: 'contact@genclover.com',
   phone: null,
   location: 'Chandigarh, India',
-  hours: 'Monday – Friday, 9:00 AM – 6:00 PM IST',
-  servingNote: 'Working with clients across India and internationally.',
+  /**
+   * Deliberately not a fixed 9-to-6 window. Clients run across Indian and
+   * international time zones, so publishing office hours in one zone tells
+   * most of them the wrong thing. This states reach, not a schedule.
+   */
+  hours: 'Across Indian and international time zones',
+  servingNote:
+    'We work with clients in India and internationally, and arrange calls around your working day rather than ours.',
 }
 
 /**

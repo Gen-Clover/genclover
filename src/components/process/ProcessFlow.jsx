@@ -94,7 +94,7 @@ export const ProcessRail = () => {
                       scale: isActive ? 1 : 0.88,
                     }}
                     transition={{ duration: reduced ? 0 : 0.35, ease: EASE }}
-                    className={`relative grid h-full w-full place-items-center rounded-full border font-display text-[10px] font-semibold transition-colors duration-300 sm:text-xs ${
+                    className={`relative grid h-full w-full place-items-center rounded-full border font-display text-[11px] font-semibold transition-colors duration-300 sm:text-xs ${
                       isActive
                         ? 'border-accent-500 bg-accent-600 text-white'
                         : isPassed

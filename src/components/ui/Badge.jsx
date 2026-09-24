@@ -34,7 +34,7 @@ export const StatusBadge = ({ status, className = '' }) => {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-display text-[10px] font-semibold uppercase tracking-brand ${
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-display text-[11px] font-semibold uppercase tracking-brand ${
         statusStyles[resolved.id]
       } ${className}`}
     >
