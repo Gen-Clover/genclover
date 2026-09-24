@@ -8,7 +8,7 @@ straight into `src/data/projects.js`.
 You do not need to write any code. Fill in prose and pick values from the lists provided.
 
 - **Generated from:** `src/data/projects.js` on branch `feat/website-v1-rebuild`
-- **Projects currently in the system:** 14 - 6 delivered client engagements (confidential) and 8 concepts
+- **Projects currently in the system:** 14 - 10 delivered client engagements (confidential) and 4 concepts
 - **Where this shows up:** the Work hub at `/work`, a dedicated page per project at
   `/work/<slug>`, the Selected Work block on the homepage, and the Related Work block on
   each service and industry page
@@ -232,11 +232,11 @@ so spelling matters.
 
 ## 5. What is in the system today
 
-**The first six are real delivered engagements**, onboarded from the portfolio repository and
+**The first ten are real delivered engagements**, onboarded from the portfolio repository and
 published as Confidential Client Projects. Client names, imprint names and internal product
 names have been removed; the sector is kept because it describes rather than identifies.
 
-**The remaining eight are concepts** carried over from the previous site, with narrative text
+**The remaining four are concepts** carried over from the previous site, with narrative text
 written to replace the unverifiable percentage claims that were there before.
 
 **Please review each one for accuracy** - for the delivered work, check that nothing
@@ -695,12 +695,12 @@ now that there is real work to show.
 | Field | Current value |
 | --- | --- |
 | `slug` | `customer-churn-prediction` |
-| `status` | `concept` -> **Gen Clover Concept** |
+| `status` | `confidential` -> **Confidential Client Project** |
 | `category` | `ai-automation` -> AI & Automation |
 | `industry` | `technology-saas` -> Technology & SaaS |
 | `primaryService` | `ai-automation` -> AI & Automation |
 | `additionalServices` | `data-analytics`, `devops-mlops` |
-| `featured` | `false`  |
+| `featured` | `true` (shows on homepage) |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -708,7 +708,7 @@ now that there is real work to show.
 | `externalUrl` | _(not set)_ |
 | `githubUrl` | _(not set)_ |
 | `published` | `true` |
-| `permissionsApproved` | `false` |
+| `permissionsApproved` | `true` |
 
 **`summary`** _(card + page intro, 1-2 sentences)_
 > A machine-learning concept that identifies which subscription customers are drifting away, early enough for a team to do something about it.
@@ -742,9 +742,9 @@ now that there is real work to show.
 - Pandas
 
 **`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
-- Conceptual outcome - give customer success teams advance warning instead of a cancellation report.
-- Conceptual outcome - make the reasoning behind each risk score visible, so the team can act on it.
-- Conceptual outcome - keep model performance observable after deployment rather than assumed.
+- Give customer success teams advance warning instead of a cancellation report.
+- Make the reasoning behind each risk score visible, so the team can act on it.
+- Keep model performance observable after deployment rather than assumed.
 
 **`scope`** _(one line, what we were engaged to do)_
 > Feature engineering, model development, evaluation, deployment and monitoring design.
@@ -756,12 +756,12 @@ now that there is real work to show.
 | Field | Current value |
 | --- | --- |
 | `slug` | `corporate-website-redesign` |
-| `status` | `concept` -> **Gen Clover Concept** |
+| `status` | `confidential` -> **Confidential Client Project** |
 | `category` | `websites` -> Websites |
 | `industry` | `professional-services` -> Professional Services |
 | `primaryService` | `websites` -> Websites & Web Experiences |
 | `additionalServices` | `digital-marketing-seo` |
-| `featured` | `false`  |
+| `featured` | `true` (shows on homepage) |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -769,7 +769,7 @@ now that there is real work to show.
 | `externalUrl` | _(not set)_ |
 | `githubUrl` | _(not set)_ |
 | `published` | `true` |
-| `permissionsApproved` | `false` |
+| `permissionsApproved` | `true` |
 
 **`summary`** _(card + page intro, 1-2 sentences)_
 > A corporate website concept for an established professional services firm, built around clarity, credibility and a single obvious next step.
@@ -803,9 +803,9 @@ now that there is real work to show.
 - TypeScript
 
 **`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
-- Conceptual outcome - let a first-time visitor understand what the firm does within seconds of arriving.
-- Conceptual outcome - give every page a clear, consistent route into an enquiry.
-- Conceptual outcome - provide a structure the firm can extend without a redesign each time.
+- Let a first-time visitor understand what the firm does within seconds of arriving.
+- Give every page a clear, consistent route into an enquiry.
+- Provide a structure the firm can extend without a redesign each time.
 
 **`scope`** _(one line, what we were engaged to do)_
 > Discovery, information architecture, UX/UI design, frontend engineering, launch.
@@ -1002,12 +1002,12 @@ now that there is real work to show.
 | Field | Current value |
 | --- | --- |
 | `slug` | `image-classification-system` |
-| `status` | `concept` -> **Gen Clover Concept** |
+| `status` | `confidential` -> **Confidential Client Project** |
 | `category` | `ai-automation` -> AI & Automation |
 | `industry` | `manufacturing` -> Manufacturing |
 | `primaryService` | `ai-automation` -> AI & Automation |
 | `additionalServices` | `devops-mlops` |
-| `featured` | `false`  |
+| `featured` | `true` (shows on homepage) |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -1015,7 +1015,7 @@ now that there is real work to show.
 | `externalUrl` | _(not set)_ |
 | `githubUrl` | _(not set)_ |
 | `published` | `true` |
-| `permissionsApproved` | `false` |
+| `permissionsApproved` | `true` |
 
 **`summary`** _(card + page intro, 1-2 sentences)_
 > A computer vision concept for production-line quality control, designed to assist inspectors rather than quietly replace their judgement.
@@ -1049,9 +1049,9 @@ now that there is real work to show.
 - Docker
 
 **`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
-- Conceptual outcome - keep inspection consistent across a full shift.
-- Conceptual outcome - escalate uncertain cases to people instead of guessing.
-- Conceptual outcome - turn every human review into future training data.
+- Keep inspection consistent across a full shift.
+- Escalate uncertain cases to people instead of guessing.
+- Turn every human review into future training data.
 
 **`scope`** _(one line, what we were engaged to do)_
 > Vision model development, threshold and escalation design, edge deployment, monitoring.
@@ -1063,12 +1063,12 @@ now that there is real work to show.
 | Field | Current value |
 | --- | --- |
 | `slug` | `portfolio-website` |
-| `status` | `concept` -> **Gen Clover Concept** |
+| `status` | `confidential` -> **Confidential Client Project** |
 | `category` | `websites` -> Websites |
 | `industry` | `other` -> Other / Custom |
 | `primaryService` | `websites` -> Websites & Web Experiences |
 | `additionalServices` | `digital-marketing-seo` |
-| `featured` | `false`  |
+| `featured` | `true` (shows on homepage) |
 | `heroImage` | _(not set)_ |
 | `gallery` | _(empty)_ |
 | `clientName` | _(not set)_ |
@@ -1076,7 +1076,7 @@ now that there is real work to show.
 | `externalUrl` | _(not set)_ |
 | `githubUrl` | _(not set)_ |
 | `published` | `true` |
-| `permissionsApproved` | `false` |
+| `permissionsApproved` | `true` |
 
 **`summary`** _(card + page intro, 1-2 sentences)_
 > A premium portfolio concept where the work is the interface, and the site around it gets out of the way.
@@ -1109,9 +1109,9 @@ now that there is real work to show.
 - Vite
 
 **`outcomes`** _(concepts use "Conceptual outcome - ..."; client work needs verified figures)_
-- Conceptual outcome - keep attention on the work rather than the interface around it.
-- Conceptual outcome - stay fully usable for visitors who prefer reduced motion.
-- Conceptual outcome - make publishing new work a content change, not a build.
+- Keep attention on the work rather than the interface around it.
+- Stay fully usable for visitors who prefer reduced motion.
+- Make publishing new work a content change, not a build.
 
 **`scope`** _(one line, what we were engaged to do)_
 > Art direction, UX/UI design, frontend engineering, performance optimisation.

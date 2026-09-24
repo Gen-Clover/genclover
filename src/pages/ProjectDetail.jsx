@@ -16,6 +16,19 @@ import {
 import { getService } from '../data/services'
 import { routes } from '../data/site'
 import { usePageMeta } from '../lib/seo'
+import {
+  FlowStrip,
+  StatRow,
+  AtAGlance,
+  PointsSection,
+  BeforeAfter,
+  ArchitectureFlow,
+  Walkthrough,
+  ComponentList,
+  Roadmap,
+  TechStack,
+  ClosingStatement,
+} from '../components/work/CaseStudySections'
 import { useMotionVariants, revealOnce } from '../lib/motion'
 
 /**
@@ -46,6 +59,7 @@ const ProjectDetail = () => {
   const related = getRelatedProjects(project)
   const isConcept = project.status === 'concept'
   const isConfidential = project.status === 'confidential'
+  const cs = project.caseStudy
 
   const metaRows = [
     { label: 'Status', value: status.publicLabel },
@@ -87,9 +101,36 @@ const ProjectDetail = () => {
             >
               {project.summary}
             </motion.p>
+
+            {(cs?.role || cs?.builtOn) && (
+              <motion.dl
+                variants={v.fadeUp}
+                className="mt-9 flex flex-wrap gap-x-10 gap-y-4 border-t border-ink-800 pt-6"
+              >
+                {cs.role && (
+                  <div>
+                    <dt className="font-display text-[11px] uppercase tracking-eyebrow text-silver-500">
+                      Role
+                    </dt>
+                    <dd className="mt-1.5 text-sm font-medium text-silver-200">{cs.role}</dd>
+                  </div>
+                )}
+                {cs.builtOn && (
+                  <div>
+                    <dt className="font-display text-[11px] uppercase tracking-eyebrow text-silver-500">
+                      Built on
+                    </dt>
+                    <dd className="mt-1.5 text-sm font-medium text-silver-200">{cs.builtOn}</dd>
+                  </div>
+                )}
+              </motion.dl>
+            )}
           </motion.div>
         </div>
       </header>
+
+      {/* The delivery loop, animated — 01 through to hand-off */}
+      <FlowStrip flow={cs?.flow} />
 
       {/* Concept disclosure — stated plainly, not buried. (Spec §1.2, §7.2) */}
       {isConcept && (
@@ -191,6 +232,15 @@ const ProjectDetail = () => {
         </div>
       </Section>
 
+      {/* ---------------------------------------------- deep case study */}
+      {cs?.stats?.length > 0 && (
+        <Section className="!pt-0">
+          <StatRow stats={cs.stats} />
+        </Section>
+      )}
+
+      <AtAGlance data={cs?.atAGlance} />
+
       {/* ------------------------------------------- challenge / approach */}
       <Section muted>
         <div className="grid gap-12 lg:grid-cols-3 lg:gap-14">
@@ -214,6 +264,42 @@ const ProjectDetail = () => {
             ))}
         </div>
       </Section>
+
+      {/* Deep-dive sections. Each renders only if the project carries it. */}
+      <PointsSection
+        eyebrow="The challenge"
+        title={cs?.challengeDetail?.headline}
+        description={cs?.challengeDetail?.intro}
+        points={cs?.challengeDetail?.points}
+        footnote={cs?.challengeDetail?.footnote}
+      />
+
+      <BeforeAfter data={cs?.beforeAfter} />
+
+      <PointsSection
+        eyebrow="The approach"
+        title={cs?.approachDetail?.headline}
+        description={cs?.approachDetail?.intro}
+        points={cs?.approachDetail?.points}
+        icon="check"
+        muted
+      />
+
+      <ArchitectureFlow data={cs?.architecture} />
+
+      <Walkthrough data={cs?.walkthrough} />
+
+      <ComponentList data={cs?.components} />
+
+      <PointsSection
+        eyebrow={cs?.safeguards?.eyebrow ?? 'Safeguards'}
+        title={cs?.safeguards?.headline}
+        description={cs?.safeguards?.intro}
+        points={cs?.safeguards?.points}
+        icon="shield"
+        columns={2}
+        muted
+      />
 
       {/* --------------------------------- capabilities / tech / outcomes */}
       <Section>
@@ -304,6 +390,12 @@ const ProjectDetail = () => {
           </div>
         </div>
       </Section>
+
+      <TechStack data={cs?.techStack} />
+
+      <Roadmap data={cs?.roadmap} />
+
+      <ClosingStatement text={cs?.closing} />
 
       {/* -------------------------------------------------------- related */}
       {related.length > 0 && (

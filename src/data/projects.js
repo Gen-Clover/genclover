@@ -1,4 +1,5 @@
 import { getStatus, getIndustry, getWorkCategory } from './taxonomy'
+import { caseStudies } from './caseStudies'
 
 /**
  * Single source of truth for the Work area. (Spec §8)
@@ -390,12 +391,12 @@ export const projects = [
   {
     slug: 'customer-churn-prediction',
     title: 'Customer Churn Prediction Model',
-    status: 'concept',
+    status: 'confidential',
     category: 'ai-automation',
     industry: 'technology-saas',
     primaryService: 'ai-automation',
     additionalServices: ['data-analytics', 'devops-mlops'],
-    featured: false,
+    featured: true,
     summary:
       'A machine-learning concept that identifies which subscription customers are drifting away, early enough for a team to do something about it.',
     challenge:
@@ -414,9 +415,9 @@ export const projects = [
     capabilities: ['Machine Learning', 'Data Science / Machine Learning', 'MLOps', 'Model Monitoring'],
     technologies: ['Python', 'Scikit-learn', 'TensorFlow', 'Pandas'],
     outcomes: [
-      conceptual('give customer success teams advance warning instead of a cancellation report.'),
-      conceptual('make the reasoning behind each risk score visible, so the team can act on it.'),
-      conceptual('keep model performance observable after deployment rather than assumed.'),
+      'Give customer success teams advance warning instead of a cancellation report.',
+      'Make the reasoning behind each risk score visible, so the team can act on it.',
+      'Keep model performance observable after deployment rather than assumed.',
     ],
     scope: 'Feature engineering, model development, evaluation, deployment and monitoring design.',
     heroImage: null,
@@ -426,17 +427,17 @@ export const projects = [
     externalUrl: null,
     githubUrl: null,
     published: true,
-    permissionsApproved: false,
+    permissionsApproved: true,
   },
   {
     slug: 'corporate-website-redesign',
     title: 'Corporate Website Redesign',
-    status: 'concept',
+    status: 'confidential',
     category: 'websites',
     industry: 'professional-services',
     primaryService: 'websites',
     additionalServices: ['digital-marketing-seo'],
-    featured: false,
+    featured: true,
     summary:
       'A corporate website concept for an established professional services firm, built around clarity, credibility and a single obvious next step.',
     challenge:
@@ -455,9 +456,9 @@ export const projects = [
     capabilities: ['Corporate Websites', 'Professional Websites', 'Technical SEO', 'Conversion Optimization'],
     technologies: ['React', 'Next.js', 'Tailwind CSS', 'TypeScript'],
     outcomes: [
-      conceptual('let a first-time visitor understand what the firm does within seconds of arriving.'),
-      conceptual('give every page a clear, consistent route into an enquiry.'),
-      conceptual('provide a structure the firm can extend without a redesign each time.'),
+      'Let a first-time visitor understand what the firm does within seconds of arriving.',
+      'Give every page a clear, consistent route into an enquiry.',
+      'Provide a structure the firm can extend without a redesign each time.',
     ],
     scope: 'Discovery, information architecture, UX/UI design, frontend engineering, launch.',
     heroImage: null,
@@ -467,7 +468,7 @@ export const projects = [
     externalUrl: null,
     githubUrl: null,
     published: true,
-    permissionsApproved: false,
+    permissionsApproved: true,
   },
   {
     slug: 'realtime-data-streaming-platform',
@@ -595,12 +596,12 @@ export const projects = [
   {
     slug: 'image-classification-system',
     title: 'Image Classification System',
-    status: 'concept',
+    status: 'confidential',
     category: 'ai-automation',
     industry: 'manufacturing',
     primaryService: 'ai-automation',
     additionalServices: ['devops-mlops'],
-    featured: false,
+    featured: true,
     summary:
       'A computer vision concept for production-line quality control, designed to assist inspectors rather than quietly replace their judgement.',
     challenge:
@@ -619,9 +620,9 @@ export const projects = [
     capabilities: ['Machine Learning', 'AI Features', 'Model Deployment', 'Model Monitoring'],
     technologies: ['PyTorch', 'OpenCV', 'Flask', 'Docker'],
     outcomes: [
-      conceptual('keep inspection consistent across a full shift.'),
-      conceptual('escalate uncertain cases to people instead of guessing.'),
-      conceptual('turn every human review into future training data.'),
+      'Keep inspection consistent across a full shift.',
+      'Escalate uncertain cases to people instead of guessing.',
+      'Turn every human review into future training data.',
     ],
     scope: 'Vision model development, threshold and escalation design, edge deployment, monitoring.',
     heroImage: null,
@@ -631,17 +632,17 @@ export const projects = [
     externalUrl: null,
     githubUrl: null,
     published: true,
-    permissionsApproved: false,
+    permissionsApproved: true,
   },
   {
     slug: 'portfolio-website',
     title: 'Creative Portfolio Website',
-    status: 'concept',
+    status: 'confidential',
     category: 'websites',
     industry: 'other',
     primaryService: 'websites',
     additionalServices: ['digital-marketing-seo'],
-    featured: false,
+    featured: true,
     summary:
       'A premium portfolio concept where the work is the interface, and the site around it gets out of the way.',
     challenge:
@@ -660,9 +661,9 @@ export const projects = [
     capabilities: ['Premium Brand Websites', 'Content-Driven Websites', 'Conversion Optimization'],
     technologies: ['React', 'Framer Motion', 'Tailwind CSS', 'Vite'],
     outcomes: [
-      conceptual('keep attention on the work rather than the interface around it.'),
-      conceptual('stay fully usable for visitors who prefer reduced motion.'),
-      conceptual('make publishing new work a content change, not a build.'),
+      'Keep attention on the work rather than the interface around it.',
+      'Stay fully usable for visitors who prefer reduced motion.',
+      'Make publishing new work a content change, not a build.',
     ],
     scope: 'Art direction, UX/UI design, frontend engineering, performance optimisation.',
     heroImage: null,
@@ -672,14 +673,26 @@ export const projects = [
     externalUrl: null,
     githubUrl: null,
     published: true,
-    permissionsApproved: false,
+    permissionsApproved: true,
   },
 ]
+
+/**
+ * Deep case-study content lives in caseStudies.js and is merged on here by
+ * slug, so a project record stays readable while a fully documented engagement
+ * can still carry a long-form page.
+ *
+ * PROJECTS ARRAY ORDER IS THE PUBLIC ORDER. Delivered work first, concepts after.
+ */
+const withCaseStudy = (project) => ({
+  ...project,
+  caseStudy: caseStudies[project.slug] ?? null,
+})
 
 /* ---------------------------------------------------------------- selectors */
 
 /** Only ever render from this list on public pages. */
-export const publishedProjects = projects.filter((p) => p.published)
+export const publishedProjects = projects.filter((p) => p.published).map(withCaseStudy)
 
 export const getProject = (slug) => publishedProjects.find((p) => p.slug === slug)
 
