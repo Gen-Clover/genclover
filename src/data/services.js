@@ -47,7 +47,7 @@ export const services = [
       'From professional corporate websites to high-conversion digital experiences, Gen Clover designs and engineers websites that look exceptional, communicate clearly and perform reliably.',
     closingTitle: 'Planning a new website?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Website Work', to: '/work?category=websites' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'websites',
     capabilities: [
       { label: 'Corporate Websites', description: 'A credible digital presence for established businesses.' },
@@ -89,7 +89,7 @@ export const services = [
       'Customer portals, dashboards, internal tools and SaaS products, engineered around real workflows, with the maintainability, performance and security to run for years.',
     closingTitle: 'Have an application in mind?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Application Work', to: '/work?category=web-applications' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'web-applications',
     capabilities: [
       { label: 'Customer Portals', description: 'Self-service experiences for the people you serve.' },
@@ -119,7 +119,7 @@ export const services = [
       'Storefronts, catalogs, checkout and the systems behind them, designed so customers can find what they need and buy it without friction.',
     closingTitle: 'Building or rebuilding a store?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View E-Commerce Work', to: '/work?category=ecommerce' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'ecommerce',
     capabilities: [
       { label: 'E-Commerce Websites', description: 'Storefronts designed around discovery and purchase.' },
@@ -150,7 +150,7 @@ export const services = [
       'Assistants, intelligent search, document understanding and workflow automation, built into your existing systems rather than bolted on beside them.',
     closingTitle: 'Looking at where AI could help?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View AI Work', to: '/work?category=ai-automation' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'ai-automation',
     capabilities: [
       { label: 'AI Assistants', description: 'Assistants grounded in your own content and systems.' },
@@ -182,7 +182,7 @@ export const services = [
       'Pipelines, platforms and reporting built so the numbers agree with each other, and so the people who need them can reach them without asking.',
     closingTitle: 'Need numbers your team can trust?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Data Work', to: '/work?category=data-analytics' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'data-analytics',
     capabilities: [
       { label: 'Data Engineering', description: 'The plumbing that makes everything downstream reliable.' },
@@ -212,7 +212,7 @@ export const services = [
       'APIs, integrations, cloud architecture and modernization: the backend work that lets the rest of the business move.',
     closingTitle: 'Facing a requirement nothing off the shelf covers?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Platform Work', to: '/work?category=digital-platforms' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'digital-platforms',
     capabilities: [
       { label: 'APIs', description: 'Documented, versioned interfaces for internal and partner use.' },
@@ -277,7 +277,7 @@ export const services = [
       'Technical and on-page SEO, content structure, conversion optimization and measurement, grounded in how your site is actually built.',
     closingTitle: 'Want to be found by the right people?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Website Work', to: '/work?category=websites' },
+    secondaryCta: { label: 'View Our Work', to: '/work' },
     workCategory: 'websites',
     capabilities: [
       { label: 'Search Engine Optimization', description: 'A structured program rather than isolated tactics.' },

@@ -172,7 +172,7 @@ src/
     layout/              Header, Footer
     home/                The homepage sections, in spec order (§5.2)
     process/             ProcessRail + ProcessTimeline — the animated Discover→Grow flow
-    work/                WorkCard, WorkFilters
+    work/                WorkCard, CaseStudySections
     form/                ProjectBriefForm + field primitives
   pages/                 One file per route
 ```

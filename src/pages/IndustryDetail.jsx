@@ -132,7 +132,7 @@ const IndustryDetail = () => {
             title={`Work in ${industry.label.toLowerCase()}.`}
             action={
               <Button to={routes.work} variant="secondary" size="md">
-                All work
+                View all work
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             }

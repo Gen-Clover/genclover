@@ -76,7 +76,7 @@ const ProjectDetail = () => {
             className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            All work
+            Back to work
           </Link>
 
           <motion.div initial="hidden" animate="visible" variants={v.stagger(0.08)}>
@@ -363,7 +363,7 @@ const ProjectDetail = () => {
             title="Related projects."
             action={
               <Button to={routes.work} variant="secondary" size="md">
-                All work
+                View all work
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             }

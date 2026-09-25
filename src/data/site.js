@@ -1,6 +1,6 @@
 import { Linkedin } from 'lucide-react'
 import { services } from './services'
-import { workFilters } from './taxonomy'
+import { featuredProjects } from './projects'
 
 /**
  * Company-level constants and the primary navigation model. (Spec §3, §19)
@@ -80,14 +80,7 @@ export const primaryNav = [
       icon: s.icon,
     })),
   },
-  {
-    label: 'Work',
-    to: routes.work,
-    children: workFilters.map((f) => ({
-      label: f.label,
-      to: f.id === 'all' ? routes.work : `${routes.work}?category=${f.id}`,
-    })),
-  },
+  { label: 'Work', to: routes.work },
   { label: 'Industries', to: routes.industries },
   { label: 'How We Work', to: routes.howWeWork },
   { label: 'About', to: routes.about },
@@ -101,10 +94,10 @@ export const footerNav = [
   },
   {
     title: 'Work',
-    links: workFilters.map((f) => ({
-      label: f.label,
-      to: f.id === 'all' ? routes.work : `${routes.work}?category=${f.id}`,
-    })),
+    links: [
+      ...featuredProjects.slice(0, 5).map((p) => ({ label: p.title, to: `${routes.work}/${p.slug}` })),
+      { label: 'View all work', to: routes.work },
+    ],
   },
   {
     title: 'Company',

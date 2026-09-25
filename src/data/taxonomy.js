@@ -29,8 +29,6 @@ export const workCategories = [
   { id: 'digital-platforms', label: 'Digital Platforms' },
 ]
 
-/** The "All Work" pseudo-filter plus every real category. (Spec §7.1) */
-export const workFilters = [{ id: 'all', label: 'All work' }, ...workCategories]
 
 /**
  * Project statuses. (Spec §7.2 / Appendix A.3)

@@ -11,7 +11,7 @@ import { useLocation, useNavigationType } from 'react-router-dom'
  *   PUSH    — a new page. Start at the top.
  *   POP     — back or forward. Return the visitor to exactly where they were,
  *             which is the whole point of pressing back.
- *   REPLACE — same page, different state (the Work hub's ?category= filter).
+ *   REPLACE — same page, different state (e.g. a query-string change).
  *             Do not move. Yanking someone to the top when they tick a filter
  *             is the single most irritating thing an SPA can do.
  *
