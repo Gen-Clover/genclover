@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
 import Logo from '../brand/Logo'
 import Button from '../ui/Button'
 import ThemeToggle from '../ui/ThemeToggle'
+import SoundToggle from '../ui/SoundToggle'
 import { primaryNav, routes } from '../../data/site'
 import { trackEvent, events } from '../../lib/analytics'
 
@@ -224,6 +225,8 @@ const Header = () => {
             </ul>
 
             <div className="flex items-center gap-2">
+              {/* Hover sounds are mouse-only, so the toggle is hidden on touch-size screens */}
+              <SoundToggle className="hidden lg:inline-flex" />
               <ThemeToggle />
 
               <Button

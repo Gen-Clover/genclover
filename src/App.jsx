@@ -6,6 +6,7 @@ import ScrollRestoration from './components/ScrollRestoration'
 import Home from './pages/Home'
 import { routes } from './data/site'
 import { captureAttribution } from './lib/analytics'
+import { useHoverSound } from './lib/hoverSound'
 
 /**
  * Routing and information architecture. (Spec §3, §18, §25)
@@ -56,6 +57,8 @@ const AttributionCapture = () => {
 }
 
 function App() {
+  useHoverSound()
+
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ScrollRestoration />
