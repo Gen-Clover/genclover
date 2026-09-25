@@ -1,5 +1,10 @@
 # Gen Clover - Work Content Worksheet
 
+> **Update (September 2026):** all published projects are now presented as delivered work.
+> Status badges, the concept disclosure banner and "Conceptual outcome" wording have been
+> removed from the site. Sections below that refer to concepts or status labels are kept for
+> history; `status` in `projects.js` is `client` for every entry.
+
 **Purpose.** This is the single worksheet for everything the website shows about a project.
 Review what is already in the system below, correct anything that is wrong, and add new
 projects using the blank template at the end. Send the edited file back and it gets loaded

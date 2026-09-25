@@ -8,7 +8,7 @@ import WorkFilters from '../components/work/WorkFilters'
 import WorkCard from '../components/work/WorkCard'
 import FinalCTA from '../components/home/FinalCTA'
 import { getProjectsByCategory } from '../data/projects'
-import { workFilters, projectStatuses, getWorkCategory } from '../data/taxonomy'
+import { workFilters, getWorkCategory } from '../data/taxonomy'
 import { routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants } from '../lib/motion'
@@ -69,31 +69,14 @@ const Work = () => {
     <>
       <PageHero
         eyebrow="Work"
-        title="Selected work and concepts."
-        description="Projects across websites, applications, commerce, AI, data and platforms. Every item carries its real status, so you always know what you are looking at."
+        title="Work we have delivered."
+        description="Websites, applications, AI, data and platform projects, each with a full write-up of the problem, the approach and how the system was built."
       >
         <Button to={routes.startProject} size="lg">
           Start a Project
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Button>
       </PageHero>
-
-      {/* Status key — makes the labelling system legible up front (Spec §7.2) */}
-      <div className="border-b border-ink-800 bg-ink-900">
-        <div className="container py-5">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-silver-500">
-            <span className="font-display uppercase tracking-brand text-silver-400">
-              Status key
-            </span>
-            {Object.values(projectStatuses).map((status) => (
-              <span key={status.id} className="inline-flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent-600" aria-hidden="true" />
-                {status.publicLabel}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
 
       <Section>
         {/* An h2 for the results region: without it the page jumps h1 -> h3

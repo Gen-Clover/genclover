@@ -21,7 +21,7 @@ const WhyGenClover = () => {
           <SectionHeader
             index="04"
             eyebrow="Why Gen Clover"
-            title="Technology at the centre. Four capabilities working together."
+            title="Technology at the center. Four ideas working together."
             description={site.meaning}
             className="mb-10"
           />

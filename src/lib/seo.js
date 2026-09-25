@@ -69,65 +69,67 @@ export const usePageMeta = ({ title, description, path, image, noIndex = false }
   }, [title, description, path, image, noIndex])
 }
 
-/** Page titles from the spec's SEO table. (Spec §15) */
+/**
+ * Page titles and descriptions. (Spec §15)
+ * Pattern: "<Page> | Gen Clover". Descriptions stay within ~160 characters.
+ */
 export const pageMeta = {
   home: {
     title: 'Gen Clover | Digital Products, Technology & AI Solutions',
     description:
-      'Gen Clover designs and builds digital products that move businesses forward - websites, web applications, e-commerce, AI and automation, data, DevOps and digital growth.',
+      'Gen Clover designs and builds digital products that move businesses forward: websites, web applications, e-commerce, AI and automation, data, DevOps and SEO.',
     path: '/',
   },
   services: {
-    title: 'Gen Clover Services | Digital Products & Technology Solutions',
+    title: 'Services: Websites, Applications, AI & Data | Gen Clover',
     description:
       'Websites, web applications, e-commerce, AI and automation, data and analytics, technology solutions, DevOps and MLOps, and digital marketing and SEO.',
     path: '/services',
   },
   work: {
-    title: 'Gen Clover Work | Websites, Applications & Digital Products',
+    title: 'Our Work: Websites, Applications, AI & Data | Gen Clover',
     description:
-      'Selected websites, web applications, e-commerce, AI and data work from Gen Clover. Every item is clearly labelled with its project status.',
+      'Delivered Gen Clover projects across AI and automation, data and analytics, web applications, platforms and websites, each with a full case study.',
     path: '/work',
   },
   industries: {
-    title: 'Industries | Gen Clover',
+    title: 'Industries We Serve | Gen Clover',
     description:
-      'How Gen Clover works across professional services, technology and SaaS, financial services, real estate, healthcare, education, retail, manufacturing, logistics and hospitality.',
+      'Gen Clover works across healthcare, media and publishing, professional services, technology and SaaS, financial services, retail, manufacturing, logistics and more.',
     path: '/industries',
   },
   howWeWork: {
     title: 'How We Work | Gen Clover',
     description:
-      'Discover, Define, Design, Build, Validate, Launch, Grow - the delivery process behind every Gen Clover engagement.',
+      'Discover, Define, Design, Build, Validate, Launch, Grow: the seven-stage delivery process behind every Gen Clover engagement, and the care that follows launch.',
     path: '/how-we-work',
   },
   about: {
-    title: 'About Gen Clover | Technology & Digital Products',
+    title: 'About Us | Gen Clover',
     description:
-      'Gen Clover is a technology and digital product company focused on building practical, high-quality digital experiences and solutions for modern businesses.',
+      'Gen Clover is a technology and digital product company building practical, high-quality websites, applications, AI and data solutions for modern businesses.',
     path: '/about',
-  },
-  insights: {
-    title: 'Insights | Gen Clover',
-    description:
-      'Notes and perspectives from the Gen Clover team on building digital products, technology and AI.',
-    path: '/insights',
   },
   careers: {
     title: 'Careers | Gen Clover',
     description:
-      'Open roles and how we work at Gen Clover, a technology and digital product company.',
+      'Careers at Gen Clover, a technology and digital product company. See current and recent roles, and send a general application.',
     path: '/careers',
   },
   startProject: {
     title: 'Start a Project | Gen Clover',
     description:
-      'Tell us about your project. A short structured brief so we can come back to you with something useful rather than a generic reply.',
+      'Tell us about your project in eight short questions, so our first reply is about your goals rather than a generic capability deck.',
     path: '/start-a-project',
   },
   privacy: {
     title: 'Privacy Notice | Gen Clover',
     description: 'How Gen Clover handles the information you submit through this website.',
     path: '/privacy',
+  },
+  terms: {
+    title: 'Terms of Use | Gen Clover',
+    description: 'The terms that apply when you use the Gen Clover website.',
+    path: '/terms',
   },
 }

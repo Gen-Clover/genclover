@@ -1,10 +1,11 @@
+import { Linkedin } from 'lucide-react'
 import { services } from './services'
 import { workFilters } from './taxonomy'
 
 /**
  * Company-level constants and the primary navigation model. (Spec §3, §19)
  * Navigation is derived from the service and work taxonomies so a new service
- * appears in the header, the footer and the enquiry form at once.
+ * appears in the header, the footer and the inquiry form at once.
  */
 
 export const site = {
@@ -41,7 +42,13 @@ export const contact = {
  * Social accounts. (Spec §19 — only real accounts.)
  * Add an entry only once the account exists and the Product Owner confirms it.
  */
-export const socialLinks = []
+export const socialLinks = [
+  {
+    label: 'Gen Clover on LinkedIn',
+    href: 'https://www.linkedin.com/company/gen-clover/',
+    icon: Linkedin,
+  },
+]
 
 export const routes = {
   home: '/',
@@ -50,10 +57,10 @@ export const routes = {
   industries: '/industries',
   howWeWork: '/how-we-work',
   about: '/about',
-  insights: '/insights',
   careers: '/careers',
   startProject: '/start-a-project',
   privacy: '/privacy',
+  terms: '/terms',
 }
 
 /**
@@ -83,15 +90,8 @@ export const primaryNav = [
   },
   { label: 'Industries', to: routes.industries },
   { label: 'How We Work', to: routes.howWeWork },
-  {
-    label: 'Company',
-    to: routes.about,
-    children: [
-      { label: 'About', to: routes.about },
-      { label: 'Insights', to: routes.insights },
-      { label: 'Careers', to: routes.careers },
-    ],
-  },
+  { label: 'About', to: routes.about },
+  { label: 'Careers', to: routes.careers },
 ]
 
 export const footerNav = [
@@ -112,15 +112,14 @@ export const footerNav = [
       { label: 'About', to: routes.about },
       { label: 'How We Work', to: routes.howWeWork },
       { label: 'Industries', to: routes.industries },
-      { label: 'Insights', to: routes.insights },
       { label: 'Careers', to: routes.careers },
       { label: 'Start a Project', to: routes.startProject },
     ],
   },
 ]
 
-/**
- * Legal links. Privacy is required before production lead collection (§19);
- * Terms is recommended and is left out until the Product Owner supplies it.
- */
-export const legalNav = [{ label: 'Privacy Notice', to: routes.privacy }]
+/** Legal links, shown in the footer. (Spec §19) */
+export const legalNav = [
+  { label: 'Privacy Notice', to: routes.privacy },
+  { label: 'Terms of Use', to: routes.terms },
+]

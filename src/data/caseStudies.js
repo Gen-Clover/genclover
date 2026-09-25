@@ -36,7 +36,7 @@ export const caseStudies = {
     ],
 
     stats: [
-      { value: '5', label: 'specialised agents in one workflow, each with a single job' },
+      { value: '5', label: 'specialized agents in one workflow, each with a single job' },
       { value: '±5', unit: 'min', label: 'of logs read around every error during triage' },
       { value: '30k', label: 'token cap per incident, enforced live by a circuit breaker' },
       { value: '1', label: 'trace ID follows an incident from alert to pull request' },
@@ -53,7 +53,7 @@ export const caseStudies = {
         },
         {
           title: 'Remediation swarm',
-          text: 'Five specialised agents move from alert to pull request, with safety checks between each step.',
+          text: 'Five specialized agents move from alert to pull request, with safety checks between each step.',
         },
         {
           title: 'Observability dashboard',
@@ -103,7 +103,7 @@ export const caseStudies = {
     architecture: {
       headline: 'Watch an incident travel through the system.',
       intro:
-        'Services log to centralised logging. An error alert reaches a webhook that starts the agent swarm, which reads code from and opens pull requests in source control. A dashboard reads the resulting audit trail.',
+        'Services log to centralized logging. An error alert reaches a webhook that starts the agent swarm, which reads code from and opens pull requests in source control. A dashboard reads the resulting audit trail.',
       layers: [
         {
           label: '1 · Instrumentation',
@@ -286,7 +286,7 @@ export const caseStudies = {
 
     roadmap: {
       headline: 'What the platform is designed to grow into.',
-      intro: 'Prioritised the way a product owner would: control first, then reach, then polish.',
+      intro: 'Prioritized the way a product owner would: control first, then reach, then polish.',
       groups: [
         {
           title: 'Human in the loop',
@@ -342,11 +342,11 @@ export const caseStudies = {
     atAGlance: {
       headline: 'One set of business rules, in one place.',
       intro:
-        'Scale had, over time, buried the reporting platform under four disconnected systems and a large manual process run over email and spreadsheets. The programme replaced all of it, and the hardest constraint was that every number had to keep matching what the business already knew to be true.',
+        'Scale had, over time, buried the reporting platform under four disconnected systems and a large manual process run over email and spreadsheets. The program replaced all of it, and the hardest constraint was that every number had to keep matching what the business already knew to be true.',
       points: [
         {
           title: 'One governed pipeline',
-          text: 'Six layers from source system to end user, each with validation, logging and retry built in rather than bolted on afterwards.',
+          text: 'Six layers from source system to end user, each with validation, logging and retry built in rather than bolted on afterward.',
         },
         {
           title: 'Embedded, not standalone',
@@ -397,7 +397,7 @@ export const caseStudies = {
         },
         {
           title: 'Put analytics where the work happens',
-          text: 'Reports embedded in the portal the business already used, rather than a separate tool requiring a separate login and a separate licence.',
+          text: 'Reports embedded in the portal the business already used, rather than a separate tool requiring a separate login and a separate license.',
         },
       ],
     },
@@ -454,7 +454,7 @@ export const caseStudies = {
         {
           label: '6 · End users',
           nodes: [
-            { title: 'Business users', lines: ['Access, analyse, operate, collaborate', 'in one place'] },
+            { title: 'Business users', lines: ['Access, analyze, operate, collaborate', 'in one place'] },
           ],
         },
       ],
@@ -555,7 +555,7 @@ export const caseStudies = {
     atAGlance: {
       headline: 'Type a drug name, get a competitor list you can defend.',
       intro:
-        'Sourced from live web search, checked against regulatory data, and reconciled with the organisation’s own competitive-intelligence database, with every unverified candidate still visible rather than quietly dropped.',
+        'Sourced from live web search, checked against regulatory data, and reconciled with the organization’s own competitive-intelligence database, with every unverified candidate still visible rather than quietly dropped.',
       points: [
         {
           title: 'Recall from the model',
@@ -573,13 +573,13 @@ export const caseStudies = {
     },
 
     challengeDetail: {
-      headline: 'Knowing who really competes is a judgement call, not a lookup.',
+      headline: 'Knowing who really competes is a judgment call, not a lookup.',
       intro:
         'Telling two products genuinely compete, rather than that their names sound alike, takes knowing active ingredient, therapeutic class, route, dosage form and regulatory pathway well enough to say so with confidence. Doing that by hand, per product, across a portfolio, does not scale.',
       points: [
         {
           title: 'Manual, inconsistent research',
-          text: 'Without a standard process, two analysts researching the same drug can land on two different competitor lists, based on general web research and personal judgement.',
+          text: 'Without a standard process, two analysts researching the same drug can land on two different competitor lists, based on general web research and personal judgment.',
         },
         {
           title: 'Disconnected sources of truth',
@@ -613,7 +613,7 @@ export const caseStudies = {
     architecture: {
       headline: 'Five parts, one pipeline.',
       intro:
-        'A single-page application, a proxy that handles authentication, a backend running the analysis workflow, a search-grounded model for research, and a warehouse holding both regulatory facts and the organisation’s own ground truth.',
+        'A single-page application, a proxy that handles authentication, a backend running the analysis workflow, a search-grounded model for research, and a warehouse holding both regulatory facts and the organization’s own ground truth.',
       layers: [
         {
           label: '1 · Interface',
@@ -673,7 +673,7 @@ export const caseStudies = {
         },
         {
           title: 'The analyst curates',
-          text: 'Checking or unchecking a row adds or removes that competitor from the organisation’s own list, live.',
+          text: 'Checking or unchecking a row adds or removes that competitor from the organization’s own list, live.',
         },
         {
           title: 'The result is cached locally',
@@ -715,7 +715,7 @@ export const caseStudies = {
     },
 
     roadmap: {
-      headline: 'Grouped the way a product owner would prioritise it.',
+      headline: 'Grouped the way a product owner would prioritize it.',
       intro: 'Trust and data quality first, then efficiency, then experience, then operations.',
       groups: [
         {
@@ -770,7 +770,7 @@ export const caseStudies = {
     ],
 
     atAGlance: {
-      headline: 'Seven agents, one personalised output per recipient.',
+      headline: 'Seven agents, one personalized output per recipient.',
       intro:
         'A poster is a puzzle of up to a dozen sections, and each recipient needs their own set of tracked codes. Instead of designers assembling each one by hand, creators pick a layout, upload the content, and the platform does the rest.',
       points: [
@@ -1025,7 +1025,7 @@ export const caseStudies = {
       ],
     },
 
-    closing: 'Pieces in. A personalised, trackable output out. People in control of what ships.',
+    closing: 'Pieces in. A personalized, trackable output out. People in control of what ships.',
   },
 
   /* ================================================================
@@ -1039,13 +1039,13 @@ export const caseStudies = {
       { number: '01', title: 'Source', detail: 'Candidate matched, recruiter assigned' },
       { number: '02', title: 'Submit', detail: 'Skill match, rate, availability logged' },
       { number: '03', title: 'Interview', detail: 'Client feedback, rounds, outcome' },
-      { number: '04', title: 'Analyse', detail: 'The KPI engine scores the funnel' },
+      { number: '04', title: 'Analyze', detail: 'The KPI engine scores the funnel' },
       { number: '05', title: 'Decide', detail: 'Manager escalates, reassigns or waits' },
     ],
 
     stats: [
-      { value: '7', label: 'fact and dimension tables modelling the recruitment lifecycle' },
-      { value: '50', unit: '+', label: 'standardised KPIs tracked across the funnel' },
+      { value: '7', label: 'fact and dimension tables modeling the recruitment lifecycle' },
+      { value: '50', unit: '+', label: 'standardized KPIs tracked across the funnel' },
       { value: '3', label: 'predictive models in production' },
       { value: '1', label: 'single source of truth for recruitment reporting' },
     ],
@@ -1056,7 +1056,7 @@ export const caseStudies = {
         'The operational platform ran the recruitment lifecycle. This layer sat on top of it, turning candidate, requirement, recruiter and client activity into KPIs that meant the same thing whoever was looking at them.',
       points: [
         {
-          title: 'Standardised definitions',
+          title: 'Standardized definitions',
           text: 'Time-to-fill, fill rate and every conversion ratio are computed once, centrally, and reused everywhere rather than redefined per report.',
         },
         {
@@ -1093,7 +1093,7 @@ export const caseStudies = {
     architecture: {
       headline: 'From a raw record to a placement decision.',
       intro:
-        'Operational data is extracted into an analytical warehouse, modelled as a star schema, validated for quality, measured through a central KPI layer and scored by machine-learning models, then delivered as role-scoped dashboards.',
+        'Operational data is extracted into an analytical warehouse, modeled as a star schema, validated for quality, measured through a central KPI layer and scored by machine-learning models, then delivered as role-scoped dashboards.',
       layers: [
         {
           label: '1 · Source and extract',
@@ -1138,7 +1138,7 @@ export const caseStudies = {
         {
           index: 'R',
           name: 'Recruiter dimension',
-          what: 'Productivity index, response time to a new requirement, fill rate, workload balance, submission quality, specialisation index, activity-to-outcome ratio, and performance against tenure cohort.',
+          what: 'Productivity index, response time to a new requirement, fill rate, workload balance, submission quality, specialization index, activity-to-outcome ratio, and performance against tenure cohort.',
           guardrailLabel: 'Grain',
           guardrail: 'Per recruiter, per period, so individual and team views reconcile.',
         },
@@ -1184,7 +1184,7 @@ export const caseStudies = {
 
     techStack: {
       groups: [
-        { title: 'Data', items: ['SQL', 'Star schema modelling', 'Scheduled extract and load'] },
+        { title: 'Data', items: ['SQL', 'Star schema modeling', 'Scheduled extract and load'] },
         { title: 'Semantic layer', items: ['Power BI', 'DAX', 'Row-Level Security'] },
         { title: 'Machine learning', items: ['Python', 'scikit-learn', 'pandas'] },
         { title: 'Delivery', items: ['Role-scoped dashboards', 'Daily refresh'] },
@@ -1283,7 +1283,7 @@ export const caseStudies = {
       { number: '01', title: 'Audit', detail: 'Content inventory, analytics, search' },
       { number: '02', title: 'Restructure', detail: 'IA built around visitor intent' },
       { number: '03', title: 'Design', detail: 'Design system, not page mockups' },
-      { number: '04', title: 'Build', detail: 'Componentised, CMS-driven' },
+      { number: '04', title: 'Build', detail: 'Componentized, CMS-driven' },
       { number: '05', title: 'Migrate', detail: 'Redirect map, launch, monitor' },
     ],
 
@@ -1305,7 +1305,7 @@ export const caseStudies = {
         },
         {
           title: 'A system, not a set of pages',
-          text: 'A componentised design system means new pages are assembled from reviewed parts rather than designed from scratch and drifting apart.',
+          text: 'A componentized design system means new pages are assembled from reviewed parts rather than designed from scratch and drifting apart.',
         },
         {
           title: 'Editable by the people who own the content',
@@ -1317,11 +1317,11 @@ export const caseStudies = {
     challengeDetail: {
       headline: 'Long-established firms accumulate a website rather than design one.',
       intro:
-        'Years of additions had produced a site where services were described in internal language, similar pages had drifted into different layouts, and the enquiry route was buried several clicks deep.',
+        'Years of additions had produced a site where services were described in internal language, similar pages had drifted into different layouts, and the inquiry route was buried several clicks deep.',
       points: [
         {
           title: 'Structure mirrored the org chart',
-          text: 'Navigation reflected how the firm was organised internally, which is rarely how a prospective client thinks about their problem.',
+          text: 'Navigation reflected how the firm was organized internally, which is rarely how a prospective client thinks about their problem.',
         },
         {
           title: 'Every change needed a developer',
@@ -1329,7 +1329,7 @@ export const caseStudies = {
         },
         {
           title: 'Layouts had drifted apart',
-          text: 'Pages built at different times by different people looked and behaved differently, which undermined exactly the impression of rigour the firm sells.',
+          text: 'Pages built at different times by different people looked and behaved differently, which undermined exactly the impression of rigor the firm sells.',
         },
         {
           title: 'No measurement to argue from',
@@ -1347,7 +1347,7 @@ export const caseStudies = {
         },
         {
           title: 'Design a system, not screens',
-          text: 'Typography, spacing, colour and a component library were defined first, so every page is assembled from parts that have already been reviewed.',
+          text: 'Typography, spacing, color and a component library were defined first, so every page is assembled from parts that have already been reviewed.',
         },
         {
           title: 'No stock photography',
@@ -1355,7 +1355,7 @@ export const caseStudies = {
         },
         {
           title: 'Instrument before launch',
-          text: 'Analytics events and the enquiry funnel were defined during the build, so the first month produced evidence rather than opinions.',
+          text: 'Analytics events and the inquiry funnel were defined during the build, so the first month produced evidence rather than opinions.',
         },
       ],
     },
@@ -1363,13 +1363,13 @@ export const caseStudies = {
     architecture: {
       headline: 'Content, composition and delivery, kept separate.',
       intro:
-        'A headless content model feeds a componentised frontend, which is statically rendered where possible and revalidated on publish. Enquiries go to a validated server endpoint, never to a mail client.',
+        'A headless content model feeds a componentized frontend, which is statically rendered where possible and revalidated on publish. Inquiries go to a validated server endpoint, never to a mail client.',
       layers: [
         {
           label: '1 · Content',
           nodes: [
             { title: 'Headless CMS', lines: ['Structured content types', 'not free-form pages'] },
-            { title: 'Design tokens', lines: ['Typography, spacing, colour', 'defined once'] },
+            { title: 'Design tokens', lines: ['Typography, spacing, color', 'defined once'] },
             { title: 'Media pipeline', lines: ['Responsive derivatives', 'generated on upload'] },
           ],
         },
@@ -1393,7 +1393,7 @@ export const caseStudies = {
         {
           label: '4 · Conversion and measurement',
           nodes: [
-            { title: 'Enquiry endpoint', lines: ['Server-side validation,', 'spam protection, rate limiting'] },
+            { title: 'Inquiry endpoint', lines: ['Server-side validation,', 'spam protection, rate limiting'] },
             { title: 'Analytics events', lines: ['CTA, funnel and abandonment', 'defined before launch'] },
           ],
         },
@@ -1407,7 +1407,7 @@ export const caseStudies = {
         {
           index: 'IA',
           name: 'Information architecture',
-          what: 'A content inventory, a rationalised sitemap and a navigation model built around visitor intent, agreed before design started.',
+          what: 'A content inventory, a rationalized sitemap and a navigation model built around visitor intent, agreed before design started.',
           guardrail: 'Signed off as a document, so later disagreements were about the map rather than about a page.',
         },
         {
@@ -1445,11 +1445,11 @@ export const caseStudies = {
         },
         {
           title: 'Performance budget',
-          text: 'Image optimisation, lazy loading and a limit on blocking scripts, enforced during the build rather than profiled afterwards.',
+          text: 'Image optimization, lazy loading and a limit on blocking scripts, enforced during the build rather than profiled afterward.',
         },
         {
           title: 'No mail-client dependency',
-          text: 'Enquiries post to a validated, rate-limited endpoint, so a visitor without a configured mail client can still reach the firm.',
+          text: 'Inquiries post to a validated, rate-limited endpoint, so a visitor without a configured mail client can still reach the firm.',
         },
       ],
     },
@@ -1484,7 +1484,7 @@ export const caseStudies = {
         {
           title: 'Conversion',
           items: [
-            'Progressive enquiry forms that adapt to the service selected',
+            'Progressive inquiry forms that adapt to the service selected',
             'Experimentation framework for headline and CTA variants',
           ],
         },
@@ -1505,7 +1505,7 @@ export const caseStudies = {
       { number: '01', title: 'Curate', detail: 'Which work earns a place' },
       { number: '02', title: 'Art direct', detail: 'Crops and sequence per project' },
       { number: '03', title: 'Compose', detail: 'Index and detail as one system' },
-      { number: '04', title: 'Optimise', detail: 'Asset pipeline, lazy loading' },
+      { number: '04', title: 'Optimize', detail: 'Asset pipeline, lazy loading' },
       { number: '05', title: 'Publish', detail: 'New work is a content change' },
     ],
 
@@ -1648,7 +1648,7 @@ export const caseStudies = {
    * ================================================================ */
   'customer-churn-prediction': {
     role: 'Product Owner & ML Solution Architect',
-    builtOn: 'Python, scikit-learn, feature pipeline, CRM integration',
+    builtOn: 'Python, scikit-learn, pandas, CRM integration',
 
     flow: [
       { number: '01', title: 'Define', detail: 'What churn means, and for whom' },
@@ -1668,7 +1668,7 @@ export const caseStudies = {
     atAGlance: {
       headline: 'A prediction nobody acts on is a report, not a product.',
       intro:
-        'The modelling was the straightforward part. The work that made it useful was deciding who would act on a score, how much notice they needed, and what they could realistically do with it.',
+        'The modeling was the straightforward part. The work that made it useful was deciding who would act on a score, how much notice they needed, and what they could realistically do with it.',
       points: [
         {
           title: 'Define churn first',
@@ -1710,7 +1710,7 @@ export const caseStudies = {
     },
 
     approachDetail: {
-      headline: 'Treat it as an operational problem, not a modelling exercise.',
+      headline: 'Treat it as an operational problem, not a modeling exercise.',
       points: [
         {
           title: 'Agree the target before the model',
@@ -1813,7 +1813,7 @@ export const caseStudies = {
       points: [
         {
           title: 'The model advises, the team decides',
-          text: 'No automated commercial action is triggered by a score. It prioritises attention; a person chooses the intervention.',
+          text: 'No automated commercial action is triggered by a score. It prioritizes attention; a person chooses the intervention.',
         },
         {
           title: 'Point-in-time correctness',
@@ -1832,7 +1832,7 @@ export const caseStudies = {
 
     techStack: {
       groups: [
-        { title: 'Modelling', items: ['Python', 'scikit-learn', 'pandas', 'NumPy'] },
+        { title: 'Modeling', items: ['Python', 'scikit-learn', 'pandas', 'NumPy'] },
         { title: 'Pipeline', items: ['Scheduled feature jobs', 'Point-in-time joins', 'Validation checks'] },
         { title: 'Delivery', items: ['CRM and success tooling integration', 'Segmented scored lists'] },
         { title: 'Operations', items: ['Versioned training runs', 'Drift monitoring', 'Scheduled retraining'] },
@@ -1845,8 +1845,8 @@ export const caseStudies = {
         {
           title: 'Model',
           items: [
-            'Uplift modelling, to predict who responds to an intervention rather than who is at risk',
-            'Survival modelling for time-to-churn rather than a fixed horizon',
+            'Uplift modeling, to predict who responds to an intervention rather than who is at risk',
+            'Survival modeling for time-to-churn rather than a fixed horizon',
           ],
         },
         {
@@ -1874,7 +1874,7 @@ export const caseStudies = {
    * ================================================================ */
   'image-classification-system': {
     role: 'Product Owner & ML Solution Architect',
-    builtOn: 'PyTorch, OpenCV, containerised edge deployment',
+    builtOn: 'PyTorch, OpenCV, containerized edge deployment',
 
     flow: [
       { number: '01', title: 'Capture', detail: 'Line imaging, consistent conditions' },
@@ -1892,13 +1892,13 @@ export const caseStudies = {
     ],
 
     atAGlance: {
-      headline: 'Built to assist inspectors, not to quietly replace their judgement.',
+      headline: 'Built to assist inspectors, not to quietly replace their judgment.',
       intro:
         'Defects are rare, which makes them both hard to catch and hard to gather training data for. A system designed around the average case would be accurate on paper and useless on the line.',
       points: [
         {
           title: 'Design for the rare case',
-          text: 'Optimised for recall on defects, because the cost of a missed defect and the cost of a false alarm are nothing like equal.',
+          text: 'Optimized for recall on defects, because the cost of a missed defect and the cost of a false alarm are nothing like equal.',
         },
         {
           title: 'Uncertainty escalates',
@@ -1918,7 +1918,7 @@ export const caseStudies = {
       points: [
         {
           title: 'Defects are rare',
-          text: 'Class imbalance means a model can score extremely well by predicting "fine" every time, which is exactly the wrong behaviour.',
+          text: 'Class imbalance means a model can score extremely well by predicting "fine" every time, which is exactly the wrong behavior.',
         },
         {
           title: 'Training data barely exists',
@@ -1936,7 +1936,7 @@ export const caseStudies = {
     },
 
     approachDetail: {
-      headline: 'Optimise for recall, escalate uncertainty, and record everything.',
+      headline: 'Optimize for recall, escalate uncertainty, and record everything.',
       points: [
         {
           title: 'Augment aggressively for scarce classes',
@@ -1948,11 +1948,11 @@ export const caseStudies = {
         },
         {
           title: 'Close the loop from day one',
-          text: 'Every inspector review becomes labelled training data, so the system improves from normal operation rather than from a separate labelling project.',
+          text: 'Every inspector review becomes labeled training data, so the system improves from normal operation rather than from a separate labeling project.',
         },
         {
           title: 'Deploy at the line',
-          text: 'Containerised at the edge, so a network problem slows nothing down and inspection does not depend on a round trip.',
+          text: 'Containerized at the edge, so a network problem slows nothing down and inspection does not depend on a round trip.',
         },
       ],
     },
@@ -1964,13 +1964,13 @@ export const caseStudies = {
           label: '1 · Capture',
           nodes: [
             { title: 'Line imaging', lines: ['Controlled lighting', 'and positioning'] },
-            { title: 'Pre-processing', lines: ['Normalisation and framing'] },
+            { title: 'Pre-processing', lines: ['Normalization and framing'] },
           ],
         },
         {
           label: '2 · Inference at the edge',
           emphasis: true,
-          note: 'Containerised, runs without a network round trip',
+          note: 'Containerized, runs without a network round trip',
           nodes: [
             { title: 'Classifier', lines: ['Convolutional model,', 'recall-weighted'] },
             { title: 'Confidence threshold', lines: ['Business-owned, not hard-coded'] },
@@ -1987,7 +1987,7 @@ export const caseStudies = {
         {
           label: '4 · Learning loop',
           nodes: [
-            { title: 'Reviewed case store', lines: ['Labelled data from normal operation'] },
+            { title: 'Reviewed case store', lines: ['Labeled data from normal operation'] },
             { title: 'Retraining pipeline', lines: ['Versioned, evaluated before promotion'] },
             { title: 'Model monitoring', lines: ['Drift and class balance over time'] },
           ],
@@ -2002,7 +2002,7 @@ export const caseStudies = {
         {
           index: '1',
           name: 'Augmentation strategy',
-          what: 'Targeted augmentation for scarce defect classes, modelled on the real variation seen on the line rather than generic transforms.',
+          what: 'Targeted augmentation for scarce defect classes, modeled on the real variation seen on the line rather than generic transforms.',
           guardrail: 'Augmentation is validated against held-out real defects, so it does not teach the model an artefact.',
         },
         {
@@ -2056,8 +2056,8 @@ export const caseStudies = {
 
     techStack: {
       groups: [
-        { title: 'Modelling', items: ['PyTorch', 'OpenCV', 'Python'] },
-        { title: 'Serving', items: ['Containerised edge deployment', 'REST inference API'] },
+        { title: 'Modeling', items: ['PyTorch', 'OpenCV', 'Python'] },
+        { title: 'Serving', items: ['Flask REST inference API', 'Docker', 'Edge deployment'] },
         { title: 'Data', items: ['Reviewed case store', 'Versioned training sets'] },
         { title: 'Operations', items: ['Retraining pipeline', 'Model monitoring', 'Decision audit trail'] },
       ],
@@ -2069,14 +2069,14 @@ export const caseStudies = {
         {
           title: 'Model',
           items: [
-            'Defect localisation, so the inspector sees where as well as whether',
+            'Defect localization, so the inspector sees where as well as whether',
             'Per-defect-class thresholds rather than one global boundary',
           ],
         },
         {
           title: 'Operations',
           items: [
-            'Active learning, prioritising the most informative cases for review',
+            'Active learning, prioritizing the most informative cases for review',
             'Automated evaluation and promotion gates in the retraining pipeline',
           ],
         },
@@ -2092,6 +2092,802 @@ export const caseStudies = {
 
     closing: 'Consistent inspection across a full shift, with a person on every uncertain call.',
   },
-}
 
-export const getCaseStudy = (slug) => caseStudies[slug]
+  /* ================================================================
+   * E-COMMERCE ANALYTICS PLATFORM
+   * ================================================================ */
+  'ecommerce-analytics-platform': {
+    builtOn: 'Python, Apache Airflow, PostgreSQL, Tableau',
+
+    flow: [
+      { number: '01', title: 'Define', detail: 'Order, customer and product' },
+      { number: '02', title: 'Ingest', detail: 'Storefront, payments, fulfillment' },
+      { number: '03', title: 'Model', detail: 'Governed warehouse' },
+      { number: '04', title: 'Check', detail: 'Quality rules and alerts' },
+      { number: '05', title: 'Report', detail: 'One set of trading numbers' },
+    ],
+
+    atAGlance: {
+      headline: 'One set of numbers, agreed before anyone builds a dashboard.',
+      intro:
+        'The retailer did not lack reports. It had too many, each reading a different system and each giving a slightly different answer to the same question.',
+      points: [
+        {
+          title: 'Definitions first',
+          text: 'What counts as an order, a returning customer or a sold unit was written down and agreed before a single pipeline was built.',
+        },
+        {
+          title: 'One semantic layer',
+          text: 'Every dashboard reads its metrics from the same governed definitions, so two reports cannot disagree about revenue.',
+        },
+        {
+          title: 'Failures are loud',
+          text: 'A pipeline that fails or loads suspicious data raises an alert before the morning trading meeting, not during it.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'Every meeting started with an argument about the numbers.',
+      intro:
+        'Storefront, payment provider, warehouse system and a shared spreadsheet each held part of the picture, and each was treated as the source of truth by someone.',
+      points: [
+        {
+          title: 'Four sources, four answers',
+          text: 'Refunds, partial shipments and canceled orders were handled differently in each system, so revenue and units never matched.',
+        },
+        {
+          title: 'Manual reconciliation every week',
+          text: 'An analyst spent part of every week lining the systems up by hand before any reporting could start.',
+        },
+        {
+          title: 'Silent data problems',
+          text: 'When a feed broke, nobody knew until a number looked wrong in a meeting.',
+        },
+      ],
+    },
+
+    approachDetail: {
+      headline: 'Model the business, then build the pipelines around it.',
+      points: [
+        {
+          title: 'Agree the vocabulary',
+          text: 'Trading, marketing and finance signed off one definition per metric, recorded alongside the model that computes it.',
+        },
+        {
+          title: 'Design around definitions, not systems',
+          text: 'Pipelines were shaped by what the business needed to measure, rather than by whichever system happened to hold the data.',
+        },
+        {
+          title: 'Keep history',
+          text: 'Daily snapshots make period-on-period comparison reliable even when source systems overwrite records.',
+        },
+      ],
+    },
+
+    architecture: {
+      headline: 'From four source systems to one trading view.',
+      layers: [
+        {
+          label: '1 · Sources',
+          nodes: [
+            { title: 'Storefront', lines: ['Orders, carts, customers'] },
+            { title: 'Payments', lines: ['Captures, refunds'] },
+            { title: 'Fulfillment', lines: ['Shipments, returns, stock'] },
+          ],
+        },
+        {
+          label: '2 · Pipelines',
+          emphasis: true,
+          nodes: [
+            { title: 'Scheduled ingestion', lines: ['Orchestrated with Airflow'] },
+            { title: 'Quality checks', lines: ['Completeness, freshness,', 'reconciliation'] },
+          ],
+        },
+        {
+          label: '3 · Warehouse',
+          nodes: [
+            { title: 'Governed model', lines: ['PostgreSQL, daily snapshots'] },
+            { title: 'Semantic layer', lines: ['One definition per metric'] },
+          ],
+        },
+        {
+          label: '4 · Reporting',
+          nodes: [
+            { title: 'Trading dashboard', lines: ['Daily decisions'] },
+            { title: 'Period comparison', lines: ['Week, month, season'] },
+          ],
+        },
+      ],
+    },
+
+    safeguards: {
+      eyebrow: 'Data quality',
+      headline: 'What stops a bad number reaching a meeting.',
+      points: [
+        {
+          title: 'Freshness checks',
+          text: 'Each source has an expected arrival window. A late feed is flagged rather than quietly reported as a slow day.',
+        },
+        {
+          title: 'Cross-system reconciliation',
+          text: 'Order totals are reconciled against payment captures on every load, so a mismatch surfaces at its source.',
+        },
+        {
+          title: 'Alerting on failure',
+          text: 'A failed or partial load notifies the data owner and marks affected dashboards as stale.',
+        },
+        {
+          title: 'Definitions under change control',
+          text: 'A metric definition changes through review, not through someone editing a dashboard formula.',
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Pipelines', items: ['Python', 'Apache Airflow'] },
+        { title: 'Warehouse', items: ['PostgreSQL', 'Daily snapshots', 'Semantic layer'] },
+        { title: 'Reporting', items: ['Tableau'] },
+        { title: 'Operations', items: ['Data quality checks', 'Failure alerting'] },
+      ],
+    },
+
+    closing: 'Trading meetings now start from the same numbers.',
+  },
+
+  /* ================================================================
+   * REAL-TIME DATA STREAMING PLATFORM
+   * ================================================================ */
+  'realtime-data-streaming-platform': {
+    builtOn: 'Kafka, Python, AWS, Docker',
+
+    flow: [
+      { number: '01', title: 'Publish', detail: 'Vehicles, depots, orders' },
+      { number: '02', title: 'Validate', detail: 'Schemas at the boundary' },
+      { number: '03', title: 'Process', detail: 'Rolling aggregates' },
+      { number: '04', title: 'Serve', detail: 'Live dispatch view' },
+      { number: '05', title: 'Store', detail: 'Warehouse and replay' },
+    ],
+
+    atAGlance: {
+      headline: 'Publish once, let every team read at its own pace.',
+      intro:
+        'Dispatch needed to know about a slipping delivery while it could still be rescued. Overnight batch reporting told them the next morning.',
+      points: [
+        {
+          title: 'An event backbone',
+          text: 'Vehicles, depots and the order system publish events once; dispatch, reporting and alerting each consume them independently.',
+        },
+        {
+          title: 'Contracts at the boundary',
+          text: 'Every event is validated against a versioned schema on arrival, so a malformed message cannot break the consumers downstream.',
+        },
+        {
+          title: 'Replay as a feature',
+          text: 'Retained history means recovery and backfill are a replay, not a reconstruction from logs.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'Batch reporting is fine for accounts and useless for dispatch.',
+      points: [
+        {
+          title: 'News arrived a day late',
+          text: 'Exceptions surfaced in the next morning’s report, long after the customer had noticed.',
+        },
+        {
+          title: 'Point-to-point integrations',
+          text: 'Every new consumer meant another direct connection into the systems producing the data.',
+        },
+        {
+          title: 'Recovery was manual',
+          text: 'When a job failed, rebuilding the missing period meant stitching data together by hand.',
+        },
+      ],
+    },
+
+    approachDetail: {
+      headline: 'Separate the backbone from the consumers.',
+      points: [
+        {
+          title: 'Events, not extracts',
+          text: 'Source systems publish what happened as it happens, rather than being queried on a schedule.',
+        },
+        {
+          title: 'Schema governance',
+          text: 'Schemas are versioned and checked at ingestion, so producers and consumers can change independently.',
+        },
+        {
+          title: 'Infrastructure as code',
+          text: 'Every environment is defined in code, so staging behaves like production.',
+        },
+      ],
+    },
+
+    architecture: {
+      headline: 'One stream, several consumers.',
+      layers: [
+        {
+          label: '1 · Producers',
+          nodes: [
+            { title: 'Vehicle telemetry', lines: ['Location, status'] },
+            { title: 'Depot systems', lines: ['Scans, loads'] },
+            { title: 'Order system', lines: ['Bookings, changes'] },
+          ],
+        },
+        {
+          label: '2 · Event backbone',
+          emphasis: true,
+          nodes: [
+            { title: 'Kafka topics', lines: ['Retained history'] },
+            { title: 'Schema validation', lines: ['Versioned contracts'] },
+          ],
+        },
+        {
+          label: '3 · Processing',
+          nodes: [{ title: 'Stream processing', lines: ['Rolling operational aggregates'] }],
+        },
+        {
+          label: '4 · Consumers',
+          nodes: [
+            { title: 'Live dispatch view', lines: ['Exceptions as they happen'] },
+            { title: 'Warehouse sink', lines: ['Reporting and history'] },
+            { title: 'Alerting', lines: ['Late and at-risk deliveries'] },
+          ],
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Streaming', items: ['Kafka', 'Schema validation', 'Stream processing'] },
+        { title: 'Services', items: ['Python', 'Docker'] },
+        { title: 'Cloud', items: ['AWS', 'Infrastructure as code'] },
+        { title: 'Operations', items: ['Monitoring and alerting', 'Replay and backfill'] },
+      ],
+    },
+
+    closing: 'Dispatch hears about a problem while it can still be fixed.',
+  },
+
+  /* ================================================================
+   * RECOMMENDATION ENGINE
+   * ================================================================ */
+  'recommendation-engine': {
+    builtOn: 'Python, TensorFlow, Redis, FastAPI',
+
+    flow: [
+      { number: '01', title: 'Signals', detail: 'Behavior and attributes' },
+      { number: '02', title: 'Candidates', detail: 'Cached generation' },
+      { number: '03', title: 'Rank', detail: 'Hybrid model' },
+      { number: '04', title: 'Rules', detail: 'Merchandiser overrides' },
+      { number: '05', title: 'Test', detail: 'Controlled experiments' },
+    ],
+
+    atAGlance: {
+      headline: 'Recommendations that help discovery, not just repeat the bestsellers.',
+      intro:
+        'Generic “customers also bought” strips kept recommending what was already popular. New products and slower lines never got seen.',
+      points: [
+        {
+          title: 'Behavior plus attributes',
+          text: 'Blending what customers do with what products are gives the model something sensible to say about items with little history.',
+        },
+        {
+          title: 'Merchandisers stay in charge',
+          text: 'A rules layer above the model lets the team pin, exclude and boost products without retraining anything.',
+        },
+        {
+          title: 'Evidence before rollout',
+          text: 'Ranking strategies are compared in controlled experiments rather than swapped on instinct.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'A large catalog is only an asset if people can find their way through it.',
+      points: [
+        {
+          title: 'Popularity bias',
+          text: 'Recommendations based on co-purchase alone kept promoting the same small set of products.',
+        },
+        {
+          title: 'Cold start',
+          text: 'New listings had no history, so the existing approach never recommended them.',
+        },
+        {
+          title: 'No commercial control',
+          text: 'The merchandising team could not steer what appeared, even for stock that needed to move.',
+        },
+      ],
+    },
+
+    architecture: {
+      headline: 'Candidates, ranking and rules as separate stages.',
+      layers: [
+        {
+          label: '1 · Signals',
+          nodes: [
+            { title: 'Behavior', lines: ['Views, carts, purchases'] },
+            { title: 'Catalog', lines: ['Attributes, categories'] },
+          ],
+        },
+        {
+          label: '2 · Candidate generation',
+          nodes: [{ title: 'Cached candidate sets', lines: ['Refreshed on a schedule'] }],
+        },
+        {
+          label: '3 · Ranking',
+          emphasis: true,
+          nodes: [
+            { title: 'Hybrid ranker', lines: ['Collaborative and', 'content-based'] },
+            { title: 'Business rules', lines: ['Pin, exclude, boost'] },
+          ],
+        },
+        {
+          label: '4 · Serving',
+          nodes: [
+            { title: 'Low-latency API', lines: ['FastAPI with Redis cache'] },
+            { title: 'Experiments', lines: ['Strategy comparison'] },
+          ],
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Modeling', items: ['Python', 'TensorFlow'] },
+        { title: 'Serving', items: ['FastAPI', 'Redis'] },
+        { title: 'Control', items: ['Merchandiser rules layer', 'Experiment framework'] },
+      ],
+    },
+
+    closing: 'Customers find more of the catalog, and the team still decides what matters.',
+  },
+
+  /* ================================================================
+   * SAAS DASHBOARD APPLICATION
+   * ================================================================ */
+  'saas-dashboard-application': {
+    builtOn: 'React, Node.js, MongoDB, Stripe',
+
+    flow: [
+      { number: '01', title: 'Tenancy', detail: 'Accounts and data isolation' },
+      { number: '02', title: 'Roles', detail: 'Teams and permissions' },
+      { number: '03', title: 'Billing', detail: 'Subscription lifecycle' },
+      { number: '04', title: 'Dashboard', detail: 'In-product analytics' },
+      { number: '05', title: 'API', detail: 'Documented integrations' },
+    ],
+
+    atAGlance: {
+      headline: 'Foundations first, so features stay fast later.',
+      intro:
+        'The interesting part of a SaaS product is rarely the part that takes the time. Accounts, permissions and billing edge cases do, and they are painful to retrofit.',
+      points: [
+        {
+          title: 'Multi-tenant from day one',
+          text: 'Every record belongs to an account, and isolation is enforced in the data layer rather than remembered in each feature.',
+        },
+        {
+          title: 'One subscription lifecycle',
+          text: 'Trials, upgrades, downgrades, failed payments and cancellations all move through the same states.',
+        },
+        {
+          title: 'A dashboard worth returning to',
+          text: 'In-product analytics answer the questions customers were exporting spreadsheets to answer.',
+        },
+      ],
+    },
+
+    approachDetail: {
+      headline: 'Settle who can see what before building what they see.',
+      points: [
+        {
+          title: 'Permission model as a contract',
+          text: 'Roles and their permissions were defined and tested before feature work, so new screens inherit them automatically.',
+        },
+        {
+          title: 'Billing as state, not as webhooks',
+          text: 'Payment events update a single subscription state that the product reads, instead of features reacting to payment events directly.',
+        },
+        {
+          title: 'API designed alongside the UI',
+          text: 'The interface uses the same documented API customers integrate against, which keeps it honest.',
+        },
+      ],
+    },
+
+    architecture: {
+      headline: 'Account, product and billing layers.',
+      layers: [
+        {
+          label: '1 · Identity and tenancy',
+          nodes: [
+            { title: 'Accounts', lines: ['Isolation in the data layer'] },
+            { title: 'Teams and roles', lines: ['Invitations, permissions'] },
+          ],
+        },
+        {
+          label: '2 · Product',
+          emphasis: true,
+          nodes: [
+            { title: 'Web application', lines: ['React'] },
+            { title: 'API', lines: ['Node.js, documented'] },
+          ],
+        },
+        {
+          label: '3 · Billing',
+          nodes: [{ title: 'Subscription lifecycle', lines: ['Stripe, dunning, plan changes'] }],
+        },
+        {
+          label: '4 · Data',
+          nodes: [
+            { title: 'Application data', lines: ['MongoDB'] },
+            { title: 'Usage analytics', lines: ['In-product dashboard'] },
+          ],
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Frontend', items: ['React'] },
+        { title: 'Backend', items: ['Node.js', 'REST API'] },
+        { title: 'Data', items: ['MongoDB'] },
+        { title: 'Billing', items: ['Stripe', 'Subscription webhooks'] },
+      ],
+    },
+
+    closing: 'The foundations were settled once, so the product can keep growing on top of them.',
+  },
+
+  /* ================================================================
+   * SECTOR CASE STUDIES — drafts, published: false in projects.js
+   * ================================================================ */
+  'lending-operations-portal': {
+    builtOn: 'React, Node.js, PostgreSQL, Power BI',
+
+    flow: [
+      { number: '01', title: 'Intake', detail: 'Applications and documents' },
+      { number: '02', title: 'Verify', detail: 'Checklists and validation' },
+      { number: '03', title: 'Approve', detail: 'Maker-checker workflow' },
+      { number: '04', title: 'Audit', detail: 'Every action recorded' },
+      { number: '05', title: 'Report', detail: 'Pipeline and exceptions' },
+    ],
+
+    atAGlance: {
+      headline: 'Auditability designed in, not added after the first review.',
+      intro:
+        'Loan applications moved between email, shared folders and spreadsheets. Each step worked, but nobody could show who approved what, when, and on which version of the documents.',
+      points: [
+        {
+          title: 'One place for every application',
+          text: 'Intake, document collection, verification and approval run through a single portal with a clear status at every step.',
+        },
+        {
+          title: 'Maker-checker by default',
+          text: 'The person who prepares a decision can never be the person who approves it. The workflow enforces it rather than relying on policy.',
+        },
+        {
+          title: 'An audit trail that answers questions',
+          text: 'Every change, approval and document version is recorded with who, when and why.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'In financial services the constraints are the design.',
+      points: [
+        {
+          title: 'Work spread across tools',
+          text: 'Email threads, shared folders and trackers each held part of an application’s history.',
+        },
+        {
+          title: 'Access was hard to govern',
+          text: 'Folder permissions did not match roles, so sensitive documents were visible to more people than necessary.',
+        },
+        {
+          title: 'Reporting was retrospective',
+          text: 'Pipeline and turnaround reports were compiled by hand at month end.',
+        },
+      ],
+    },
+
+    architecture: {
+      headline: 'Workflow, documents and reporting on one governed record.',
+      layers: [
+        {
+          label: '1 · Intake',
+          nodes: [
+            { title: 'Application forms', lines: ['Validated on entry'] },
+            { title: 'Document upload', lines: ['Checklist per product'] },
+          ],
+        },
+        {
+          label: '2 · Workflow',
+          emphasis: true,
+          nodes: [
+            { title: 'Verification', lines: ['Checklist and exceptions'] },
+            { title: 'Maker-checker', lines: ['Separate preparer', 'and approver'] },
+          ],
+        },
+        {
+          label: '3 · Record',
+          nodes: [
+            { title: 'Application record', lines: ['PostgreSQL'] },
+            { title: 'Audit log', lines: ['Append-only history'] },
+          ],
+        },
+        {
+          label: '4 · Reporting',
+          nodes: [{ title: 'Operations reporting', lines: ['Pipeline, aging, exceptions'] }],
+        },
+      ],
+    },
+
+    safeguards: {
+      eyebrow: 'Controls',
+      headline: 'What the system enforces.',
+      points: [
+        { title: 'Role-based access', text: 'Users see only the applications and documents their role requires.' },
+        { title: 'Segregation of duties', text: 'Preparer and approver are always different people.' },
+        { title: 'Immutable history', text: 'Audit entries are appended, never edited.' },
+        { title: 'Document versioning', text: 'An approval is tied to the exact document versions it was based on.' },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Application', items: ['React', 'Node.js', 'REST API'] },
+        { title: 'Data', items: ['PostgreSQL', 'Append-only audit log', 'Document storage'] },
+        { title: 'Reporting', items: ['Power BI'] },
+        { title: 'Security', items: ['Role-based access', 'Single sign-on'] },
+      ],
+    },
+
+    closing: 'Every decision can be traced to a person, a time and a document.',
+  },
+
+  'property-listings-platform': {
+    builtOn: 'Next.js, headless CMS, PostgreSQL',
+
+    flow: [
+      { number: '01', title: 'List', detail: 'Structured property data' },
+      { number: '02', title: 'Search', detail: 'Filters and map' },
+      { number: '03', title: 'Compare', detail: 'Shortlist side by side' },
+      { number: '04', title: 'Inquire', detail: 'Routed to the right agent' },
+      { number: '05', title: 'Follow up', detail: 'Saved searches and alerts' },
+    ],
+
+    atAGlance: {
+      headline: 'Property decisions are slow, visual and comparative. The site had to be too.',
+      intro:
+        'Listings were uploaded as PDFs and images, inquiries arrived in one shared inbox, and buyers had no way to keep a shortlist between visits.',
+      points: [
+        {
+          title: 'Structured listings',
+          text: 'Every property has the same structured fields, so search, filters and comparison work reliably.',
+        },
+        {
+          title: 'A shortlist that lasts',
+          text: 'Buyers save properties and searches, and come back to them over the months a decision takes.',
+        },
+        {
+          title: 'Inquiries reach the right agent',
+          text: 'Each inquiry is routed to the agent responsible for that property, with the listing attached.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'Great photography, buried in PDFs.',
+      points: [
+        { title: 'Unsearchable listings', text: 'Key details lived inside documents, so buyers could not filter by what mattered to them.' },
+        { title: 'One inbox for everything', text: 'Inquiries waited in a shared mailbox until someone forwarded them.' },
+        { title: 'No reason to return', text: 'Nothing remembered what a buyer had already looked at.' },
+      ],
+    },
+
+    architecture: {
+      headline: 'Content, search and inquiries.',
+      layers: [
+        {
+          label: '1 · Content',
+          nodes: [
+            { title: 'Listing model', lines: ['Headless CMS'] },
+            { title: 'Media pipeline', lines: ['Responsive image sizes'] },
+          ],
+        },
+        {
+          label: '2 · Discovery',
+          emphasis: true,
+          nodes: [
+            { title: 'Search and filters', lines: ['Location, price, type'] },
+            { title: 'Compare', lines: ['Side-by-side shortlist'] },
+          ],
+        },
+        {
+          label: '3 · Engagement',
+          nodes: [
+            { title: 'Saved searches', lines: ['Email alerts'] },
+            { title: 'Inquiry routing', lines: ['Agent per listing'] },
+          ],
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Frontend', items: ['Next.js', 'React', 'Tailwind CSS'] },
+        { title: 'Content', items: ['Headless CMS', 'Image optimization'] },
+        { title: 'Data', items: ['PostgreSQL', 'Search index'] },
+        { title: 'Engagement', items: ['Email alerts', 'Inquiry routing'] },
+      ],
+    },
+
+    closing: 'Buyers find, compare and return. Agents hear about it straight away.',
+  },
+
+  'learning-platform': {
+    builtOn: 'React, Node.js, PostgreSQL',
+
+    flow: [
+      { number: '01', title: 'Catalog', detail: 'Courses and cohorts' },
+      { number: '02', title: 'Enroll', detail: 'Self-service sign-up' },
+      { number: '03', title: 'Learn', detail: 'Lessons and assessments' },
+      { number: '04', title: 'Track', detail: 'Progress for educators' },
+      { number: '05', title: 'Certify', detail: 'Completion records' },
+    ],
+
+    atAGlance: {
+      headline: 'Three audiences, one system, three different views.',
+      intro:
+        'Learners, educators and administrators each needed something different from the same course data, and were getting it from three separate tools.',
+      points: [
+        {
+          title: 'Learner view',
+          text: 'A clear path through each course, with progress saved and assessments in context.',
+        },
+        {
+          title: 'Educator view',
+          text: 'Cohort progress at a glance, with the learners who need attention surfaced rather than searched for.',
+        },
+        {
+          title: 'Administrator view',
+          text: 'Enrollment, scheduling and completion records managed in one place.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'Course content, enrollment and records lived apart.',
+      points: [
+        { title: 'Manual enrollment', text: 'Sign-ups arrived by form and were entered by hand.' },
+        { title: 'Invisible progress', text: 'Educators found out a learner had fallen behind at the end of the course.' },
+        { title: 'Scattered records', text: 'Completion evidence had to be assembled from several places.' },
+      ],
+    },
+
+    architecture: {
+      headline: 'One course model, role-based views.',
+      layers: [
+        {
+          label: '1 · Content',
+          nodes: [
+            { title: 'Course catalog', lines: ['Modules, lessons, cohorts'] },
+            { title: 'Assessments', lines: ['Quizzes and submissions'] },
+          ],
+        },
+        {
+          label: '2 · Platform',
+          emphasis: true,
+          nodes: [
+            { title: 'Enrollment', lines: ['Self-service, approvals'] },
+            { title: 'Progress engine', lines: ['Saved per learner'] },
+          ],
+        },
+        {
+          label: '3 · Views',
+          nodes: [
+            { title: 'Learner', lines: ['Course path'] },
+            { title: 'Educator', lines: ['Cohort progress'] },
+            { title: 'Administrator', lines: ['Records and scheduling'] },
+          ],
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Frontend', items: ['React', 'Accessible components'] },
+        { title: 'Backend', items: ['Node.js', 'REST API'] },
+        { title: 'Data', items: ['PostgreSQL', 'Progress tracking'] },
+        { title: 'Operations', items: ['Email notifications', 'Role-based access'] },
+      ],
+    },
+
+    closing: 'Everyone sees the same course, from the angle they need.',
+  },
+
+  'hotel-direct-booking': {
+    builtOn: 'Next.js, booking engine integration, payment gateway',
+
+    flow: [
+      { number: '01', title: 'Inspire', detail: 'Image-led property pages' },
+      { number: '02', title: 'Search', detail: 'Dates, guests, rooms' },
+      { number: '03', title: 'Choose', detail: 'Rooms and offers' },
+      { number: '04', title: 'Pay', detail: 'Secure checkout' },
+      { number: '05', title: 'Confirm', detail: 'Instant confirmation' },
+    ],
+
+    atAGlance: {
+      headline: 'The experience starts before arrival, and so does the booking.',
+      intro:
+        'A group of properties relied on third-party booking sites for most reservations. The brand website looked dated and handed guests off to a generic booking engine at the last step.',
+      points: [
+        {
+          title: 'One journey, start to finish',
+          text: 'Availability, rooms, offers and payment sit inside the brand experience rather than behind a hand-off.',
+        },
+        {
+          title: 'Built for several properties',
+          text: 'A shared structure lets each property keep its own character while the group manages content once.',
+        },
+        {
+          title: 'Reasons to book direct',
+          text: 'Direct-only offers and clear inclusions are shown at the moment a guest compares prices.',
+        },
+      ],
+    },
+
+    challengeDetail: {
+      headline: 'Guests loved the photos, then left to book elsewhere.',
+      points: [
+        { title: 'A jarring hand-off', text: 'Clicking “Book” sent guests to a page that looked nothing like the brand.' },
+        { title: 'Content managed per property', text: 'Each property’s pages were updated separately, so offers and details drifted.' },
+        { title: 'Slow on mobile', text: 'Large images and heavy scripts made the site slow exactly where most guests browse.' },
+      ],
+    },
+
+    architecture: {
+      headline: 'Brand content and booking in one flow.',
+      layers: [
+        {
+          label: '1 · Content',
+          nodes: [
+            { title: 'Property pages', lines: ['Shared structure, own style'] },
+            { title: 'Offers', lines: ['Managed once, per property'] },
+          ],
+        },
+        {
+          label: '2 · Booking',
+          emphasis: true,
+          nodes: [
+            { title: 'Availability and rates', lines: ['Booking engine integration'] },
+            { title: 'Checkout', lines: ['Payment gateway'] },
+          ],
+        },
+        {
+          label: '3 · After booking',
+          nodes: [
+            { title: 'Confirmation', lines: ['Email and reference'] },
+            { title: 'Analytics', lines: ['Search-to-booking funnel'] },
+          ],
+        },
+      ],
+    },
+
+    techStack: {
+      groups: [
+        { title: 'Frontend', items: ['Next.js', 'React', 'Image optimization'] },
+        { title: 'Booking', items: ['Booking engine API', 'Payment gateway'] },
+        { title: 'Content', items: ['Headless CMS', 'Multi-property structure'] },
+        { title: 'Measurement', items: ['Booking funnel analytics'] },
+      ],
+    },
+
+    closing: 'Guests who fall for the property can book it without leaving.',
+  },
+}

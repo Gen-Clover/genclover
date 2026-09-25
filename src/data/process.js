@@ -120,7 +120,7 @@ export const differentiators = [
   {
     title: 'Security and performance built in',
     description:
-      'Handled during the build, verified before launch, and monitored afterwards, rather than added once something goes wrong.',
+      'Handled during the build, verified before launch, and monitored afterward, rather than added once something goes wrong.',
   },
   {
     title: 'Clear, honest communication',

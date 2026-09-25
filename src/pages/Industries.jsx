@@ -21,7 +21,7 @@ const Industries = () => {
       <PageHero
         eyebrow="Industries"
         title="Who we build for."
-        description="Industries describe who the work is for, not what it is. A single project can serve one sector while drawing on several services."
+        description="Every sector brings its own constraints, vocabulary and definition of done. Here is how we approach the ones we work in most."
       >
         <Button to={routes.startProject} size="lg">
           Start a Project
@@ -77,7 +77,7 @@ const Industries = () => {
         </motion.ul>
 
         <p className="mt-10 max-w-prose text-sm leading-relaxed text-silver-500">
-          Working in a sector that is not listed? The engineering discipline does not change - get
+          Working in a sector that is not listed? The engineering discipline does not change, so get
           in touch and tell us about the constraints you work under.
         </p>
       </Section>

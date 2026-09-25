@@ -18,8 +18,8 @@ const SelectedWork = () => {
       <SectionHeader
         index="02"
         eyebrow="Selected Work"
-        title="Work that shows how we think."
-        description="A selection of projects and concepts across websites, applications, commerce, AI and data. Each one is labelled with its real status."
+        title="Work we have delivered."
+        description="AI, data, application and website projects, each with a full case study of the problem, the approach and how the system was built."
         action={
           <Button to={routes.work} variant="secondary" size="md">
             View all work

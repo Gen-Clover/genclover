@@ -14,7 +14,7 @@ import { useMotionVariants, revealOnce } from '../lib/motion'
 
 /**
  * Industry landing page. (Spec §13)
- * Relevant capabilities plus related concept work. No fabricated sector claims.
+ * Relevant capabilities plus related work. No fabricated sector claims.
  */
 const IndustryDetail = () => {
   const { slug } = useParams()
@@ -22,7 +22,7 @@ const IndustryDetail = () => {
 
   usePageMeta({
     title: industry ? `${industry.label} | Gen Clover` : undefined,
-    description: industry?.description,
+    description: industry?.seoDescription ?? industry?.description,
     path: industry ? `${routes.industries}/${industry.id}` : undefined,
   })
 

@@ -2,7 +2,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Button from '../ui/Button'
 import { CloverMark } from '../brand/Logo'
-import { routes } from '../../data/site'
+import { routes, site } from '../../data/site'
 import { useMotionVariants } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
 
@@ -66,7 +66,7 @@ const Hero = () => {
         >
           <motion.div variants={v.fadeUp} className="flex items-center gap-3">
             <span className="h-px w-8 bg-accent-600" aria-hidden="true" />
-            <p className="eyebrow">Digital Products • Technology • Innovation</p>
+            <p className="eyebrow">{site.domains}</p>
           </motion.div>
 
           <motion.h1

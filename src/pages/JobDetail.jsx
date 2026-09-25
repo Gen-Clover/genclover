@@ -14,8 +14,8 @@ const JobDetail = () => {
   const job = jobs.find((j) => String(j.id) === String(id))
 
   usePageMeta({
-    title: job ? `${job.title} | Careers at Gen Clover` : undefined,
-    description: job?.description?.slice(0, 180),
+    title: job ? `${job.title}, Careers | Gen Clover` : undefined,
+    description: job?.metaDescription,
     path: job ? `${routes.careers}/${job.id}` : undefined,
     // A closed role should not keep attracting search traffic.
     noIndex: job?.status === 'closed',
@@ -28,7 +28,7 @@ const JobDetail = () => {
   const Icon = job.icon
   const isClosed = job.status === 'closed'
   const applyHref = `mailto:${contact.email}?subject=${encodeURIComponent(
-    `Application - ${job.title}`
+    `Application: ${job.title}`
   )}`
 
   return (
@@ -136,7 +136,7 @@ const JobDetail = () => {
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-silver-400">
                   We are no longer accepting applications for this position. You are still welcome
-                  to send a general application - we keep strong ones on file.
+                  to send a general application; we keep strong ones on file.
                 </p>
                 <Button
                   href={`mailto:${contact.email}?subject=${encodeURIComponent('General application')}`}

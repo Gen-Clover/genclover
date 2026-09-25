@@ -56,7 +56,7 @@ If you **rename** a service, keep the old slug alive by adding it to that servic
 Append to `projects` in **`src/data/projects.js`**. For client work you must set:
 
 ```js
-status: 'client',            // → renders the "Client Project" badge
+status: 'client',
 clientName: 'Acme Ltd',      // only with written permission
 outcomes: ['Reduced…'],      // verified figures only — see below
 permissionsApproved: true,   // confirms the client approved publication
@@ -68,21 +68,12 @@ published: true,             // the last switch you flip
 
 Leave `published: false` while drafting; only `published: true` items are ever rendered.
 
-### Add a concept project
+### Draft projects
 
-Identical, except:
-
-```js
-status: 'concept',           // → renders the "Gen Clover Concept" badge
-clientName: null,
-permissionsApproved: false,
-outcomes: ['Conceptual outcome - designed to …'],
-```
-
-The status badge and the disclosure banner on the case-study page are driven by `status`,
-so a concept can never accidentally present as delivered client work (§7.2).
-
-Use the `conceptual()` helper at the top of the file to keep outcome wording consistent.
+A project with `published: false` never renders anywhere. The four sector case studies
+at the end of `projects.js` (financial services, real estate, education, hospitality)
+are drafts: publish one only after the Product Owner confirms it describes a real
+engagement and corrects the details to match.
 
 ### Add an industry
 
@@ -93,8 +84,9 @@ available as a tag but gets no landing page.
 ### Add project imagery
 
 Drop the file in `public/work/` and set `heroImage: '/work/your-file.jpg'` on the project.
-Until then `ProjectVisual` renders a deterministic brand graphic — deliberately obviously a
-graphic, never a fake screenshot (§4).
+Until then `ProjectVisual` draws the project's delivery flow as a diagram, from the `flow`
+steps in its case study (`caseStudies.js`). A project with no flow gets a plain brand panel.
+Never use stock photography or a fabricated interface mockup (§4).
 
 ---
 
@@ -102,7 +94,8 @@ graphic, never a fake screenshot (§4).
 
 These are not style preferences. They were the reason for this rebuild.
 
-- **No invented client names.** Concepts are labelled as concepts, everywhere.
+- **No invented client names.** Clients are named only with written permission.
+- **No invented projects.** Every published project must be real delivered work.
 - **No unverified numbers.** The previous site published *92% accuracy, 35% churn
   reduction, 40% conversion increase, 60% engagement, 25% sales, 45% cost reduction, 96%
   classification accuracy*, *30+ US-based clients* and *98% satisfaction*, none of which
@@ -164,7 +157,6 @@ src/
     industries.js        Industry page copy + enquiry form options
     process.js           How We Work stages, care plans, differentiators
     proof.js             Testimonials + verified stats (both intentionally empty)
-    insights.js          Articles (intentionally empty)
     site.js              Contact details, routes, navigation model
     jobs.js              Careers listings
   lib/
@@ -173,11 +165,12 @@ src/
     motion.js            Shared variants, all reduced-motion aware (§4.1)
     theme.jsx            Dark/light state — defaults to dark, ignores the OS setting
     leadSchema.js        The 8-step brief: steps + validation (§9)
+    intlOptions.js       Currency list (Intl) and phone country codes (libphonenumber-js)
   components/
     brand/               CloverMark + three-bar-E Wordmark
     ui/                  Button, Badge/StatusBadge, Section, ProjectVisual, ThemeToggle
     layout/              Header, Footer
-    home/                The nine homepage sections, in spec order (§5.2)
+    home/                The homepage sections, in spec order (§5.2)
     process/             ProcessRail + ProcessTimeline — the animated Discover→Grow flow
     work/                WorkCard, WorkFilters
     form/                ProjectBriefForm + field primitives
@@ -202,6 +195,10 @@ instead — it never silently drops a lead.
 
 Never commit these. `.env.example` documents them; `.env*` is gitignored.
 
+The brief collects an optional budget as any ISO currency plus an approximate amount, and a
+required phone number with a searchable country calling code. Both are validated again in
+`api/lead.js` (phone numbers with `libphonenumber-js`).
+
 The lead record is shaped for the future Commercial Engine (§24) — one primary service
 now, with `additionalServices[]` already present for later.
 
@@ -209,23 +206,26 @@ now, with `additionalServices[]` already present for later.
 
 ## Outstanding — needs the Product Owner
 
-- [ ] **Privacy notice** — `src/pages/Privacy.jsx` is a working draft describing what the
-      site actually does. Legal wording, registered entity name and retention period must
-      be approved **before production lead collection** (§19). The page shows a review
-      banner until then.
-- [ ] **Phone number** — `contact.phone` in `site.js` is `null` (spec records it as N/A).
-      The footer omits the row until it is set.
-- [ ] **Social accounts** — `socialLinks` in `site.js` is empty. Real accounts only (§19).
-- [ ] **Project screenshots** and approved concept visuals (§19).
-- [ ] **Concept project names** — the current nine are carried over from the previous site,
-      relabelled as concepts. The spec's proposed set (Aurelia Capital, Northstar
-      Properties, …) needs approval before use (§7.5).
-- [ ] **Insights content** — page renders an honest empty state until `insights.js` has
-      entries.
+- [ ] **Legal review** of the Privacy Notice and Terms of Use (`src/pages/Privacy.jsx`,
+      `src/pages/Terms.jsx`). Both are written in plain language from what the site does;
+      neither has been reviewed by a lawyer.
+- [ ] **Phone number** — `contact.phone` in `site.js` is `null`; the site is email-only for now.
+- [ ] **Project screenshots** — optional; each project currently shows its flow diagram.
+- [ ] **Sector drafts** — confirm or discard the four unpublished sector projects.
 - [ ] **Verified testimonials / metrics** — see `proof.js`.
 - [ ] **Analytics provider** — `lib/analytics.js` is wired and no-ops until a provider is
       installed. Events fire for CTA clicks, work cards, service CTAs, and form
       start/step/abandon/submit.
+
+## SEO files
+
+- `public/robots.txt` points at the sitemap.
+- `npm run build` writes `dist/sitemap.xml` from the data files
+  (`scripts/generate-sitemap.mjs`), so new services, projects and industry pages are
+  included automatically.
+- `vercel.json` sends `X-Robots-Tag: noindex` on `dev.genclover.com` so the dev site is
+  never indexed.
+- Organization structured data (JSON-LD) is in `index.html`.
 
 ---
 

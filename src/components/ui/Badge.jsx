@@ -12,7 +12,7 @@ export const Badge = ({ children, className = '' }) => (
 /**
  * Project status badge. (Spec §7.2 / §21)
  * Every published Work item must carry one of these, and the wording comes from
- * the taxonomy — never from a component — so a concept can never be relabelled
+ * the taxonomy — never from a component — so a concept can never be relabeled
  * as client work by accident.
  */
 /**

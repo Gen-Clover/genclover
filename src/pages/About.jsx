@@ -27,7 +27,7 @@ const About = () => {
       <PageHero
         eyebrow="About"
         title="A technology and digital product company."
-        description="Gen Clover builds practical, high-quality digital experiences and solutions for modern businesses. We would rather do a smaller number of things properly than claim a longer list."
+        description="Gen Clover builds practical, high-quality websites, applications, AI and data solutions for modern businesses, and stays involved after launch."
       >
         <Button to={routes.startProject} size="lg">
           Start a Project
@@ -57,7 +57,7 @@ const About = () => {
           <div className="space-y-6 text-base leading-relaxed text-silver-400">
             <p>
               <span className="font-medium text-silver-200">Gen</span> stands for generation,
-              generative, and the generation of intelligence - which is a fair description of a
+              generative, and the generation of intelligence, which is a fair description of a
               company working in AI, software, automation and next-generation technology.
             </p>
             <p>
@@ -99,7 +99,7 @@ const About = () => {
         <SectionHeader
           eyebrow="How we operate"
           title="What you can expect from working with us."
-          description="These are commitments about process and engineering practice - things we control and can be held to."
+          description="These are commitments about process and engineering practice: things we control and can be held to."
         />
         <motion.ul
           variants={v.stagger(0.06)}
