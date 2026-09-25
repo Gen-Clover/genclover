@@ -8,7 +8,7 @@ import { routes } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
 
-/** 03 — What We Do. Introduces the eight service domains. (Spec §5.2, §6) */
+/** 04 — What We Do. Every service, as cards. (Spec §5.2, §6) */
 const WhatWeDo = () => {
   const v = useMotionVariants()
 
@@ -17,8 +17,8 @@ const WhatWeDo = () => {
       <SectionHeader
         index="04"
         eyebrow="What We Do"
-        title="Eight services, one way of working."
-        description="From websites and web applications to AI, data platforms, cloud infrastructure and search, delivered by one team with one process."
+        title="Everything a digital product needs, under one roof."
+        description="Websites, applications, commerce, AI, data, infrastructure and search, delivered by one team with one way of working."
         action={
           <Button to={routes.services} variant="secondary" size="md">
             All services

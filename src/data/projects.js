@@ -875,8 +875,18 @@ export const getProjectsByService = (serviceSlug) =>
 export const getProjectsByIndustry = (industryId) =>
   publishedProjects.filter((p) => p.industry === industryId)
 
-/** Homepage Selected Work — 6–8 items. (Spec §20) */
+/** Featured delivered work (footer links, related lists). */
 export const featuredProjects = publishedProjects.filter((p) => p.featured).slice(0, 8)
+
+/** Homepage Selected Work: the three flagship projects, in this order. */
+const HOMEPAGE_SLUGS = [
+  'ai-log-monitoring-observability-platform',
+  'data-bi-modernization',
+  'drug-competitor-identification',
+]
+export const homepageProjects = HOMEPAGE_SLUGS.map((slug) =>
+  publishedProjects.find((p) => p.slug === slug)
+).filter(Boolean)
 
 /** Resolve the display labels a card or detail page needs. */
 export const projectMeta = (project) => ({
