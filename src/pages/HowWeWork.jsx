@@ -107,7 +107,7 @@ const StageExplorer = () => {
         id="stage-panel"
         role="tabpanel"
         aria-labelledby={`stage-tab-${active}`}
-        className="surface relative overflow-hidden p-6 md:p-9"
+        className="surface surface-static relative overflow-hidden p-6 md:p-9"
       >
         <div className="grid-lines pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
         <AnimatePresence mode="wait">
@@ -139,7 +139,7 @@ const StageExplorer = () => {
               {columns.map((col) => {
                 const ColIcon = col.icon
                 return (
-                  <div key={col.title} className="rounded-xl border border-ink-800 bg-ink-950/70 p-5">
+                  <div key={col.title} className="tile rounded-xl border border-ink-800 bg-ink-950/70 p-5">
                     <p className="flex items-center gap-2 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-400">
                       <ColIcon className="h-3.5 w-3.5 text-accent-500" aria-hidden="true" />
                       {col.title}
@@ -277,7 +277,7 @@ const HowWeWork = () => {
               <motion.li
                 key={item.title}
                 variants={v.fadeUp}
-                className="flex gap-5 rounded-xl border border-ink-800 bg-ink-950 p-5"
+                className="tile flex gap-5 rounded-xl border border-ink-800 bg-ink-950 p-5"
               >
                 <span className="font-display text-sm font-semibold tracking-brand text-accent-500">
                   {String(i + 1).padStart(2, '0')}

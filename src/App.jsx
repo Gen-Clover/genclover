@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import ScrollRestoration from './components/ScrollRestoration'
+import CursorLight from './components/ui/CursorLight'
 import Home from './pages/Home'
 import { routes } from './data/site'
 import { captureAttribution } from './lib/analytics'
@@ -62,6 +63,7 @@ function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ScrollRestoration />
+      <CursorLight />
       <AttributionCapture />
 
       <div className="flex min-h-screen flex-col">

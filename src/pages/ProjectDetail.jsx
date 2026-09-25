@@ -277,7 +277,7 @@ const ProjectDetail = () => {
                     <motion.li
                       key={feature}
                       variants={v.fadeUp}
-                      className="flex items-start gap-3.5 rounded-lg border border-ink-800 bg-ink-900 px-5 py-4"
+                      className="tile flex items-start gap-3.5 rounded-lg border border-ink-800 bg-ink-900 px-5 py-4"
                     >
                       <span
                         className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500"

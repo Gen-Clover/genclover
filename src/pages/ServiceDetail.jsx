@@ -122,7 +122,7 @@ const ServiceDetail = () => {
           <motion.aside
             variants={v.fadeUp}
             {...revealOnce}
-            className="surface h-fit p-7 lg:sticky lg:top-28"
+            className="surface surface-static h-fit p-7 lg:sticky lg:top-28"
           >
             <p className="eyebrow">Pricing</p>
             <p className="mt-4 text-sm leading-relaxed text-silver-300">{PRICING_STATEMENT}</p>

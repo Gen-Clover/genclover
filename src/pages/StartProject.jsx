@@ -52,7 +52,7 @@ const StartProject = () => {
           <ProjectBriefForm />
 
           <aside className="space-y-6">
-            <div className="surface p-6">
+            <div className="surface surface-static p-6">
               <p className="eyebrow">Prefer email?</p>
               <ul className="mt-5 space-y-4 text-sm">
                 <li>
@@ -78,7 +78,7 @@ const StartProject = () => {
               </p>
             </div>
 
-            <div className="surface p-6">
+            <div className="surface surface-static p-6">
               <p className="eyebrow">What happens next</p>
               <ol className="mt-5 space-y-4">
                 {processSteps.slice(0, 3).map((step) => (

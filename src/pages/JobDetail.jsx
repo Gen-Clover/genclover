@@ -95,7 +95,7 @@ const JobDetail = () => {
                 {job.responsibilities.map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-3.5 rounded-lg border border-ink-800 bg-ink-900 px-5 py-4"
+                    className="tile flex items-start gap-3.5 rounded-lg border border-ink-800 bg-ink-900 px-5 py-4"
                   >
                     <span
                       className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500"
@@ -126,7 +126,7 @@ const JobDetail = () => {
           <motion.aside
             variants={v.fadeUp}
             {...revealOnce}
-            className="surface h-fit p-7 lg:sticky lg:top-28"
+            className="surface surface-static h-fit p-7 lg:sticky lg:top-28"
           >
             {isClosed ? (
               <>

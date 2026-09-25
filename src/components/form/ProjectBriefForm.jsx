@@ -161,7 +161,7 @@ const ProjectBriefForm = () => {
   /* ------------------------------------------------------------- success */
   if (status === 'success') {
     return (
-      <div className="surface p-8 text-center md:p-12" role="status" aria-live="polite">
+      <div className="surface surface-static p-8 text-center md:p-12" role="status" aria-live="polite">
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-accent-700 bg-accent-950">
           <Check className="h-6 w-6 text-accent-400" aria-hidden="true" />
         </span>
@@ -188,7 +188,7 @@ const ProjectBriefForm = () => {
 
   /* ---------------------------------------------------------------- form */
   return (
-    <form onSubmit={handleSubmit} noValidate className="surface overflow-hidden">
+    <form onSubmit={handleSubmit} noValidate className="surface surface-static overflow-hidden">
       {/* Progress */}
       <div className="border-b border-ink-800 px-6 py-5 md:px-8">
         <div className="flex items-center justify-between text-xs">

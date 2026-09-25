@@ -183,6 +183,69 @@
     @apply hover:border-accent-700/60 hover:bg-ink-800/80;
   }
 
+  /*
+   * One hover treatment for every card and tile, so no tile is left static:
+   * - .surface cards and .tile boxes: border warms to accent, surface lifts.
+   * - tiles in the hairline grids (ul/ol with gap-px): background lifts and a
+   *   thin accent line appears along the top edge.
+   */
+  .surface:not(.surface-static):hover,
+  .tile:hover {
+    border-color: rgb(var(--accent-700) / 0.6);
+    background-color: rgb(var(--ink-800) / 0.8);
+  }
+  .tile {
+    transition: border-color 300ms, background-color 300ms, box-shadow 300ms;
+  }
+  ul.gap-px > li,
+  ol.gap-px > li {
+    transition: background-color 300ms, box-shadow 300ms;
+  }
+  ul.gap-px > li:hover,
+  ol.gap-px > li:hover {
+    background-color: rgb(var(--ink-900));
+    box-shadow: inset 0 1px 0 rgb(var(--accent-500) / 0.7);
+  }
+
+  /*
+   * Cursor light: a soft light that follows the pointer across the whole page.
+   * Dark theme: red light added with `screen`, so black turns faintly red.
+   * Light theme: a rose-to-peach tint laid on with `multiply`, so white warms
+   * without washing out text.
+   */
+  .cursor-light {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms;
+    background: radial-gradient(
+      520px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(224 31 38 / 0.16),
+      rgb(224 31 38 / 0.06) 35%,
+      transparent 65%
+    );
+    mix-blend-mode: screen;
+  }
+  .cursor-light[data-on='true'] {
+    opacity: 1;
+  }
+  :root[data-theme='light'] .cursor-light {
+    background: radial-gradient(
+      480px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(255 120 120 / 0.16),
+      rgb(255 190 150 / 0.10) 35%,
+      transparent 65%
+    );
+    mix-blend-mode: multiply;
+  }
+  @media (hover: none) {
+    .cursor-light {
+      display: none;
+    }
+  }
+
   /* A white card on a white page needs elevation the dark theme gets for free */
   :root[data-theme='light'] .surface {
     box-shadow:
