@@ -11,11 +11,11 @@ import { trackEvent, events } from '../../lib/analytics'
 /**
  * Primary navigation. (Spec §3, §18)
  *
- * Services, Work, Industries, How We Work, Company + a persistent Start a
+ * Services, Work, Industries, How We Work, About, Careers + a persistent Start a
  * Project CTA. All items come from site.js, which derives them from the service
  * and work taxonomies, so nothing here is hard-coded. (Spec §25)
  *
- * Keyboard behaviour: dropdowns open on click or focus, close on Escape and on
+ * Keyboard behavior: dropdowns open on click or focus, close on Escape and on
  * focus leaving the group, so the header is fully operable without a mouse.
  */
 const Header = () => {
@@ -95,14 +95,14 @@ const Header = () => {
             <Link
               to={routes.home}
               className="shrink-0 rounded-sm"
-              aria-label="Gen Clover - home"
+              aria-label="Gen Clover home"
               onClick={() => setOpenMenu(null)}
             >
               <Logo markClassName="h-8 w-8" wordClassName="text-base md:text-lg" />
             </Link>
 
             {/* ------------------------------------------------ desktop nav */}
-            <ul className="hidden items-center gap-1 lg:flex">
+            <ul className="hidden items-center gap-0 lg:flex xl:gap-1">
               {primaryNav.map((item) => {
                 const active = isSectionActive(item)
 
@@ -111,7 +111,7 @@ const Header = () => {
                     <li key={item.label}>
                       <NavLink
                         to={item.to}
-                        className={`relative rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                        className={`relative whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition-colors xl:px-3 ${
                           active ? 'text-silver-100' : 'text-silver-400 hover:text-silver-100'
                         }`}
                       >
@@ -138,7 +138,7 @@ const Header = () => {
                       aria-expanded={expanded}
                       aria-haspopup="true"
                       onClick={() => setOpenMenu(expanded ? null : item.label)}
-                      className={`relative flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-2 xl:px-3 text-sm font-medium transition-colors ${
                         active || expanded
                           ? 'text-silver-100'
                           : 'text-silver-400 hover:text-silver-100'

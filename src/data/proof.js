@@ -35,9 +35,9 @@ export const verifiedStats = []
 export const capabilityProof = [
   {
     icon: FileSearch,
-    title: 'Concepts are labelled as concepts',
+    title: 'Case studies describe real systems',
     description:
-      'Every item in our Work section carries its real status. Demonstration projects say so, plainly, on the card and on the page.',
+      'Every project in our Work section is documented from the system as built: the problem, the approach, the architecture and the safeguards, with client details withheld.',
   },
   {
     icon: GitBranch,

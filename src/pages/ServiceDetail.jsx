@@ -189,7 +189,7 @@ const ServiceDetail = () => {
       )}
 
       <FinalCTA
-        title={`Have a ${service.title.toLowerCase()} project in mind?`}
+        title={service.closingTitle}
         primaryLabel={service.ctaLabel}
         location={`service_${service.slug}`}
       />

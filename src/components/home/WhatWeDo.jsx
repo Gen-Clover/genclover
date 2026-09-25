@@ -17,8 +17,8 @@ const WhatWeDo = () => {
       <SectionHeader
         index="03"
         eyebrow="What We Do"
-        title="Multiple service domains, one way of working."
-        description="Website development is one major service line. Gen Clover also builds web applications, commerce, AI and automation, data platforms, infrastructure and digital growth capability."
+        title="Eight services, one way of working."
+        description="From websites and web applications to AI, data platforms, cloud infrastructure and search, delivered by one team with one process."
         action={
           <Button to={routes.services} variant="secondary" size="md">
             All services

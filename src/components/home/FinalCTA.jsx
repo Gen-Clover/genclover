@@ -11,6 +11,8 @@ const FinalCTA = ({
   title = 'Tell us what you are trying to build.',
   description = 'A short structured brief is enough to get started. We will come back with a considered response, not a template.',
   primaryLabel = 'Start a Project',
+  /** Optional external/mailto target, used instead of the Start a Project route. */
+  primaryHref,
   location = 'final_cta',
 }) => {
   const v = useMotionVariants()
@@ -52,9 +54,11 @@ const FinalCTA = ({
             className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
             <Button
-              to={routes.startProject}
+              {...(primaryHref ? { href: primaryHref } : { to: routes.startProject })}
               size="lg"
-              onClick={() => trackEvent(events.START_PROJECT_CTA, { location })}
+              onClick={() =>
+                !primaryHref && trackEvent(events.START_PROJECT_CTA, { location })
+              }
             >
               {primaryLabel}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

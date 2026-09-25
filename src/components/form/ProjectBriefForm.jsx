@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { ArrowRight, ArrowLeft, Check, AlertTriangle, Loader2 } from 'lucide-react'
 import Button from '../ui/Button'
-import { OptionGrid, TextField, ConsentField } from './fields'
+import { parsePhoneNumber } from 'libphonenumber-js/min'
+import { OptionGrid, TextField, ConsentField, BudgetField, PhoneField } from './fields'
 import {
   STEPS,
   TOTAL_STEPS,
@@ -12,7 +13,15 @@ import {
   validateAll,
   validateField,
   fieldsForStep,
+  normalizeAmount,
 } from '../../lib/leadSchema'
+import {
+  getCurrencyOptions,
+  getDialCodeOptions,
+  currencyForRegion,
+  countryForRegion,
+  formatBudget,
+} from '../../lib/intlOptions'
 import { routes, contact } from '../../data/site'
 import { trackEvent, events, readAttribution } from '../../lib/analytics'
 
@@ -36,6 +45,8 @@ const ProjectBriefForm = () => {
   const headingRef = useRef(null)
   const hasStarted = useRef(false)
   const reduced = useReducedMotion()
+  const currencyOptions = useMemo(getCurrencyOptions, [])
+  const countryOptions = useMemo(getDialCodeOptions, [])
 
   const step = STEPS[stepIndex]
   const isLast = stepIndex === TOTAL_STEPS - 1
@@ -63,7 +74,15 @@ const ProjectBriefForm = () => {
         hasStarted.current = true
         trackEvent(events.FORM_START)
       }
-      setValues((prev) => ({ ...prev, [name]: value }))
+      setValues((prev) => {
+        const next = { ...prev, [name]: value }
+        // The location answer sets sensible defaults the visitor can still change.
+        if (name === 'region') {
+          if (!prev.budgetCurrency) next.budgetCurrency = currencyForRegion(value)
+          if (!prev.phoneCountry) next.phoneCountry = countryForRegion(value)
+        }
+        return next
+      })
       // Clear an existing error as soon as the visitor starts fixing it.
       setErrors((prev) => (prev[name] ? { ...prev, [name]: undefined } : prev))
     },
@@ -113,6 +132,9 @@ const ProjectBriefForm = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...values,
+          budgetAmount: normalizeAmount(values.budgetAmount),
+          budgetCurrency: normalizeAmount(values.budgetAmount) ? values.budgetCurrency : '',
+          phone: toInternational(values.phone, values.phoneCountry),
           // Anti-spam signals, checked server-side.
           company_website: honeypotRef.current?.value ?? '',
           elapsedMs: Date.now() - startedAt,
@@ -124,7 +146,7 @@ const ProjectBriefForm = () => {
       const payload = await response.json().catch(() => ({}))
 
       if (!response.ok) {
-        throw new Error(payload.message || 'We could not send your enquiry just now.')
+        throw new Error(payload.message || 'We could not send your inquiry just now.')
       }
 
       trackEvent(events.FORM_SUBMIT, { service: values.service, region: values.region })
@@ -143,9 +165,9 @@ const ProjectBriefForm = () => {
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-accent-700 bg-accent-950">
           <Check className="h-6 w-6 text-accent-400" aria-hidden="true" />
         </span>
-        <h2 className="mt-6 text-2xl font-semibold text-silver-100">Thank you - brief received.</h2>
+        <h2 className="mt-6 text-2xl font-semibold text-silver-100">Thank you. Brief received.</h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-silver-400">
-          We read every enquiry properly rather than replying with a template, so give us a
+          We read every inquiry properly rather than replying with a template, so give us a
           working day or two. If it is urgent, email us directly at{' '}
           <a href={`mailto:${contact.email}`} className="text-accent-400 hover:text-accent-300">
             {contact.email}
@@ -225,6 +247,21 @@ const ProjectBriefForm = () => {
                 />
               )}
 
+              {step.kind === 'budget' && (
+                <BudgetField
+                  currency={values.budgetCurrency || 'USD'}
+                  amount={values.budgetAmount}
+                  currencyOptions={currencyOptions}
+                  error={errors.budgetAmount}
+                  onChange={setValue}
+                  onBlur={handleBlur}
+                  preview={formatBudget(
+                    normalizeAmount(values.budgetAmount),
+                    values.budgetCurrency || 'USD'
+                  )}
+                />
+              )}
+
               {step.kind === 'text' && (
                 <TextField
                   field={step.field}
@@ -242,13 +279,25 @@ const ProjectBriefForm = () => {
                       key={field.name}
                       className={field.type === 'textarea' ? 'sm:col-span-2' : ''}
                     >
-                      <TextField
-                        field={field}
-                        value={values[field.name]}
-                        error={errors[field.name]}
-                        onChange={setValue}
-                        onBlur={handleBlur}
-                      />
+                      {field.type === 'tel-intl' ? (
+                        <PhoneField
+                          field={field}
+                          value={values[field.name]}
+                          country={values[field.countryName]}
+                          countryOptions={countryOptions}
+                          errors={errors}
+                          onChange={setValue}
+                          onBlur={handleBlur}
+                        />
+                      ) : (
+                        <TextField
+                          field={field}
+                          value={values[field.name]}
+                          error={errors[field.name]}
+                          onChange={setValue}
+                          onBlur={handleBlur}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -263,7 +312,7 @@ const ProjectBriefForm = () => {
                     onChange={setValue}
                   />
                   <p className="mt-4 text-xs leading-relaxed text-silver-500">
-                    We store only what is needed to respond to this enquiry and we never sell your
+                    We store only what is needed to respond to this inquiry and we never sell your
                     details. See our{' '}
                     <Link to={routes.privacy} className="text-accent-400 hover:text-accent-300">
                       privacy notice
@@ -343,6 +392,15 @@ const ProjectBriefForm = () => {
       </div>
     </form>
   )
+}
+
+/** "+91 98765 43210" style, so the inquiry email is unambiguous. */
+const toInternational = (phone, country) => {
+  try {
+    return parsePhoneNumber(phone, country).formatInternational()
+  } catch {
+    return phone
+  }
 }
 
 export default ProjectBriefForm

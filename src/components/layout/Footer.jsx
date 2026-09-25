@@ -38,7 +38,7 @@ const Footer = () => {
         <div className="grid gap-12 lg:grid-cols-[1.15fr_2fr]">
           {/* Brand + contact */}
           <div>
-            <Link to={routes.home} aria-label="Gen Clover - home" className="inline-block rounded-sm">
+            <Link to={routes.home} aria-label="Gen Clover home" className="inline-block rounded-sm">
               <Logo markClassName="h-9 w-9" wordClassName="text-lg" />
             </Link>
 

@@ -5,10 +5,43 @@ import { PageHero, Section, SectionHeader } from '../components/ui/Section'
 import Button from '../components/ui/Button'
 import FinalCTA from '../components/home/FinalCTA'
 import { jobs } from '../data/jobs'
-import { differentiators } from '../data/process'
 import { contact, routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants, revealOnce } from '../lib/motion'
+
+/** What candidates can expect. Specific to working here, not the client pitch. */
+const workingHere = [
+  {
+    title: 'Real client work from the start',
+    description:
+      'You work on systems clients depend on: AI workflows, data platforms, web applications and websites.',
+  },
+  {
+    title: 'Direct contact with the people who need it',
+    description:
+      'You talk to the people who wrote the requirement, not to a chain of intermediaries.',
+  },
+  {
+    title: 'Reviewed, traceable releases',
+    description:
+      'Every change goes through a pull request and a preview environment before production.',
+  },
+  {
+    title: 'Writing things down',
+    description:
+      'Decisions, scope and trade-offs are written down, so nobody has to remember what was agreed.',
+  },
+  {
+    title: 'Remote-friendly',
+    description:
+      'Most collaboration is written and asynchronous, with calls arranged across Indian and international time zones.',
+  },
+  {
+    title: 'Ownership after launch',
+    description:
+      'You see how your work behaves in production, and you help keep it healthy.',
+  },
+]
 
 /** Careers. (Spec §2 — retained and visually aligned to the new system.) */
 const Careers = () => {
@@ -22,7 +55,7 @@ const Careers = () => {
       <PageHero
         eyebrow="Careers"
         title="Build things that are meant to last."
-        description="We are a small team that cares about engineering quality, clear thinking and honest communication. If that sounds like how you want to work, we would like to hear from you."
+        description="We are a small team that cares about engineering quality, clear thinking and honest communication. There are no open roles right now, but if that sounds like how you want to work, we would like to hear from you."
       >
         <Button href={`mailto:${contact.email}?subject=General application`} size="lg" variant="secondary">
           Send a general application
@@ -106,14 +139,14 @@ const Careers = () => {
         <SectionHeader
           eyebrow="How we work"
           title="What you would be joining."
-          description="The same commitments we make to clients apply internally."
+          description="A small team working directly with clients on software that has to keep running after launch."
         />
         <motion.ul
           variants={v.stagger(0.06)}
           {...revealOnce}
           className="grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {differentiators.map((item) => (
+          {workingHere.map((item) => (
             <motion.li key={item.title} variants={v.fadeUp} className="bg-ink-950 p-7">
               <h3 className="text-base font-semibold text-silver-100">{item.title}</h3>
               <p className="mt-2.5 text-sm leading-relaxed text-silver-400">{item.description}</p>
@@ -124,8 +157,9 @@ const Careers = () => {
 
       <FinalCTA
         title="Not seeing the right role?"
-        description="Send us a note about what you do and what you are looking for. We keep strong applications on file and come back to them."
-        primaryLabel="Start a Project"
+        description="Send us a note about what you do and what you are looking for, with a link to work you are proud of. We keep strong applications on file and come back to them."
+        primaryLabel="Send a general application"
+        primaryHref={`mailto:${contact.email}?subject=${encodeURIComponent('General application')}`}
         location="careers"
       />
     </>

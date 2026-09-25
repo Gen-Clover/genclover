@@ -73,7 +73,7 @@ const Proof = () => {
               </blockquote>
               <figcaption className="mt-5 text-sm text-silver-400">
                 <span className="font-medium text-silver-200">{t.name}</span>
-                {' - '}
+                {', '}
                 {t.role}, {t.company}
               </figcaption>
             </motion.li>

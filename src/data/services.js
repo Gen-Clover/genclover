@@ -18,7 +18,7 @@ import {
  *
  * Shape — Service {
  *   slug, title, shortDescription, heroHeadline, heroDescription,
- *   capabilities[], deliverables[], relatedIndustries[], ctaLabel
+ *   capabilities[], deliverables[], relatedIndustries[], ctaLabel, closingTitle
  * }
  * relatedProjects is derived at read time from projects.js rather than stored
  * twice, so a new project only has to be declared in one place.
@@ -45,6 +45,7 @@ export const services = [
     heroHeadline: 'Websites built around your business.',
     heroDescription:
       'From professional corporate websites to high-conversion digital experiences, Gen Clover designs and engineers websites that look exceptional, communicate clearly and perform reliably.',
+    closingTitle: 'Planning a new website?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View Website Work', to: '/work?category=websites' },
     workCategory: 'websites',
@@ -86,6 +87,7 @@ export const services = [
     heroHeadline: 'Applications designed around how your business actually works.',
     heroDescription:
       'Customer portals, dashboards, internal tools and SaaS products, engineered around real workflows, with the maintainability, performance and security to run for years.',
+    closingTitle: 'Have an application in mind?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View Application Work', to: '/work?category=web-applications' },
     workCategory: 'web-applications',
@@ -96,7 +98,7 @@ export const services = [
       { label: 'Internal Tools', description: 'Purpose-built tooling that replaces spreadsheets and manual steps.' },
       { label: 'SaaS Applications', description: 'Multi-tenant products with accounts, billing and roles.' },
       { label: 'Workflow Applications', description: 'Structured processes, approvals and handoffs.' },
-      { label: 'Business Platforms', description: 'Systems that connect several parts of an organisation.' },
+      { label: 'Business Platforms', description: 'Systems that connect several parts of an organization.' },
     ],
     deliverables: baseDeliverables,
     relatedIndustries: ['technology-saas', 'professional-services', 'logistics', 'healthcare'],
@@ -114,17 +116,18 @@ export const services = [
       'Commerce experiences that make it easier for customers to discover, evaluate and purchase products.',
     heroHeadline: 'Commerce experiences built to convert.',
     heroDescription:
-      'Storefronts, catalogues, checkout and the systems behind them, designed so customers can find what they need and buy it without friction.',
+      'Storefronts, catalogs, checkout and the systems behind them, designed so customers can find what they need and buy it without friction.',
+    closingTitle: 'Building or rebuilding a store?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View E-Commerce Work', to: '/work?category=ecommerce' },
     workCategory: 'ecommerce',
     capabilities: [
       { label: 'E-Commerce Websites', description: 'Storefronts designed around discovery and purchase.' },
-      { label: 'Product Catalogues', description: 'Structured, searchable, filterable product data.' },
+      { label: 'Product Catalogs', description: 'Structured, searchable, filterable product data.' },
       { label: 'Checkout & Payments', description: 'Checkout flows built to reduce abandonment.' },
       { label: 'Payment Integration', description: 'Regional and international payment providers.' },
       { label: 'Inventory Systems', description: 'Stock visibility across channels and locations.' },
-      { label: 'Order Management', description: 'Fulfilment, status and post-purchase operations.' },
+      { label: 'Order Management', description: 'Fulfillment, status and post-purchase operations.' },
       { label: 'Commerce Platforms', description: 'Custom commerce where off-the-shelf will not fit.' },
     ],
     deliverables: baseDeliverables,
@@ -132,7 +135,7 @@ export const services = [
     seo: {
       title: 'E-Commerce Development | Gen Clover',
       description:
-        'E-commerce websites, product catalogues, checkout and payments, inventory and order management built by Gen Clover.',
+        'E-commerce websites, product catalogs, checkout and payments, inventory and order management built by Gen Clover.',
     },
   },
   {
@@ -145,12 +148,13 @@ export const services = [
     heroHeadline: 'AI applied where it makes a measurable difference.',
     heroDescription:
       'Assistants, intelligent search, document understanding and workflow automation, built into your existing systems rather than bolted on beside them.',
+    closingTitle: 'Looking at where AI could help?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View AI Work', to: '/work?category=ai-automation' },
     workCategory: 'ai-automation',
     capabilities: [
       { label: 'AI Assistants', description: 'Assistants grounded in your own content and systems.' },
-      { label: 'Generative AI', description: 'Drafting, summarisation and content generation in context.' },
+      { label: 'Generative AI', description: 'Drafting, summarization and content generation in context.' },
       { label: 'AI Features', description: 'Intelligence embedded inside an existing product.' },
       { label: 'Intelligent Search', description: 'Semantic retrieval across documents and records.' },
       { label: 'Workflow Automation', description: 'Removing repetitive steps from daily operations.' },
@@ -176,12 +180,13 @@ export const services = [
     heroHeadline: 'Data your team can actually trust.',
     heroDescription:
       'Pipelines, platforms and reporting built so the numbers agree with each other, and so the people who need them can reach them without asking.',
+    closingTitle: 'Need numbers your team can trust?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View Data Work', to: '/work?category=data-analytics' },
     workCategory: 'data-analytics',
     capabilities: [
       { label: 'Data Engineering', description: 'The plumbing that makes everything downstream reliable.' },
-      { label: 'Data Platforms', description: 'Warehouses and lakehouses sized to the organisation.' },
+      { label: 'Data Platforms', description: 'Warehouses and lakehouses sized to the organization.' },
       { label: 'Data Pipelines', description: 'Scheduled and streaming movement of data.' },
       { label: 'Data Integration', description: 'Bringing separate systems into one picture.' },
       { label: 'Business Intelligence', description: 'Governed metrics that mean the same thing everywhere.' },
@@ -204,7 +209,8 @@ export const services = [
     shortDescription: 'Custom technology solutions designed around complex business requirements.',
     heroHeadline: 'Engineering for the requirements nothing off-the-shelf covers.',
     heroDescription:
-      'APIs, integrations, cloud architecture and modernisation: the backend work that lets the rest of the business move.',
+      'APIs, integrations, cloud architecture and modernization: the backend work that lets the rest of the business move.',
+    closingTitle: 'Facing a requirement nothing off the shelf covers?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View Platform Work', to: '/work?category=digital-platforms' },
     workCategory: 'digital-platforms',
@@ -235,6 +241,7 @@ export const services = [
     heroHeadline: 'Ship reliably. Run confidently.',
     heroDescription:
       'Cloud infrastructure, delivery pipelines and the operational discipline that keeps software, and models, healthy after release.',
+    closingTitle: 'Want releases that stop being stressful?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'How We Work', to: '/how-we-work' },
     workCategory: 'digital-platforms',
@@ -267,17 +274,18 @@ export const services = [
       'Digital growth capabilities that improve discoverability, website performance, user journeys and measurable acquisition.',
     heroHeadline: 'Be found. Be understood. Be chosen.',
     heroDescription:
-      'Technical and on-page SEO, content structure, conversion optimisation and measurement, grounded in how your site is actually built.',
+      'Technical and on-page SEO, content structure, conversion optimization and measurement, grounded in how your site is actually built.',
+    closingTitle: 'Want to be found by the right people?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'View Website Work', to: '/work?category=websites' },
     workCategory: 'websites',
     capabilities: [
-      { label: 'Search Engine Optimization', description: 'A structured programme rather than isolated tactics.' },
+      { label: 'Search Engine Optimization', description: 'A structured program rather than isolated tactics.' },
       { label: 'Technical SEO', description: 'Crawlability, indexation, structured data and speed.' },
       { label: 'On-Page SEO', description: 'Titles, hierarchy, internal linking and intent matching.' },
       { label: 'Content Strategy', description: 'What to publish, for whom, and in what order.' },
       { label: 'Search Performance', description: 'Tracking visibility against the queries that matter.' },
-      { label: 'Conversion Optimization', description: 'Improving the journey between arrival and enquiry.' },
+      { label: 'Conversion Optimization', description: 'Improving the journey between arrival and inquiry.' },
       { label: 'Digital Campaigns', description: 'Campaign landing experiences built to be measured.' },
       { label: 'Analytics & Measurement', description: 'Events and attribution defined before launch.' },
     ],

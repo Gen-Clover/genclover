@@ -1,37 +1,40 @@
-import { Code, BarChart3, Briefcase } from 'lucide-react'
+import { Code, BarChart3 } from 'lucide-react'
 
+/**
+ * Careers listings. A role with `status: 'closed'` stays visible as a record of
+ * the work we hire for, is marked closed everywhere, and is not indexed.
+ * `metaDescription` is the search snippet (about 150–160 characters).
+ */
 export const jobs = [
   {
     id: 1,
     title: 'Full Stack Engineer',
-    type: 'Freelancer',
+    type: 'Freelance / contract',
     location: 'Remote / Chandigarh',
     status: 'closed',
-    description: 'We are seeking a talented Full Stack Engineer to join our dynamic team. You will play a crucial role in designing, developing, and maintaining scalable web applications that drive business value. This position offers the opportunity to work with cutting-edge technologies, collaborate with cross-functional teams, and contribute to innovative solutions that make a real impact.',
-    requirements: [
-      '3+ years of professional experience in full-stack web development',
-      'Strong proficiency in React, Node.js, and modern JavaScript (ES6+)',
-      'Experience with both SQL and NoSQL databases (PostgreSQL, MongoDB)',
-      'Familiarity with RESTful APIs and GraphQL',
-      'Knowledge of version control systems (Git) and CI/CD pipelines',
-      'Understanding of cloud platforms (AWS, Azure, or GCP)',
-      'Strong problem-solving skills and attention to detail',
-      'Excellent communication skills and ability to work in a team environment',
-      'Bachelor\'s degree in Computer Science or related field (preferred)',
-    ],
+    metaDescription:
+      'Freelance Full Stack Engineer at Gen Clover: build and ship React and Node.js web applications for clients, from first commit to production. Applications closed.',
+    description:
+      'We are looking for an engineer who can take a feature from a written requirement to a reviewed, tested release on their own. You will build client web applications in React and Node.js, work directly with the people who defined the requirement, and own your code in production.',
     responsibilities: [
-      'Design and develop scalable, high-performance web applications from concept to deployment',
-      'Write clean, maintainable, and well-documented code following best practices',
-      'Collaborate with UI/UX designers to implement responsive and intuitive interfaces',
-      'Participate in code reviews, technical discussions, and knowledge sharing sessions',
-      'Work closely with product managers and stakeholders to understand requirements',
-      'Optimize applications for maximum speed, scalability, and user experience',
-      'Troubleshoot, debug, and resolve technical issues in production environments',
-      'Stay updated with latest technologies, frameworks, and industry best practices',
-      'Mentor junior developers and contribute to team growth',
+      'Build features across the frontend and backend of client web applications, from data model to interface',
+      'Turn written requirements into a short technical plan and raise questions early',
+      'Write code that the next engineer can read, with tests where they earn their place',
+      'Open pull requests that are small, described and easy to review, and review others’ work',
+      'Deploy through CI/CD to preview and production environments, and watch releases afterward',
+      'Investigate and fix production issues, and write down what caused them',
+    ],
+    requirements: [
+      '3+ years of professional full-stack web development',
+      'Strong React, Node.js and modern JavaScript or TypeScript',
+      'Experience with a relational database (PostgreSQL or similar) and at least one NoSQL store',
+      'Comfortable designing and consuming REST APIs; GraphQL is a plus',
+      'Day-to-day use of Git, pull requests and CI/CD',
+      'Working knowledge of at least one cloud platform (AWS, Azure or Google Cloud)',
+      'Clear written English, since most of our collaboration is written',
+      'Able to commit reliable hours across an engagement and communicate availability honestly',
     ],
     icon: Code,
-    color: 'from-blue-500 to-blue-600',
   },
   {
     id: 2,
@@ -39,31 +42,28 @@ export const jobs = [
     type: 'Full-time',
     location: 'Remote / Chandigarh',
     status: 'closed',
-    description: 'Join our data analytics team as a Data Analyst and help transform raw data into actionable business insights. You will work closely with stakeholders across the organization to understand business needs, analyze complex datasets, and create compelling visualizations that drive strategic decision-making. This role is perfect for someone who is passionate about data and enjoys solving business problems through analytics.',
-    requirements: [
-      '2+ years of experience in data analysis, business intelligence, or related field',
-      'Proficiency in SQL for data extraction and manipulation',
-      'Experience with data visualization tools (Power BI, Tableau, Looker, or similar)',
-      'Strong analytical and statistical skills with attention to detail',
-      'Experience with Excel, Python, or R for data analysis',
-      'Understanding of data warehousing concepts and ETL processes',
-      'Excellent communication skills to present findings to technical and non-technical audiences',
-      'Ability to work independently and manage multiple projects simultaneously',
-      'Bachelor\'s degree in Statistics, Mathematics, Economics, or related field (preferred)',
-    ],
+    metaDescription:
+      'Data Analyst at Gen Clover: model data in SQL, build Power BI dashboards and define KPIs that mean the same thing everywhere. Full-time, remote. Applications closed.',
+    description:
+      'You will turn client data into reporting that people trust and use. That means modeling data in SQL, defining KPIs with the people who own them, building dashboards in Power BI or similar tools, and explaining what the numbers say in plain language.',
     responsibilities: [
-      'Analyze complex datasets to identify trends, patterns, and business opportunities',
-      'Create interactive dashboards and reports that provide actionable insights to stakeholders',
-      'Collaborate with business teams to understand requirements and translate them into analytical solutions',
-      'Ensure data quality, accuracy, and consistency across all analyses',
-      'Present findings, insights, and recommendations to management and cross-functional teams',
-      'Develop and maintain data models, reports, and analytical frameworks',
-      'Work with data engineers to improve data collection and storage processes',
-      'Monitor key performance indicators (KPIs) and provide regular updates to stakeholders',
-      'Continuously improve analytical processes and methodologies',
+      'Model source data into clean, documented tables that reporting can rely on',
+      'Agree KPI definitions with business owners and implement each one once, centrally',
+      'Build dashboards and reports designed around the decision they support',
+      'Write data quality checks and follow up when something does not reconcile',
+      'Present findings to technical and non-technical audiences, in writing and on calls',
+      'Work with data engineers on how data is collected, stored and refreshed',
+    ],
+    requirements: [
+      '2+ years in data analysis, business intelligence or a related role',
+      'Strong SQL for extraction, modeling and validation',
+      'Experience with Power BI, Tableau, Looker or a similar tool; DAX is a plus',
+      'Python or R for analysis',
+      'Understanding of data warehousing, star schemas and ETL processes',
+      'Careful with detail, and able to explain a number and where it came from',
+      'Comfortable managing several pieces of work at once and saying when priorities clash',
+      'Degree in statistics, mathematics, economics, computer science or similar (preferred, not required)',
     ],
     icon: BarChart3,
-    color: 'from-purple-500 to-purple-600',
-  }
+  },
 ]
-

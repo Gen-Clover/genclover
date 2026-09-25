@@ -24,8 +24,8 @@ const Services = () => {
     <>
       <PageHero
         eyebrow="Services"
-        title="What Gen Clover does."
-        description="Commercial service domains, each with its own capabilities and delivery approach. Most engagements draw on more than one."
+        title="What we build."
+        description="Eight services, from websites to AI, data and the infrastructure that runs them. Most projects draw on more than one."
       >
         <Button to={routes.startProject} size="lg">
           Start a Project
@@ -96,7 +96,7 @@ const Services = () => {
         <SectionHeader
           eyebrow="Delivery"
           title="The same process behind every service."
-          description="Whichever domain an engagement starts in, it runs through the same seven stages."
+          description="Whichever service a project starts in, it runs through the same seven stages."
           action={
             <Button to={routes.howWeWork} variant="secondary" size="md">
               How we work

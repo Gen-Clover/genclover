@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLocation, useNavigationType } from 'react-router-dom'
 
 /**
- * Scroll behaviour on navigation.
+ * Scroll behavior on navigation.
  *
  * React Router's built-in <ScrollRestoration> only works with a data router
  * (createBrowserRouter). We use BrowserRouter, so this implements the same

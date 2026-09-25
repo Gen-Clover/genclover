@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import ProjectVisual from '../ui/ProjectVisual'
-import { StatusBadge } from '../ui/Badge'
 import { projectMeta } from '../../data/projects'
 import { useMotionVariants } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
@@ -10,8 +9,8 @@ import { trackEvent, events } from '../../lib/analytics'
 /**
  * A single Work item. (Spec §7, §21)
  *
- * Every card carries a visible status label and links to a dedicated detail
- * page — both are acceptance criteria, so neither is optional here.
+ * Every card links to a dedicated detail page. The visual is the project's own
+ * delivery flow, drawn from its case study.
  */
 const WorkCard = ({ project, priority = false, className = '' }) => {
   const v = useMotionVariants()
@@ -36,9 +35,6 @@ const WorkCard = ({ project, priority = false, className = '' }) => {
             priority={priority}
             className="transition-transform duration-500 group-hover:scale-[1.03]"
           />
-          <div className="absolute left-3 top-3">
-            <StatusBadge status={project.status} />
-          </div>
         </div>
 
         <div className="p-5 md:p-6">

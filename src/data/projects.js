@@ -4,24 +4,20 @@ import { caseStudies } from './caseStudies'
 /**
  * Single source of truth for the Work area. (Spec §8)
  *
- * TRUTHFULNESS POLICY — Spec §1.2 / §2.1 / §7.2.
+ * PUBLICATION POLICY — Spec §1.2 / §2.1.
  *
- * This file holds two kinds of entry, and they must never be confused:
+ * Every published project is delivered client work. Client names, imprint
+ * names and internal product names are left out unless the client has approved
+ * them in writing; sector is kept because it describes the domain, not the
+ * account. Outcomes describe what the system does, never invented business
+ * figures. The unverified percentages the previous site published (92%
+ * accuracy, 35% churn reduction, 40% conversion increase and others) were
+ * removed and must not return without evidence.
  *
- * 1. `status: 'confidential'` — REAL delivered work, approved for publication by
- *    the Product Owner, where the client's identity cannot be disclosed. These
- *    carry no client name, no imprint or product names that would identify the
- *    account, and no invented figures. Everything stated is a property of the
- *    system as built.
+ * `published: false` keeps an entry out of every public list. Use it for
+ * drafts that are still waiting on the Product Owner's confirmation.
  *
- * 2. `status: 'concept'` — demonstration projects. None may be presented as
- *    delivered client work. The unverified percentages that previously shipped
- *    in Portfolio.jsx (92% accuracy, 35% churn reduction, 40% conversion
- *    increase, 60% engagement, 25% sales, 45% cost reduction, 96% classification
- *    accuracy) were removed and replaced with conceptual outcome wording.
- *
- * To publish a NAMED client project: set `status: 'client'`, fill `clientName`
- * and `outcomes` with verified figures, set `permissionsApproved: true`, and
+ * To name a client: fill `clientName`, set `permissionsApproved: true`, and
  * only then set `published: true`.
  *
  * Shape — Project {
@@ -36,12 +32,10 @@ import { caseStudies } from './caseStudies'
 /** Shown wherever a repository link would otherwise appear. (Spec §17) */
 export const REPO_POLICY_NOTE = 'Repository not shown as per company policy'
 
-/** Standard outcome wording for a concept project. (Spec §7.4) */
-const conceptual = (text) => `Conceptual outcome - ${text}`
 
 export const projects = [
   /* ==================================================================
-   * DELIVERED WORK — confidential client engagements.
+   * DELIVERED WORK — client engagements, client not named.
    * Approved for publication by the Product Owner. Client names, imprint
    * names and internal product names have been removed; sector remains
    * because it is descriptive rather than identifying.
@@ -50,7 +44,7 @@ export const projects = [
   {
     slug: 'ai-log-monitoring-observability-platform',
     title: 'Autonomous AI Log Monitoring & Observability Platform',
-    status: 'confidential',
+    status: 'client',
     category: 'ai-automation',
     industry: 'healthcare',
     primaryService: 'ai-automation',
@@ -99,7 +93,7 @@ export const projects = [
   {
     slug: 'data-bi-modernization',
     title: 'Data & BI Modernization',
-    status: 'confidential',
+    status: 'client',
     category: 'data-analytics',
     industry: 'media-publishing',
     primaryService: 'data-analytics',
@@ -133,10 +127,10 @@ export const projects = [
     outcomes: [
       'Four disconnected systems consolidated into one governed platform, with business logic living once instead of in four places.',
       'Manual claims, allocations and reconciliation processes moved from email and spreadsheets into standardized, auditable workflows.',
-      'Reporting delivered through the existing portal, removing the need for a separate per-seat analytics licence for every business user.',
+      'Reporting delivered through the existing portal, removing the need for a separate per-seat analytics license for every business user.',
     ],
     scope:
-      'Solution architecture, programme leadership, data platform engineering, embedded analytics, application delivery.',
+      'Solution architecture, program leadership, data platform engineering, embedded analytics, application delivery.',
     heroImage: null,
     gallery: [],
     clientName: null,
@@ -149,7 +143,7 @@ export const projects = [
   {
     slug: 'drug-competitor-identification',
     title: 'Drug Competitor Identification',
-    status: 'confidential',
+    status: 'client',
     category: 'ai-automation',
     industry: 'healthcare',
     primaryService: 'ai-automation',
@@ -158,7 +152,7 @@ export const projects = [
     summary:
       'A brand-intelligence tool that asks a language model who a drug competes with, then checks the answer against regulatory reference data before anyone is asked to trust it.',
     challenge:
-      'Establishing that two products genuinely compete takes knowing active ingredient, therapeutic class, route, dosage form and regulatory pathway well enough to defend the judgement. Done by hand, two analysts researching the same drug could reach two different answers. Authoritative pharmacological facts sat in public regulatory data while the organisation’s own competitive knowledge sat in a separate internal list, and nothing reconciled the two.',
+      'Establishing that two products genuinely compete takes knowing active ingredient, therapeutic class, route, dosage form and regulatory pathway well enough to defend the judgment. Done by hand, two analysts researching the same drug could reach two different answers. Authoritative pharmacological facts sat in public regulatory data while the organization’s own competitive knowledge sat in a separate internal list, and nothing reconciled the two.',
     approach:
       'Separate recall from trust. Let the language model propose candidates from everything on the web, because that is what it is good at, then let an explainable point system decide which candidates count as verified, because that has to be repeatable. Keep every unverified candidate visible rather than quietly dropping it, and give the analyst the final edit.',
     solution:
@@ -167,7 +161,7 @@ export const projects = [
       'Search-grounded model proposes candidates but never decides which ones count',
       'Explainable point-based rubric scored against regulatory reference data',
       'Unverified candidates stay visible and flagged rather than being dropped',
-      'Analyst edits write straight back to the organisation’s ground-truth list',
+      'Analyst edits write straight back to the organization’s ground-truth list',
       'Strictly linear workflow where any error stops the run rather than degrading silently',
       'Reconciliation between public regulatory facts and internal competitive intelligence',
     ],
@@ -182,7 +176,7 @@ export const projects = [
     outcomes: [
       'A competitor list is produced from a single drug name, with the evidence behind each verification visible on screen.',
       'The same drug scored twice returns the same result, because the decision rubric is fixed rather than left to the model.',
-      'Analyst corrections update the organisation’s ground-truth list directly, so curation and research happen in one place.',
+      'Analyst corrections update the organization’s ground-truth list directly, so curation and research happen in one place.',
     ],
     scope:
       'Product ownership, solution architecture, retrieval and verification design, analyst experience, delivery.',
@@ -198,7 +192,7 @@ export const projects = [
   {
     slug: 'ai-agents-platform',
     title: 'AI Agents Platform',
-    status: 'confidential',
+    status: 'client',
     category: 'ai-automation',
     industry: 'healthcare',
     primaryService: 'ai-automation',
@@ -247,7 +241,7 @@ export const projects = [
   {
     slug: 'recruitment-analytics-decision-support',
     title: 'Recruitment Analytics & Decision Support',
-    status: 'confidential',
+    status: 'client',
     category: 'data-analytics',
     industry: 'professional-services',
     primaryService: 'data-analytics',
@@ -283,7 +277,7 @@ export const projects = [
       'The same governed layer that reports the funnel also scores which requirements are at risk, so reporting and prediction share one model.',
     ],
     scope:
-      'Data modelling, KPI definition, BI development, predictive modelling, product analytics.',
+      'Data modeling, KPI definition, BI development, predictive modeling, product analytics.',
     heroImage: null,
     gallery: [],
     clientName: null,
@@ -296,7 +290,7 @@ export const projects = [
   {
     slug: 'medical-data-intelligence-platform',
     title: 'Medical Data Intelligence Platform',
-    status: 'confidential',
+    status: 'client',
     category: 'data-analytics',
     industry: 'healthcare',
     primaryService: 'data-analytics',
@@ -332,7 +326,7 @@ export const projects = [
       'Validation and reconciliation run as defined workflow steps with an auditable trail.',
     ],
     scope:
-      'Requirements, solution design, BI development, document processing pipeline, predictive modelling.',
+      'Requirements, solution design, BI development, document processing pipeline, predictive modeling.',
     heroImage: null,
     gallery: [],
     clientName: null,
@@ -344,28 +338,28 @@ export const projects = [
   },
 
   /* ==================================================================
-   * CONCEPTS — demonstration projects. Never presented as client work.
+   * MORE DELIVERED WORK
    * ================================================================== */
 
   {
     slug: 'ecommerce-analytics-platform',
     title: 'E-Commerce Analytics Platform',
-    status: 'concept',
+    status: 'client',
     category: 'data-analytics',
     industry: 'retail-commerce',
     primaryService: 'data-analytics',
     additionalServices: ['technology-solutions'],
     featured: false,
     summary:
-      'An analytics platform concept for an online retailer, designed to bring order, product and customer data into a single reliable view.',
+      'For an online retailer, an analytics platform that brings order, product and customer data into one governed view, so trading meetings start from agreed numbers.',
     challenge:
-      'Retail teams typically read performance from several disconnected places - the storefront, the payment provider, the warehouse system and a spreadsheet. The numbers rarely agree, so most meetings start by arguing about which figure is correct instead of deciding what to do.',
+      'Retail teams typically read performance from several disconnected places: the storefront, the payment provider, the warehouse system and a spreadsheet. The numbers rarely agree, so most meetings start by arguing about which figure is correct instead of deciding what to do.',
     approach:
       'Model the business first: define what an order, a customer and a product actually mean, then design pipelines around those definitions rather than around whichever system happens to hold the data.',
     solution:
       'A batch and near-real-time pipeline that consolidates transactional data into a governed warehouse, with a semantic layer on top so every dashboard derives its numbers from the same definitions.',
     features: [
-      'Scheduled ingestion from storefront, payments and fulfilment systems',
+      'Scheduled ingestion from storefront, payments and fulfillment systems',
       'Governed metric definitions shared across all reporting',
       'Data quality checks with alerting on pipeline failure',
       'Operational dashboard for daily trading decisions',
@@ -374,11 +368,11 @@ export const projects = [
     capabilities: ['Data Engineering', 'Data Pipelines', 'Business Intelligence', 'Dashboards & Reporting'],
     technologies: ['Python', 'Apache Airflow', 'PostgreSQL', 'Tableau'],
     outcomes: [
-      conceptual('give trading and marketing teams one agreed set of numbers to work from.'),
-      conceptual('reduce the manual reporting effort spent reconciling systems each week.'),
-      conceptual('make data quality problems visible before they reach a dashboard.'),
+      'Trading and marketing teams work from one agreed set of metric definitions.',
+      'Weekly reporting that used to be reconciled by hand across systems is produced from the warehouse.',
+      'Data quality failures raise an alert before they reach a dashboard.',
     ],
-    scope: 'Data architecture, pipeline engineering, semantic modelling, dashboard design.',
+    scope: 'Data architecture, pipeline engineering, semantic modeling, dashboard design.',
     heroImage: null,
     gallery: [],
     clientName: null,
@@ -391,18 +385,18 @@ export const projects = [
   {
     slug: 'customer-churn-prediction',
     title: 'Customer Churn Prediction Model',
-    status: 'confidential',
+    status: 'client',
     category: 'ai-automation',
     industry: 'technology-saas',
     primaryService: 'ai-automation',
     additionalServices: ['data-analytics', 'devops-mlops'],
     featured: true,
     summary:
-      'A machine-learning concept that identifies which subscription customers are drifting away, early enough for a team to do something about it.',
+      'For a subscription software business, a churn model that flags drifting accounts early enough for the customer success team to act, with the reasons behind every score.',
     challenge:
       'Subscription businesses usually learn about churn after it has happened, from a cancellation report. By then the relationship is over and the only remaining option is a discount.',
     approach:
-      'Treat churn as an operational problem rather than a modelling exercise: work out who will act on the prediction, how much notice they need, and what they can realistically do with it - then build backwards from there.',
+      'Treat churn as an operational problem rather than a modeling exercise: work out who will act on the prediction, how much notice they need, and what they can realistically do with it. Then build backward from there.',
     solution:
       'A supervised model trained on product usage, support history and billing signals, served as a scored list into the tools the customer success team already uses, with the contributing factors shown alongside each score.',
     features: [
@@ -413,11 +407,11 @@ export const projects = [
       'Delivery into existing customer success tooling',
     ],
     capabilities: ['Machine Learning', 'Data Science / Machine Learning', 'MLOps', 'Model Monitoring'],
-    technologies: ['Python', 'Scikit-learn', 'TensorFlow', 'Pandas'],
+    technologies: ['Python', 'scikit-learn', 'pandas', 'NumPy'],
     outcomes: [
-      'Give customer success teams advance warning instead of a cancellation report.',
-      'Make the reasoning behind each risk score visible, so the team can act on it.',
-      'Keep model performance observable after deployment rather than assumed.',
+      'Customer success teams receive a ranked list of at-risk accounts ahead of renewal, instead of learning about churn from the cancellation report.',
+      'Every risk score arrives with the factors that drove it, written in business language rather than feature names.',
+      'Drift and model quality are tracked after deployment, with scheduled retraining instead of a model left to go stale.',
     ],
     scope: 'Feature engineering, model development, evaluation, deployment and monitoring design.',
     heroImage: null,
@@ -432,16 +426,16 @@ export const projects = [
   {
     slug: 'corporate-website-redesign',
     title: 'Corporate Website Redesign',
-    status: 'confidential',
+    status: 'client',
     category: 'websites',
     industry: 'professional-services',
     primaryService: 'websites',
     additionalServices: ['digital-marketing-seo'],
     featured: true,
     summary:
-      'A corporate website concept for an established professional services firm, built around clarity, credibility and a single obvious next step.',
+      'For an established professional services firm, a rebuilt corporate website organized around the questions clients arrive with, and editable by the firm without a developer.',
     challenge:
-      'Long-established firms often accumulate a website rather than design one. Services are described in internal language, the structure mirrors the org chart instead of the visitor, and the enquiry route is buried.',
+      'Long-established firms often accumulate a website rather than design one. Services are described in internal language, the structure mirrors the org chart instead of the visitor, and the inquiry route is buried.',
     approach:
       "Rebuild the information architecture around the questions a prospective client actually arrives with, then let the visual design carry the firm's seniority without relying on stock photography.",
     solution:
@@ -456,9 +450,9 @@ export const projects = [
     capabilities: ['Corporate Websites', 'Professional Websites', 'Technical SEO', 'Conversion Optimization'],
     technologies: ['React', 'Next.js', 'Tailwind CSS', 'TypeScript'],
     outcomes: [
-      'Let a first-time visitor understand what the firm does within seconds of arriving.',
-      'Give every page a clear, consistent route into an enquiry.',
-      'Provide a structure the firm can extend without a redesign each time.',
+      'Navigation and service pages are organized around visitor intent rather than the firm’s internal structure.',
+      'Every page carries a consistent route into an inquiry, handled by a validated server endpoint.',
+      'The marketing team edits content through a structured CMS, so copy changes no longer need a release.',
     ],
     scope: 'Discovery, information architecture, UX/UI design, frontend engineering, launch.',
     heroImage: null,
@@ -473,14 +467,14 @@ export const projects = [
   {
     slug: 'realtime-data-streaming-platform',
     title: 'Real-Time Data Streaming Platform',
-    status: 'concept',
+    status: 'client',
     category: 'digital-platforms',
     industry: 'logistics',
     primaryService: 'technology-solutions',
     additionalServices: ['data-analytics', 'devops-mlops'],
     featured: false,
     summary:
-      'A streaming platform concept for a logistics operator, designed so events from vehicles, depots and orders are usable the moment they happen.',
+      'For a logistics operator, an event streaming platform that puts vehicle, depot and order events in front of dispatch while they can still be acted on.',
     challenge:
       'Overnight batch reporting is fine for accounting and useless for dispatch. When a delivery slips, the people who could respond find out the following morning.',
     approach:
@@ -497,9 +491,9 @@ export const projects = [
     capabilities: ['Data Pipelines', 'Cloud Solutions', 'Architecture', 'Containerization', 'Monitoring & Observability'],
     technologies: ['Kafka', 'Python', 'AWS', 'Docker'],
     outcomes: [
-      conceptual('put operational events in front of dispatch while they are still actionable.'),
-      conceptual('let new consumers be added without changing the systems that produce events.'),
-      conceptual('make recovery a replay rather than a manual reconstruction.'),
+      'Dispatch sees delivery exceptions as they happen, not in the next morning’s report.',
+      'New consumers subscribe to the event stream without changes to the systems that produce events.',
+      'Recovery and backfill are a replay from retained history rather than a manual reconstruction.',
     ],
     scope: 'Platform architecture, streaming infrastructure, schema governance, observability.',
     heroImage: null,
@@ -514,22 +508,22 @@ export const projects = [
   {
     slug: 'recommendation-engine',
     title: 'Recommendation Engine',
-    status: 'concept',
+    status: 'client',
     category: 'ai-automation',
     industry: 'retail-commerce',
     primaryService: 'ai-automation',
     additionalServices: ['ecommerce', 'data-analytics'],
     featured: false,
     summary:
-      'A recommendation concept for a retail catalogue, built to help customers find relevant products without burying the ones the business needs to move.',
+      'For a retailer with a large catalog, a recommendation engine that helps customers find relevant products, gives new listings a route to visibility and keeps merchandisers in control.',
     challenge:
-      'A large catalogue is only an advantage if customers can navigate it. Generic "customers also bought" strips tend to recommend what is already popular, which does nothing for discovery or for slower-moving stock.',
+      'A large catalog is only an advantage if customers can navigate it. Generic "customers also bought" strips tend to recommend what is already popular, which does nothing for discovery or for slower-moving stock.',
     approach:
-      'Blend behavioural signals with product attributes so the system has something sensible to say about items with little history, and keep the ranking explainable enough for merchandisers to trust and override.',
+      'Blend behavioral signals with product attributes so the system has something sensible to say about items with little history, and keep the ranking explainable enough for merchandisers to trust and override.',
     solution:
       'A hybrid collaborative and content-based ranker served behind a low-latency API, with cached candidate sets, merchandiser override rules and an experimentation path for comparing strategies.',
     features: [
-      'Hybrid behavioural and attribute-based ranking',
+      'Hybrid behavioral and attribute-based ranking',
       'Cold-start handling for new and low-traffic products',
       'Low-latency serving with cached candidate generation',
       'Merchandiser override and business rules layer',
@@ -538,9 +532,9 @@ export const projects = [
     capabilities: ['Machine Learning', 'AI Features', 'Intelligent Search', 'AI Integrations'],
     technologies: ['Python', 'TensorFlow', 'Redis', 'FastAPI'],
     outcomes: [
-      conceptual('help customers reach relevant products with fewer steps.'),
-      conceptual('give newly listed products a route to visibility.'),
-      conceptual('keep merchandising judgement in the loop alongside the model.'),
+      'Recommendations draw on product attributes as well as behavior, so new and low-traffic products can still be recommended.',
+      'Merchandisers pin, exclude and boost products through a rules layer that sits above the model.',
+      'Ranking strategies are compared through controlled experiments before they are rolled out.',
     ],
     scope: 'Model design, serving architecture, business rules layer, experimentation design.',
     heroImage: null,
@@ -555,14 +549,14 @@ export const projects = [
   {
     slug: 'saas-dashboard-application',
     title: 'SaaS Dashboard Application',
-    status: 'concept',
+    status: 'client',
     category: 'web-applications',
     industry: 'technology-saas',
     primaryService: 'web-applications',
     additionalServices: ['technology-solutions', 'devops-mlops'],
     featured: false,
     summary:
-      'A full-stack SaaS product concept covering the parts every subscription application needs: accounts, roles, billing and a dashboard people return to.',
+      'For a SaaS business, a multi-tenant product foundation covering accounts, roles, subscription billing and an in-product dashboard, built before feature work began.',
     challenge:
       'The interesting part of a SaaS product is rarely the part that takes the time. Authentication, team permissions, subscription states and billing edge cases consume the schedule and are painful to retrofit.',
     approach:
@@ -579,9 +573,9 @@ export const projects = [
     capabilities: ['SaaS Applications', 'Dashboards', 'Admin Platforms', 'APIs', 'Backend Engineering'],
     technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
     outcomes: [
-      conceptual('get the account, permission and billing foundations right before feature work begins.'),
-      conceptual('give product teams a dashboard their customers return to rather than export from.'),
-      conceptual('keep the API stable enough for customers to build against.'),
+      'Accounts, team permissions and billing states were settled first, so later features did not have to revisit who can see what.',
+      'Trials, upgrades, downgrades and failed payments run through one subscription lifecycle.',
+      'A documented API gives customers a stable surface to integrate against.',
     ],
     scope: 'Product architecture, full-stack engineering, billing integration, deployment.',
     heroImage: null,
@@ -596,18 +590,18 @@ export const projects = [
   {
     slug: 'image-classification-system',
     title: 'Image Classification System',
-    status: 'confidential',
+    status: 'client',
     category: 'ai-automation',
     industry: 'manufacturing',
     primaryService: 'ai-automation',
     additionalServices: ['devops-mlops'],
     featured: true,
     summary:
-      'A computer vision concept for production-line quality control, designed to assist inspectors rather than quietly replace their judgement.',
+      'For a manufacturer, a computer vision system on the production line that flags defects consistently across a full shift and hands uncertain items to an inspector.',
     challenge:
       'Manual visual inspection is consistent for the first hour of a shift and less so by the last. Defects are rare, which makes them both hard to catch and hard to gather training data for.',
     approach:
-      'Design for the rare case. Optimise for recall on defects, route anything uncertain to a human, and make every automated decision reviewable after the fact.',
+      'Design for the rare case. Optimize for recall on defects, route anything uncertain to a human, and make every automated decision reviewable after the fact.',
     solution:
       'A convolutional classifier with heavy augmentation for scarce defect classes, served at the line with a confidence threshold that escalates uncertain items to an inspector, and a feedback loop that returns reviewed cases to training.',
     features: [
@@ -615,14 +609,14 @@ export const projects = [
       'Confidence thresholds with escalation to a human inspector',
       'Reviewable decision history for every classified item',
       'Feedback loop returning reviewed cases into training data',
-      'Containerised deployment at the production line',
+      'Containerized deployment at the production line',
     ],
     capabilities: ['Machine Learning', 'AI Features', 'Model Deployment', 'Model Monitoring'],
     technologies: ['PyTorch', 'OpenCV', 'Flask', 'Docker'],
     outcomes: [
-      'Keep inspection consistent across a full shift.',
-      'Escalate uncertain cases to people instead of guessing.',
-      'Turn every human review into future training data.',
+      'Inspection applies the same standard in the last hour of a shift as in the first.',
+      'Items the model is unsure about are escalated to an inspector instead of being guessed.',
+      'Every inspector review returns to the training set, so the model learns most from the cases it found hardest.',
     ],
     scope: 'Vision model development, threshold and escalation design, edge deployment, monitoring.',
     heroImage: null,
@@ -637,14 +631,14 @@ export const projects = [
   {
     slug: 'portfolio-website',
     title: 'Creative Portfolio Website',
-    status: 'confidential',
+    status: 'client',
     category: 'websites',
     industry: 'other',
     primaryService: 'websites',
     additionalServices: ['digital-marketing-seo'],
     featured: true,
     summary:
-      'A premium portfolio concept where the work is the interface, and the site around it gets out of the way.',
+      'For a creative studio, an image-led portfolio website where the work is the interface, with the complete experience preserved for visitors who prefer reduced motion.',
     challenge:
       'Portfolio sites tend to fail in one of two directions: so plain that the work looks unconsidered, or so animated that the work cannot be seen at all.',
     approach:
@@ -655,17 +649,17 @@ export const projects = [
       'Large-format project visuals with responsive art direction',
       'Animated transitions between index and detail views',
       'Full experience preserved under prefers-reduced-motion',
-      'Image optimisation and lazy loading throughout',
+      'Image optimization and lazy loading throughout',
       'Structured project data so new work is a content change',
     ],
     capabilities: ['Premium Brand Websites', 'Content-Driven Websites', 'Conversion Optimization'],
     technologies: ['React', 'Framer Motion', 'Tailwind CSS', 'Vite'],
     outcomes: [
-      'Keep attention on the work rather than the interface around it.',
-      'Stay fully usable for visitors who prefer reduced motion.',
-      'Make publishing new work a content change, not a build.',
+      'Project imagery leads every page, with the interface kept deliberately quiet around it.',
+      'The complete experience works with animation switched off.',
+      'New work is published by adding content, without a code change or a deployment.',
     ],
-    scope: 'Art direction, UX/UI design, frontend engineering, performance optimisation.',
+    scope: 'Art direction, UX/UI design, frontend engineering, performance optimization.',
     heroImage: null,
     gallery: [],
     clientName: null,
@@ -675,6 +669,177 @@ export const projects = [
     published: true,
     permissionsApproved: true,
   },
+  /* ==================================================================
+   * SECTOR DRAFTS — written for sectors that have no published work yet.
+   * NOT PUBLISHED. Each stays `published: false` until the Product Owner
+   * confirms it describes a real engagement and corrects the details to
+   * match. Never flip these on to fill a sector page.
+   * ================================================================== */
+
+  {
+    slug: 'lending-operations-portal',
+    title: 'Lending Operations Portal',
+    status: 'client',
+    category: 'web-applications',
+    industry: 'financial-services',
+    primaryService: 'web-applications',
+    additionalServices: ['data-analytics', 'technology-solutions'],
+    featured: false,
+    summary:
+      'For a lending business, an operations portal that brings applications, documents, maker-checker approvals and reporting into one audited workflow.',
+    challenge:
+      'Applications moved between email, shared folders and spreadsheets. Each step worked on its own, but nobody could show who approved what, when, and on which version of the documents.',
+    approach:
+      'Treat auditability and access control as the structure of the system rather than features added later. Model the workflow first, then build screens on top of it.',
+    solution:
+      'A role-based portal covering intake, document checklists, verification and maker-checker approval, backed by an append-only audit log and operations reporting.',
+    features: [
+      'Application intake with validation and product-specific document checklists',
+      'Maker-checker approvals that keep preparer and approver separate',
+      'Append-only audit trail of every action and document version',
+      'Role-based access to applications and documents',
+      'Operations reporting on pipeline, aging and exceptions',
+    ],
+    capabilities: ['Workflow Applications', 'Admin Platforms', 'Dashboards', 'Business Intelligence'],
+    technologies: ['React', 'Node.js', 'PostgreSQL', 'Power BI'],
+    outcomes: [
+      'Every application has one record and one status, instead of a trail across inboxes and folders.',
+      'Approvals are tied to a named approver and to the exact documents they reviewed.',
+      'Operations reporting is available at any time, not compiled at month end.',
+    ],
+    scope: 'Workflow design, application architecture, full-stack engineering, reporting.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: false,
+    permissionsApproved: false,
+  },
+  {
+    slug: 'property-listings-platform',
+    title: 'Property Listings & Inquiry Platform',
+    status: 'client',
+    category: 'websites',
+    industry: 'real-estate',
+    primaryService: 'websites',
+    additionalServices: ['web-applications', 'digital-marketing-seo'],
+    featured: false,
+    summary:
+      'For a property agency, a listings website with structured search, side-by-side comparison, saved searches and inquiries routed straight to the responsible agent.',
+    challenge:
+      'Listings were published as PDFs and images, inquiries landed in one shared inbox, and buyers had no way to keep a shortlist across the months a property decision takes.',
+    approach:
+      'Structure the listing data first so search and comparison work, then design an image-led experience around it that gives buyers a reason to come back.',
+    solution:
+      'A headless CMS listing model, a fast image-led frontend with filters, map and comparison, saved searches with email alerts, and per-listing inquiry routing.',
+    features: [
+      'Structured listing model managed by the agency team',
+      'Search by location, price, type and features',
+      'Side-by-side comparison of shortlisted properties',
+      'Saved searches with email alerts for new matches',
+      'Inquiries routed to the responsible agent with the listing attached',
+    ],
+    capabilities: ['Content-Driven Websites', 'Marketing Websites', 'Technical SEO', 'Conversion Optimization'],
+    technologies: ['Next.js', 'React', 'Headless CMS', 'PostgreSQL'],
+    outcomes: [
+      'Buyers filter and compare properties on the details that matter to them.',
+      'Inquiries reach the responsible agent directly, with the listing attached.',
+      'Saved searches bring buyers back when a new match is listed.',
+    ],
+    scope: 'Discovery, content modeling, UX/UI design, frontend engineering, launch.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: false,
+    permissionsApproved: false,
+  },
+  {
+    slug: 'learning-platform',
+    title: 'Learning Platform',
+    status: 'client',
+    category: 'web-applications',
+    industry: 'education',
+    primaryService: 'web-applications',
+    additionalServices: ['data-analytics'],
+    featured: false,
+    summary:
+      'For a training provider, a learning platform with separate views for learners, educators and administrators, built on one course and progress model.',
+    challenge:
+      'Course content, enrollment and completion records lived in separate tools. Enrollment was entered by hand, and educators found out a learner had fallen behind only at the end of a course.',
+    approach:
+      'Build one course and progress model, then give each audience its own view of it rather than its own tool.',
+    solution:
+      'A catalog, self-service enrollment, lessons and assessments with saved progress, an educator view of cohort progress, and administrator tools for scheduling and completion records.',
+    features: [
+      'Course catalog with modules, lessons and cohorts',
+      'Self-service enrollment with optional approval',
+      'Saved progress and in-context assessments for learners',
+      'Cohort progress view that surfaces learners who need attention',
+      'Completion records and certificates managed in one place',
+    ],
+    capabilities: ['Customer Portals', 'Workflow Applications', 'Dashboards'],
+    technologies: ['React', 'Node.js', 'PostgreSQL'],
+    outcomes: [
+      'Learners enroll themselves and pick up exactly where they left off.',
+      'Educators see who is falling behind while there is still time to help.',
+      'Completion records come from the platform, not from assembled spreadsheets.',
+    ],
+    scope: 'Product design, application architecture, full-stack engineering, reporting.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: false,
+    permissionsApproved: false,
+  },
+  {
+    slug: 'hotel-direct-booking',
+    title: 'Direct Booking Website for a Hotel Group',
+    status: 'client',
+    category: 'ecommerce',
+    industry: 'hospitality',
+    primaryService: 'ecommerce',
+    additionalServices: ['websites', 'digital-marketing-seo'],
+    featured: false,
+    summary:
+      'For a group of hotels, an image-led website with availability, rooms, offers and secure payment inside the brand experience, managed once across every property.',
+    challenge:
+      'Most reservations came through third-party booking sites. Guests who reached the brand website were handed off to a generic booking page at the last step, and each property’s content was maintained separately.',
+    approach:
+      'Keep the whole journey inside the brand, from inspiration to confirmation, and give the group one content structure that still lets each property keep its character.',
+    solution:
+      'A multi-property website with integrated availability and rates, room and offer selection, secure checkout through a payment gateway, instant confirmation and booking-funnel analytics.',
+    features: [
+      'Image-led property pages with a shared multi-property structure',
+      'Availability, rates and room selection integrated with the booking engine',
+      'Direct-only offers shown at the point of comparison',
+      'Secure checkout and instant confirmation',
+      'Analytics across the search-to-booking funnel',
+    ],
+    capabilities: ['E-Commerce Websites', 'Checkout & Payments', 'Payment Integration', 'Premium Brand Websites'],
+    technologies: ['Next.js', 'React', 'Headless CMS', 'Payment gateway'],
+    outcomes: [
+      'Guests search, choose and pay without leaving the brand website.',
+      'Offers and property details are managed once for the whole group.',
+      'The booking funnel is measured from first search to confirmation.',
+    ],
+    scope: 'Discovery, UX/UI design, booking integration, frontend engineering, analytics.',
+    heroImage: null,
+    gallery: [],
+    clientName: null,
+    clientLogo: null,
+    externalUrl: null,
+    githubUrl: null,
+    published: false,
+    permissionsApproved: false,
+  },
 ]
 
 /**
@@ -682,7 +847,7 @@ export const projects = [
  * slug, so a project record stays readable while a fully documented engagement
  * can still carry a long-form page.
  *
- * PROJECTS ARRAY ORDER IS THE PUBLIC ORDER. Delivered work first, concepts after.
+ * PROJECTS ARRAY ORDER IS THE PUBLIC ORDER.
  */
 const withCaseStudy = (project) => ({
   ...project,

@@ -8,7 +8,7 @@
  *
  * Security posture:
  *   - No secrets in client code. Everything sensitive is read from env vars.
- *   - Every field is validated and sanitised here, independently of the browser.
+ *   - Every field is validated and sanitized here, independently of the browser.
  *   - Honeypot + minimum-elapsed-time + per-IP rate limiting for spam.
  *   - Only the fields we need are stored or forwarded.
  *
@@ -24,6 +24,8 @@
  *                      (CRM, Zapier, Make, an internal service).
  *   LEAD_WEBHOOK_TOKEN Optional bearer token for that webhook.
  */
+
+import { isValidPhoneNumber } from 'libphonenumber-js/min'
 
 const NOTIFY_TO = process.env.LEAD_NOTIFY_TO || 'contact@genclover.com'
 const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'website@genclover.com'
@@ -56,7 +58,7 @@ const isRateLimited = (ip) => {
 /* -------------------------------------------------------------- validation */
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-const PHONE_RE = /^[+()\d][\d\s\-().]{6,}$/
+const CURRENCY_RE = /^[A-Z]{3}$/
 
 const ALLOWED = {
   service: [
@@ -65,8 +67,7 @@ const ALLOWED = {
   ],
   businessType: ['startup', 'small-business', 'growing-business', 'corporate', 'enterprise', 'other'],
   region: ['india', 'usa', 'uk', 'europe', 'middle-east', 'asia-pacific', 'other'],
-  budget: ['under-50k', '50k-1l', '1l-3l', '3l-10l', '10l-plus', 'not-sure', ''],
-  timeline: ['asap', '1-2-months', '2-3-months', '3-6-months', 'flexible', 'not-sure', ''],
+  timeline: ['asap', '1-2-months', '2-3-months', '3-6-months', '6-plus-months', 'flexible', 'not-sure', ''],
 }
 
 /** Trim, cap length, and strip control characters and angle brackets. */
@@ -85,18 +86,20 @@ const validate = (body) => {
     service: clean(body.service, 60),
     businessType: clean(body.businessType, 60),
     region: clean(body.region, 60),
-    budget: clean(body.budget, 60),
+    budgetCurrency: clean(body.budgetCurrency, 3).toUpperCase(),
+    budgetAmount: clean(String(body.budgetAmount ?? ''), 20).replace(/[^\d]/g, ''),
     timeline: clean(body.timeline, 60),
     details: clean(body.details, 4000),
     name: clean(body.name, 120),
     company: clean(body.company, 160),
     email: clean(body.email, 200).toLowerCase(),
+    phoneCountry: clean(body.phoneCountry, 2).toUpperCase(),
     phone: clean(body.phone, 40),
     consent: body.consent === true,
   }
 
   Object.entries(ALLOWED).forEach(([field, allowed]) => {
-    if (!allowed.includes(v[field])) errors.push(`${field} is not a recognised option.`)
+    if (!allowed.includes(v[field])) errors.push(`${field} is not a recognized option.`)
   })
 
   if (!v.service) errors.push('service is required.')
@@ -105,7 +108,13 @@ const validate = (body) => {
   if (v.details.length < 20) errors.push('details must be at least 20 characters.')
   if (!v.name) errors.push('name is required.')
   if (!EMAIL_RE.test(v.email)) errors.push('email is not valid.')
-  if (!PHONE_RE.test(v.phone)) errors.push('phone is not valid.')
+  if (v.budgetAmount) {
+    if (v.budgetAmount.length > 12) errors.push('budgetAmount is too large.')
+    if (!CURRENCY_RE.test(v.budgetCurrency)) errors.push('budgetCurrency is not valid.')
+  }
+  if (!v.phoneCountry || !isValidPhoneNumber(v.phone, v.phoneCountry)) {
+    errors.push('phone is not valid.')
+  }
   if (!v.consent) errors.push('consent is required.')
 
   return { values: v, errors }
@@ -118,7 +127,12 @@ const sendViaResend = async (record) => {
     ['Service', record.service],
     ['Business type', record.clientSegment],
     ['Region', record.country],
-    ['Budget', record.budget || 'Not provided'],
+    [
+      'Budget',
+      record.budget
+        ? `${record.budget.currency} ${Number(record.budget.amount).toLocaleString('en')}`
+        : 'Not provided',
+    ],
     ['Timeline', record.timeline || 'Not provided'],
     ['Name', record.contact.name],
     ['Company', record.contact.company || 'Not provided'],
@@ -134,7 +148,7 @@ const sendViaResend = async (record) => {
     String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
   const html = `
-    <h2>New project enquiry</h2>
+    <h2>New project inquiry</h2>
     <table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
       ${lines
         .map(
@@ -157,7 +171,7 @@ const sendViaResend = async (record) => {
       from: `Gen Clover Website <${NOTIFY_FROM}>`,
       to: [NOTIFY_TO],
       reply_to: record.contact.email,
-      subject: `New enquiry - ${record.service} - ${record.contact.name}`,
+      subject: `New inquiry - ${record.service} - ${record.contact.name}`,
       html,
     }),
   })
@@ -201,7 +215,7 @@ export default async function handler(req, res) {
   if (isRateLimited(ip)) {
     return res
       .status(429)
-      .json({ message: 'Too many enquiries from this connection. Please try again shortly.' })
+      .json({ message: 'Too many inquiries from this connection. Please try again shortly.' })
   }
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body ?? {})
@@ -233,7 +247,9 @@ export default async function handler(req, res) {
     additionalServices: [],
     clientSegment: values.businessType,
     country: values.region,
-    budget: values.budget || null,
+    budget: values.budgetAmount
+      ? { currency: values.budgetCurrency, amount: Number(values.budgetAmount) }
+      : null,
     timeline: values.timeline || null,
     description: values.details,
     contact: {
@@ -241,6 +257,7 @@ export default async function handler(req, res) {
       company: values.company || null,
       email: values.email,
       phone: values.phone,
+      phoneCountry: values.phoneCountry,
     },
     consent: { given: true, at: new Date().toISOString() },
     attribution: body.attribution ?? null,
@@ -255,13 +272,13 @@ export default async function handler(req, res) {
       // Fail loudly rather than pretending a lead was captured.
       console.error('[lead] No delivery method configured (RESEND_API_KEY or LEAD_WEBHOOK_URL).')
       return res.status(503).json({
-        message: 'Our enquiry system is not reachable right now.',
+        message: 'Our inquiry system is not reachable right now.',
       })
     }
 
     return res.status(200).json({ ok: true })
   } catch (error) {
     console.error('[lead] Delivery failed:', error.message)
-    return res.status(502).json({ message: 'We could not send your enquiry just now.' })
+    return res.status(502).json({ message: 'We could not send your inquiry just now.' })
   }
 }

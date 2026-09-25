@@ -23,11 +23,11 @@ const Industries = lazy(() => import('./pages/Industries'))
 const IndustryDetail = lazy(() => import('./pages/IndustryDetail'))
 const HowWeWork = lazy(() => import('./pages/HowWeWork'))
 const About = lazy(() => import('./pages/About'))
-const Insights = lazy(() => import('./pages/Insights'))
 const Careers = lazy(() => import('./pages/Careers'))
 const JobDetail = lazy(() => import('./pages/JobDetail'))
 const StartProject = lazy(() => import('./pages/StartProject'))
 const Privacy = lazy(() => import('./pages/Privacy'))
+const Terms = lazy(() => import('./pages/Terms'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 /**
@@ -39,6 +39,8 @@ const LEGACY_REDIRECTS = [
   { from: '/portfolio', to: routes.work },
   { from: '/contact', to: routes.startProject },
   { from: '/career', to: routes.careers },
+  // Insights was removed until there is content to publish.
+  { from: '/insights', to: routes.home },
 ]
 
 /** Keeps a single-element-tall placeholder so lazy routes do not flash the footer up. */
@@ -78,13 +80,13 @@ function App() {
 
               <Route path={routes.howWeWork} element={<HowWeWork />} />
               <Route path={routes.about} element={<About />} />
-              <Route path={routes.insights} element={<Insights />} />
 
               <Route path={routes.careers} element={<Careers />} />
               <Route path={`${routes.careers}/:id`} element={<JobDetail />} />
 
               <Route path={routes.startProject} element={<StartProject />} />
               <Route path={routes.privacy} element={<Privacy />} />
+              <Route path={routes.terms} element={<Terms />} />
 
               {/* Compatibility redirects for the previous information architecture */}
               {LEGACY_REDIRECTS.map(({ from, to }) => (

@@ -1,9 +1,8 @@
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, ArrowLeft, Lock, ExternalLink, Info } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Lock, ExternalLink } from 'lucide-react'
 import { Section, SectionHeader } from '../components/ui/Section'
 import Button from '../components/ui/Button'
-import { StatusBadge } from '../components/ui/Badge'
 import ProjectVisual from '../components/ui/ProjectVisual'
 import WorkCard from '../components/work/WorkCard'
 import FinalCTA from '../components/home/FinalCTA'
@@ -32,7 +31,7 @@ import {
 import { useMotionVariants, revealOnce } from '../lib/motion'
 
 /**
- * Reusable case-study / concept page. (Spec §7.3, §21)
+ * Reusable case-study page. (Spec §7.3, §21)
  *
  * One component renders every Work item. Sections appear only when the project
  * carries that content, so a lightly documented project degrades gracefully
@@ -43,7 +42,7 @@ const ProjectDetail = () => {
   const project = getProject(slug)
 
   usePageMeta({
-    title: project ? `${project.title} | Gen Clover Work` : undefined,
+    title: project ? `${project.title} | Gen Clover` : undefined,
     description: project?.summary,
     path: project ? `${routes.work}/${project.slug}` : undefined,
     image: project?.heroImage ?? undefined,
@@ -53,16 +52,13 @@ const ProjectDetail = () => {
 
   if (!project) return <Navigate to={routes.work} replace />
 
-  const { status, industry, category } = projectMeta(project)
+  const { industry, category } = projectMeta(project)
   const primaryService = getService(project.primaryService)
   const additionalServices = (project.additionalServices ?? []).map(getService).filter(Boolean)
   const related = getRelatedProjects(project)
-  const isConcept = project.status === 'concept'
-  const isConfidential = project.status === 'confidential'
   const cs = project.caseStudy
 
   const metaRows = [
-    { label: 'Status', value: status.publicLabel },
     { label: 'Industry', value: industry?.label },
     { label: 'Project type', value: category?.label },
     { label: 'Primary service', value: primaryService?.title, to: primaryService && `${routes.services}/${primaryService.slug}` },
@@ -84,9 +80,9 @@ const ProjectDetail = () => {
           </Link>
 
           <motion.div initial="hidden" animate="visible" variants={v.stagger(0.08)}>
-            <motion.div variants={v.fadeUp} className="mt-7">
-              <StatusBadge status={project.status} />
-            </motion.div>
+            <motion.p variants={v.fadeUp} className="eyebrow mt-7">
+              {[category?.label, industry?.label].filter(Boolean).join(' · ')}
+            </motion.p>
 
             <motion.h1
               variants={v.fadeUp}
@@ -131,38 +127,6 @@ const ProjectDetail = () => {
 
       {/* The delivery loop, animated — 01 through to hand-off */}
       <FlowStrip flow={cs?.flow} />
-
-      {/* Concept disclosure — stated plainly, not buried. (Spec §1.2, §7.2) */}
-      {isConcept && (
-        <div className="border-b border-accent-900/50 bg-accent-950/30">
-          <div className="container flex items-start gap-3 py-4">
-            <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent-400" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-silver-300">
-              <span className="font-medium text-silver-100">This is a Gen Clover Concept.</span>{' '}
-              It is a demonstration project created to show the type of work we deliver. It is not
-              a completed client engagement, and the organisation described is not a Gen Clover
-              client.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Confidential disclosure — says why no client is named. (Spec §7.2) */}
-      {isConfidential && (
-        <div className="border-b border-ink-800 bg-ink-900">
-          <div className="container flex items-start gap-3 py-4">
-            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-silver-400" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-silver-300">
-              <span className="font-medium text-silver-100">
-                This is delivered client work.
-              </span>{' '}
-              The client is not named and identifying details have been removed at their
-              request. Everything described here is a property of the system as built, not an
-              estimate.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* ------------------------------------------------- visual + metadata */}
       <Section className="!pt-14">
@@ -379,12 +343,6 @@ const ProjectDetail = () => {
                     </li>
                   ))}
                 </ul>
-                {isConcept && (
-                  <p className="mt-5 border-t border-ink-800 pt-4 text-xs leading-relaxed text-silver-500">
-                    Conceptual outcomes describe what the design is intended to achieve. They are
-                    not measured results from a delivered engagement.
-                  </p>
-                )}
               </div>
             )}
           </div>

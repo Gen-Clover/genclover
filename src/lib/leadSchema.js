@@ -1,10 +1,6 @@
 import { serviceEnquiryOptions } from '../data/services'
-import {
-  businessTypeOptions,
-  regionOptions,
-  budgetOptions,
-  timelineOptions,
-} from '../data/industries'
+import { isValidPhoneNumber } from 'libphonenumber-js/min'
+import { businessTypeOptions, regionOptions, timelineOptions } from '../data/industries'
 
 /**
  * The Start a Project brief. (Spec §9)
@@ -45,10 +41,9 @@ export const STEPS = [
   {
     id: 'budget',
     number: 4,
-    kind: 'choice',
+    kind: 'budget',
     question: 'Approximate budget?',
-    help: 'Optional. A rough range helps us propose something realistic rather than generic.',
-    options: budgetOptions,
+    help: 'Optional. Pick any currency and give a rough figure. It helps us propose something realistic rather than generic.',
     required: false,
   },
   {
@@ -81,12 +76,12 @@ export const STEPS = [
     number: 7,
     kind: 'fields',
     question: 'How do we reach you?',
-    help: 'We use these details only to respond to this enquiry.',
+    help: 'We use these details only to respond to this inquiry.',
     fields: [
       { name: 'name', label: 'Your name', type: 'text', required: true, autoComplete: 'name', maxLength: 120 },
       { name: 'company', label: 'Company name', type: 'text', required: false, autoComplete: 'organization', maxLength: 160 },
       { name: 'email', label: 'Business email', type: 'email', required: true, autoComplete: 'email', maxLength: 200 },
-      { name: 'phone', label: 'Phone number', type: 'tel', required: true, autoComplete: 'tel', maxLength: 40 },
+      { name: 'phone', label: 'Phone number', type: 'tel-intl', countryName: 'phoneCountry', required: true, autoComplete: 'tel-national', maxLength: 30 },
     ],
   },
   {
@@ -96,7 +91,7 @@ export const STEPS = [
     question: 'One last thing.',
     help: 'Please confirm you are happy for us to get in touch.',
     label:
-      'I agree to be contacted regarding this enquiry and acknowledge the privacy notice.',
+      'I agree to be contacted regarding this inquiry and acknowledge the privacy notice.',
     required: true,
   },
 ]
@@ -107,20 +102,21 @@ export const initialLeadState = {
   service: '',
   businessType: '',
   region: '',
-  budget: '',
+  budgetCurrency: '',
+  budgetAmount: '',
   timeline: '',
   details: '',
   name: '',
   company: '',
   email: '',
+  phoneCountry: '',
   phone: '',
   consent: false,
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-// Deliberately permissive: international numbers vary far more than most
-// regexes assume, and rejecting a valid number costs more than a loose match.
-const PHONE_RE = /^[+()\d][\d\s\-().]{6,}$/
+/** Digits only, so "5,00,000" and "500 000" are both accepted. */
+export const normalizeAmount = (value) => String(value ?? '').replace(/[^\d]/g, '')
 
 /** Validate one field. Returns an error string, or null when valid. */
 export const validateField = (name, value, allValues = {}) => {
@@ -143,9 +139,21 @@ export const validateField = (name, value, allValues = {}) => {
     case 'email':
       if (!trimmed) return 'Please enter an email address.'
       return EMAIL_RE.test(trimmed) ? null : 'That does not look like a valid email address.'
+    case 'budgetAmount': {
+      if (!trimmed) return null
+      const digits = normalizeAmount(trimmed)
+      if (!digits || Number(digits) <= 0) return 'Please enter an amount, or leave it blank.'
+      if (digits.length > 12) return 'That figure looks too large. Please check it.'
+      return null
+    }
+    case 'phoneCountry':
+      return trimmed ? null : 'Please choose a country code.'
     case 'phone':
       if (!trimmed) return 'Please enter a phone number.'
-      return PHONE_RE.test(trimmed) ? null : 'Please enter a valid phone number.'
+      if (!allValues.phoneCountry) return 'Please choose a country code.'
+      return isValidPhoneNumber(trimmed, allValues.phoneCountry)
+        ? null
+        : 'That number does not look right for the selected country.'
     case 'consent':
       return value === true ? null : 'We need your agreement before we can contact you.'
     default:
@@ -157,7 +165,9 @@ export const validateField = (name, value, allValues = {}) => {
 export const fieldsForStep = (step) => {
   if (step.kind === 'choice') return [step.id]
   if (step.kind === 'text') return [step.field.name]
-  if (step.kind === 'fields') return step.fields.map((f) => f.name)
+  if (step.kind === 'budget') return ['budgetAmount']
+  if (step.kind === 'fields')
+    return step.fields.flatMap((f) => (f.countryName ? [f.countryName, f.name] : [f.name]))
   if (step.kind === 'consent') return ['consent']
   return []
 }
