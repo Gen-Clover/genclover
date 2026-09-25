@@ -60,4 +60,4 @@ export const capabilityProof = [
 ]
 
 export const PROOF_POLICY_NOTE =
-  'We publish client names, logos, testimonials and results only with permission, and only where the figures can be substantiated.'
+  'Many of our clients prefer not to be named, so our case studies describe the systems we built rather than who we built them for. Client names, logos and testimonials appear only with the client’s permission.'

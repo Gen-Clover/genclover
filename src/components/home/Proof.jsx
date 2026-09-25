@@ -22,7 +22,7 @@ const Proof = () => {
         index="08"
         eyebrow="Proof"
         title="What we will stand behind."
-        description="We would rather show you how we work than publish numbers we cannot substantiate."
+        description="How we build is something you can check: every project is documented from the system as built, every release is traceable, and quality is verified before launch."
       />
 
       {/* Verified metrics — appears only once approved figures exist */}

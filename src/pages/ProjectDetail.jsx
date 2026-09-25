@@ -132,7 +132,7 @@ const ProjectDetail = () => {
       <Section className="!pt-14">
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:gap-14">
           <motion.div variants={v.fadeUp} {...revealOnce}>
-            <ProjectVisual project={project} priority aspect="aspect-[16/9]" />
+            <ProjectVisual project={project} priority aspect="aspect-[16/9]" prefer="flow" />
           </motion.div>
 
           <motion.dl

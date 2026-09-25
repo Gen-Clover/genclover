@@ -16,7 +16,7 @@ const SelectedWork = () => {
   return (
     <Section id="work" muted>
       <SectionHeader
-        index="02"
+        index="03"
         eyebrow="Selected Work"
         title="Work we have delivered."
         description="AI, data, application and website projects, each with a full case study of the problem, the approach and how the system was built."

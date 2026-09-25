@@ -15,7 +15,7 @@ const WhatWeDo = () => {
   return (
     <Section id="services">
       <SectionHeader
-        index="03"
+        index="04"
         eyebrow="What We Do"
         title="Eight services, one way of working."
         description="From websites and web applications to AI, data platforms, cloud infrastructure and search, delivered by one team with one process."

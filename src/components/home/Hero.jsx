@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import Button from '../ui/Button'
 import { CloverMark } from '../brand/Logo'
 import { routes, site } from '../../data/site'
+import { brandPillars } from '../../data/taxonomy'
 import { useMotionVariants } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
 
@@ -24,6 +25,9 @@ const SERVICE_STRIP = [
   'DEVOPS',
   'SEO',
 ]
+
+/** Copies of the list per half: about 3,000px each, wider than a 2,560px screen. */
+const STRIP_REPEATS = 3
 
 const Hero = () => {
   const v = useMotionVariants()
@@ -57,7 +61,7 @@ const Hero = () => {
         <div className="absolute left-7 top-0 h-full w-px bg-gradient-to-b from-transparent via-accent-700/40 to-transparent" />
       </div>
 
-      <div className="container relative pb-20 pt-36 md:pb-28 md:pt-44 lg:pb-32 lg:pt-48">
+      <div className="container relative pb-14 pt-32 md:pb-16 md:pt-40 lg:pb-16 lg:pt-40">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -100,18 +104,43 @@ const Hero = () => {
             </Button>
           </motion.div>
         </motion.div>
+
+        {/* Brand pillars: Intelligence → Innovation → Automation → Growth */}
+        <motion.ol
+          initial="hidden"
+          animate="visible"
+          variants={v.stagger(0.08, 0.45)}
+          className="mt-16 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4"
+          aria-label="How we think about technology"
+        >
+          {brandPillars.map((pillar, i) => (
+            <motion.li key={pillar.label} variants={v.fadeUp} className="relative bg-ink-950/90 p-5 md:p-6">
+              <div className="flex items-center gap-3">
+                <span className="font-display text-[11px] font-semibold tracking-brand text-accent-500">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h2 className="font-display text-xs font-semibold uppercase tracking-brand text-silver-100">
+                  {pillar.label}
+                </h2>
+              </div>
+              <p className="mt-2.5 text-sm leading-relaxed text-silver-400">{pillar.description}</p>
+            </motion.li>
+          ))}
+        </motion.ol>
       </div>
 
       {/* ------------------------------------------------ service strip */}
       <div className="relative border-y border-ink-800 bg-ink-900/60">
         <div className="overflow-hidden py-3.5" aria-hidden="true">
           {/* Two identical halves; translating the wrapper by -50% loops seamlessly.
-              With reduced motion the wrapper simply does not animate. */}
+              Each half repeats the list so it is always wider than the widest
+              screen; otherwise the strip runs out and shows an empty gap before
+              the loop restarts. With reduced motion it does not animate. */}
           <div className={`flex w-max ${reduced ? '' : 'animate-marquee'}`}>
             {[0, 1].map((half) => (
               <div key={half} className="flex shrink-0 items-center">
-                {SERVICE_STRIP.map((label) => (
-                  <span key={`${half}-${label}`} className="flex shrink-0 items-center">
+                {Array.from({ length: STRIP_REPEATS }, () => SERVICE_STRIP).flat().map((label, i) => (
+                  <span key={`${half}-${i}`} className="flex shrink-0 items-center">
                     <span className="px-5 font-display text-[11px] font-medium tracking-brand text-silver-500">
                       {label}
                     </span>

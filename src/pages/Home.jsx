@@ -10,9 +10,10 @@ import FinalCTA from '../components/home/FinalCTA'
 import { usePageMeta, pageMeta } from '../lib/seo'
 
 /**
- * Homepage. Section order is fixed by the spec (§5.2):
- * 01 Hero · 02 Selected Work · 03 What We Do · 04 Why Gen Clover ·
- * 05 How We Work · 06 Industries · 07 Continuous Care · 08 Proof · 09 Final CTA
+ * Homepage. Section order (§5.2, revised in content QA so the brand pillars
+ * sit in the hero and the process is the second screen):
+ * 01 Hero + pillars · 02 How We Work · 03 Selected Work · 04 What We Do ·
+ * 05 Why Gen Clover · 06 Industries · 07 Continuous Care · 08 Proof · 09 Final CTA
  */
 const Home = () => {
   usePageMeta(pageMeta.home)
@@ -20,10 +21,10 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <HowWeWorkPreview />
       <SelectedWork />
       <WhatWeDo />
       <WhyGenClover />
-      <HowWeWorkPreview />
       <IndustriesStrip />
       <ContinuousCare />
       <Proof />

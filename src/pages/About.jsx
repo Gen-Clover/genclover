@@ -120,7 +120,7 @@ const About = () => {
         <SectionHeader
           eyebrow="Proof"
           title="Where our claims come from."
-          description="We do not publish client counts, satisfaction scores or performance figures we cannot evidence. Here is what we can point to instead."
+          description="Our case studies document the systems we built, from architecture to safeguards. Here is what else you can check."
         />
         <motion.ul
           variants={v.stagger(0.06)}

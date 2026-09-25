@@ -87,7 +87,7 @@ export default {
       animation: {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
         'ring-pulse': 'ring-pulse 6s ease-in-out infinite',
-        marquee: 'marquee 40s linear infinite',
+        marquee: 'marquee 120s linear infinite',
         'node-pulse': 'node-pulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite',
       },
     },

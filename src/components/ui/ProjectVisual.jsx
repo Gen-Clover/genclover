@@ -1,15 +1,17 @@
+import { useReducedMotion } from 'framer-motion'
 import { CloverMark } from '../brand/Logo'
 
 /**
  * Project imagery.
  *
  * Client screenshots cannot be published, so each project is illustrated with
- * a diagram of its own delivery flow, drawn from the `flow` steps in its case
- * study. The diagram is real information about the project rather than a stock
- * photo or a fabricated interface mockup (Spec §4, §25).
+ * a diagram generated from its own case study: an animated architecture map
+ * (the `architecture.layers` of the case study) on cards, and the delivery
+ * `flow` on the project page. Both are real information about the project
+ * rather than stock photos or fabricated interface mockups (Spec §4, §25).
  *
- * Order of preference: `project.heroImage` (a real image) → the flow diagram →
- * a plain brand panel for a project with no flow defined.
+ * Order of preference: `project.heroImage` (a real image) → the requested
+ * diagram → the other diagram → a plain brand panel.
  */
 
 const VB_W = 400
@@ -125,9 +127,179 @@ const FlowDiagram = ({ flow, title, id }) => {
 const seedFrom = (slug = '') =>
   [...slug].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 997, 7)
 
-const ProjectVisual = ({ project, className = '', aspect = 'aspect-[16/10]', priority = false }) => {
+
+/* ------------------------------------------------------ architecture map */
+
+const stripIndex = (text = '') => text.replace(/^\d+\s*·\s*/, '')
+
+/** Shorten to fit a box, at a word boundary where possible. */
+const fit = (text, max) => {
+  if (text.length <= max) return text
+  const cut = text.slice(0, max - 1)
+  const space = cut.lastIndexOf(' ')
+  return `${(space > max * 0.5 ? cut.slice(0, space) : cut).replace(/[,\s]+$/, '')}…`
+}
+
+const MAX_NODES = 3
+
+/**
+ * Architecture layers as panels, left to right (a two-row snake past four
+ * layers), with pulses travelling along the connectors to show data moving
+ * through the system. Pulses are omitted for visitors who prefer reduced motion.
+ */
+const ArchitectureMap = ({ layers, title, id }) => {
+  const reduced = useReducedMotion()
+  const list = layers.slice(0, 6)
+  const rows = list.length > 4 ? 2 : 1
+  const perRow = Math.ceil(list.length / rows)
+  const padX = 12
+  const padY = 12
+  const gapX = 16
+  const gapY = 18
+  const panelW = (VB_W - padX * 2 - gapX * (perRow - 1)) / perRow
+  const panelH = (VB_H - padY * 2 - gapY * (rows - 1)) / rows
+  const fontSize = rows === 2 ? 8 : 8.5
+  const maxChars = Math.max(8, Math.floor((panelW - 20) / (fontSize * 0.62)))
+
+  const panels = list.map((layer, i) => {
+    const row = Math.floor(i / perRow)
+    const col = i % perRow
+    // Second row runs right to left so the chain reads as one path.
+    const visualCol = row === 1 ? perRow - 1 - col : col
+    return {
+      layer,
+      x: padX + visualCol * (panelW + gapX),
+      y: padY + row * (panelH + gapY),
+      row,
+    }
+  })
+
+  const connectors = panels.slice(0, -1).map((a, i) => {
+    const b = panels[i + 1]
+    if (a.row === b.row) {
+      const y = a.y + panelH / 2
+      const leftToRight = b.x > a.x
+      const x1 = leftToRight ? a.x + panelW : a.x
+      const x2 = leftToRight ? b.x : b.x + panelW
+      return `M ${x1} ${y} L ${x2} ${y}`
+    }
+    const x = a.x + panelW / 2
+    return `M ${x} ${a.y + panelH} L ${x} ${b.y}`
+  })
+
+  const nodeH = rows === 2 ? 17 : 22
+  const nodeGap = rows === 2 ? 4 : 6
+  const headerH = rows === 2 ? 20 : 26
+
+  return (
+    <svg
+      viewBox={`0 0 ${VB_W} ${VB_H}`}
+      className="absolute inset-0 h-full w-full"
+      role="img"
+      aria-label={`${title}: architecture, ${list.map((l) => stripIndex(l.label)).join(', ')}`}
+    >
+      {connectors.map((d, i) => (
+        <g key={`c${i}`}>
+          <path d={d} className="stroke-ink-600" strokeWidth="1.5" strokeDasharray="3 3" fill="none" />
+          {!reduced && (
+            <circle r="2.6" className="fill-accent-500">
+              <animateMotion
+                dur="1.6s"
+                begin={`${i * 0.4}s`}
+                repeatCount="indefinite"
+                path={d}
+                keyPoints="0;1"
+                keyTimes="0;1"
+                calcMode="linear"
+              />
+            </circle>
+          )}
+        </g>
+      ))}
+
+      {panels.map(({ layer, x, y }, i) => {
+        const nodes = layer.nodes.slice(0, MAX_NODES)
+        const extra = layer.nodes.length - nodes.length
+        const blockH = nodes.length * nodeH + (nodes.length - 1) * nodeGap
+        const top = y + headerH + Math.max(0, (panelH - headerH - 8 - blockH) / 2)
+        return (
+          <g key={`${id}-p${i}`}>
+            <rect
+              x={x}
+              y={y}
+              width={panelW}
+              height={panelH}
+              rx="7"
+              className={layer.emphasis ? 'fill-accent-950/60 stroke-accent-600' : 'fill-ink-900/80 stroke-ink-700'}
+              strokeWidth="1"
+            >
+              {layer.emphasis && !reduced && (
+                <animate attributeName="stroke-opacity" values="1;0.35;1" dur="2.4s" repeatCount="indefinite" />
+              )}
+            </rect>
+            <text
+              x={x + 8}
+              y={y + (rows === 2 ? 13 : 16)}
+              className={`font-display ${layer.emphasis ? 'fill-accent-400' : 'fill-silver-500'}`}
+              fontSize={fontSize - 0.5}
+              fontWeight="600"
+              letterSpacing="0.06em"
+            >
+              {fit(stripIndex(layer.label).toUpperCase(), maxChars - (extra > 0 ? 5 : 2))}
+            </text>
+            {nodes.map((node, n) => (
+              <g key={n}>
+                <rect
+                  x={x + 6}
+                  y={top + n * (nodeH + nodeGap)}
+                  width={panelW - 12}
+                  height={nodeH}
+                  rx="4"
+                  className="fill-ink-850 stroke-ink-600"
+                  strokeWidth="0.75"
+                />
+                <text
+                  x={x + 11}
+                  y={top + n * (nodeH + nodeGap) + nodeH / 2 + fontSize * 0.36}
+                  className="fill-silver-200"
+                  fontSize={fontSize}
+                >
+                  {fit(stripIndex(node.title), maxChars)}
+                </text>
+              </g>
+            ))}
+            {extra > 0 && (
+              <text
+                x={x + panelW - 8}
+                y={y + (rows === 2 ? 13 : 16)}
+                textAnchor="end"
+                className="fill-silver-600"
+                fontSize={fontSize - 0.5}
+              >
+                +{extra}
+              </text>
+            )}
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+const ProjectVisual = ({
+  project,
+  className = '',
+  aspect = 'aspect-[16/10]',
+  priority = false,
+  prefer = 'architecture',
+}) => {
   const { heroImage, title, slug } = project
   const flow = project.caseStudy?.flow
+  const layers = project.caseStudy?.architecture?.layers
+  const diagram =
+    prefer === 'flow'
+      ? (flow?.length && 'flow') || (layers?.length && 'architecture')
+      : (layers?.length && 'architecture') || (flow?.length && 'flow')
 
   if (heroImage) {
     return (
@@ -149,8 +321,8 @@ const ProjectVisual = ({ project, className = '', aspect = 'aspect-[16/10]', pri
 
   return (
     <div
-      role={flow?.length ? undefined : 'img'}
-      aria-label={flow?.length ? undefined : `${title}: Gen Clover brand graphic`}
+      role={diagram ? undefined : 'img'}
+      aria-label={diagram ? undefined : `${title}: Gen Clover brand graphic`}
       className={`relative overflow-hidden rounded-lg border border-ink-700 bg-ink-900 ${aspect} ${className}`}
     >
       {/* Diagonal structure + controlled glow, per the brand visual system */}
@@ -170,14 +342,16 @@ const ProjectVisual = ({ project, className = '', aspect = 'aspect-[16/10]', pri
         className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-accent-700/70 to-transparent"
         aria-hidden="true"
       />
-      {flow?.length ? (
+      {diagram === 'architecture' && <ArchitectureMap layers={layers} title={title} id={slug} />}
+      {diagram === 'flow' && (
         <>
           <div className="absolute bottom-3 right-3" aria-hidden="true">
             <CloverMark className="h-7 w-7 opacity-[0.22]" />
           </div>
           <FlowDiagram flow={flow} title={title} id={slug} />
         </>
-      ) : (
+      )}
+      {!diagram && (
         <div className="absolute inset-0 grid place-items-center" aria-hidden="true">
           <CloverMark className="h-16 w-16 opacity-[0.16]" />
         </div>
