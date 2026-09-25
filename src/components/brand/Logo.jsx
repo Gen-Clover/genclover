@@ -14,7 +14,7 @@ import { useId } from 'react'
  * Drawn pointing up; four rotated copies make the clover. The lobe is
  * deliberately wide — a narrow leaf reads as an X rather than a flower.
  */
-const PETAL_PATH =
+export const PETAL_PATH =
   'M0 0 C -20 -10, -34 -26, -28 -41 C -22 -56, 22 -56, 28 -41 C 34 -26, 20 -10, 0 0 Z'
 
 export const CloverMark = ({ className = 'h-8 w-8', title }) => {
