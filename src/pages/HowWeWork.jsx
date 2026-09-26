@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Check, FileText, Flag, Users, Wrench } from 'lucide-react'
-import { PageHero, Section, SectionHeader } from '../components/ui/Section'
+import { Section, SectionHeader } from '../components/ui/Section'
+import { SplitScreen, GlassPanel } from '../components/ui/SplitScreen'
 import Button from '../components/ui/Button'
 import FinalCTA from '../components/home/FinalCTA'
 import Faq from '../components/ui/Faq'
@@ -31,13 +32,9 @@ import { useMotionVariants, revealOnce } from '../lib/motion'
 
 /* ------------------------------------------------------ stage explorer */
 
-const StageExplorer = () => {
-  const [active, setActive] = useState(0)
+/** Vertical list of stages (tabs). */
+const StageTabs = ({ active, setActive, compact = false }) => {
   const tabsRef = useRef([])
-  const reduced = useReducedMotion()
-  const step = processSteps[active]
-  const Icon = step.icon
-
   const onKeyDown = (e) => {
     const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }
     if (!(e.key in keys)) return
@@ -47,6 +44,71 @@ const StageExplorer = () => {
     tabsRef.current[next]?.focus()
   }
 
+  return (
+    <div
+      role="tablist"
+      aria-label="Delivery stages"
+      onKeyDown={onKeyDown}
+      className={
+        compact
+          ? 'grid gap-1'
+          : '-mx-4 flex gap-2 overflow-x-auto px-4 pb-2'
+      }
+    >
+      {processSteps.map((s, i) => {
+        const selected = i === active
+        return (
+          <button
+            key={s.number}
+            ref={(el) => (tabsRef.current[i] = el)}
+            type="button"
+            role="tab"
+            id={`stage-tab-${i}`}
+            aria-selected={selected}
+            aria-controls="stage-panel"
+            tabIndex={selected ? 0 : -1}
+            onClick={() => setActive(i)}
+            onMouseEnter={compact ? () => setActive(i) : undefined}
+            className={`group relative flex shrink-0 items-center gap-4 rounded-lg border px-4 text-left transition-colors ${
+              compact ? 'w-full py-2 [@media(min-height:860px)]:py-2.5' : 'py-3'
+            } ${
+              selected
+                ? 'border-accent-700/70 bg-accent-950/40'
+                : 'border-transparent hover:border-ink-700 hover:bg-ink-900'
+            }`}
+          >
+            <span
+              className={`font-display text-xs font-semibold tracking-brand ${
+                selected ? 'text-accent-400' : 'text-silver-600'
+              }`}
+            >
+              {s.number}
+            </span>
+            <span
+              className={`text-sm font-semibold ${selected ? 'text-silver-100' : 'text-silver-400 group-hover:text-silver-200'}`}
+            >
+              {s.title}
+            </span>
+            {compact && (
+              <span className="ml-auto hidden truncate text-xs text-silver-600 xl:block">
+                {s.summary.replace(/\.$/, '')}
+              </span>
+            )}
+            {selected && (
+              <span className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-accent-500" aria-hidden="true" />
+            )}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+/** Detail of the selected stage. */
+const StagePanel = ({ active, setActive }) => {
+  const reduced = useReducedMotion()
+  const step = processSteps[active]
+  const Icon = step.icon
   const columns = [
     { title: 'What we do', items: step.weDo, icon: Wrench },
     { title: 'What we need from you', items: step.youBring, icon: Users },
@@ -54,139 +116,83 @@ const StageExplorer = () => {
   ]
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[17rem_1fr] lg:gap-10">
-      {/* Stage list: horizontal scroll on small screens, vertical on large */}
-      <div
-        role="tablist"
-        aria-label="Delivery stages"
-        onKeyDown={onKeyDown}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0 lg:pb-0"
-      >
-        {processSteps.map((s, i) => {
-          const selected = i === active
-          return (
-            <button
-              key={s.number}
-              ref={(el) => (tabsRef.current[i] = el)}
-              type="button"
-              role="tab"
-              id={`stage-tab-${i}`}
-              aria-selected={selected}
-              aria-controls="stage-panel"
-              tabIndex={selected ? 0 : -1}
-              onClick={() => setActive(i)}
-              className={`group relative flex shrink-0 items-center gap-4 rounded-lg border px-4 py-3 text-left transition-colors lg:w-full ${
-                selected
-                  ? 'border-accent-700/70 bg-accent-950/40'
-                  : 'border-transparent hover:border-ink-700 hover:bg-ink-900'
-              }`}
-            >
-              <span
-                className={`font-display text-xs font-semibold tracking-brand ${
-                  selected ? 'text-accent-400' : 'text-silver-600'
-                }`}
-              >
-                {s.number}
-              </span>
-              <span
-                className={`text-sm font-semibold ${selected ? 'text-silver-100' : 'text-silver-400 group-hover:text-silver-200'}`}
-              >
-                {s.title}
-              </span>
-              {selected && (
-                <span
-                  className="absolute inset-y-2 left-0 hidden w-0.5 rounded-full bg-accent-500 lg:block"
-                  aria-hidden="true"
-                />
-              )}
-            </button>
-          )
-        })}
-      </div>
-
-      <div
-        id="stage-panel"
-        role="tabpanel"
-        aria-labelledby={`stage-tab-${active}`}
-        className="surface surface-static relative overflow-hidden p-6 md:p-9"
-      >
-        <div className="grid-lines pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step.number}
-            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="relative"
-          >
-            <div className="flex items-start gap-4">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-accent-800 bg-accent-950/50">
-                <Icon className="h-5 w-5 text-accent-400" aria-hidden="true" />
-              </span>
-              <div>
-                <p className="eyebrow">
-                  Stage {step.number} · {step.title}
-                </p>
-                <h3 className="mt-2 text-2xl font-semibold leading-snug text-silver-100 md:text-3xl">
-                  {step.question}
-                </h3>
-              </div>
-            </div>
-
-            <p className="mt-6 max-w-prose text-base leading-relaxed text-silver-400">{step.detail}</p>
-
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {columns.map((col) => {
-                const ColIcon = col.icon
-                return (
-                  <div key={col.title} className="tile rounded-xl border border-ink-800 bg-ink-950/70 p-5">
-                    <p className="flex items-center gap-2 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-400">
-                      <ColIcon className="h-3.5 w-3.5 text-accent-500" aria-hidden="true" />
-                      {col.title}
-                    </p>
-                    <ul className="mt-4 space-y-2.5">
-                      {col.items.map((item) => (
-                        <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-silver-300">
-                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent-500" aria-hidden="true" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="mt-5 flex items-start gap-3 rounded-xl border border-accent-800/60 bg-accent-950/30 p-5">
-              <Flag className="mt-0.5 h-4 w-4 shrink-0 text-accent-400" aria-hidden="true" />
-              <p className="text-sm leading-relaxed text-silver-200">
-                <span className="font-semibold text-silver-100">Before we move on: </span>
-                {step.gate}
+    <div id="stage-panel" role="tabpanel" aria-labelledby={`stage-tab-${active}`}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step.number}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          <div className="flex items-start gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent-800 bg-accent-950/50">
+              <Icon className="h-5 w-5 text-accent-400" aria-hidden="true" />
+            </span>
+            <div>
+              <p className="eyebrow">
+                Stage {step.number} · {step.title}
               </p>
+              <h3 className="mt-1.5 text-xl font-semibold leading-snug text-silver-100 xl:text-2xl">
+                {step.question}
+              </h3>
             </div>
+          </div>
 
-            <div className="mt-6 flex items-center justify-between text-sm">
-              <button
-                type="button"
-                onClick={() => setActive((i) => Math.max(0, i - 1))}
-                disabled={active === 0}
-                className="text-silver-500 transition-colors hover:text-silver-200 disabled:invisible"
-              >
-                ← {processSteps[active - 1]?.title}
-              </button>
-              <button
-                type="button"
-                onClick={() => setActive((i) => Math.min(processSteps.length - 1, i + 1))}
-                disabled={active === processSteps.length - 1}
-                className="font-medium text-accent-400 transition-colors hover:text-accent-300 disabled:invisible"
-              >
-                Next: {processSteps[active + 1]?.title} →
-              </button>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+          <p className="mt-4 text-sm leading-relaxed text-silver-400 [@media(max-height:780px)]:hidden">
+            {step.detail}
+          </p>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {columns.map((col) => {
+              const ColIcon = col.icon
+              return (
+                <div key={col.title} className="tile rounded-xl border border-ink-800 bg-ink-950/70 p-4">
+                  <p className="flex items-center gap-2 font-display text-[10px] font-semibold uppercase tracking-brand text-silver-400">
+                    <ColIcon className="h-3.5 w-3.5 text-accent-500" aria-hidden="true" />
+                    {col.title}
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {col.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-[13px] leading-snug text-silver-300">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent-500" aria-hidden="true" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="mt-4 flex items-start gap-3 rounded-xl border border-accent-800/60 bg-accent-950/30 p-4">
+            <Flag className="mt-0.5 h-4 w-4 shrink-0 text-accent-400" aria-hidden="true" />
+            <p className="text-sm leading-relaxed text-silver-200">
+              <span className="font-semibold text-silver-100">Before we move on: </span>
+              {step.gate}
+            </p>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between text-sm">
+            <button
+              type="button"
+              onClick={() => setActive(Math.max(0, active - 1))}
+              disabled={active === 0}
+              className="text-silver-500 transition-colors hover:text-silver-200 disabled:invisible"
+            >
+              ← {processSteps[active - 1]?.title}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActive(Math.min(processSteps.length - 1, active + 1))}
+              disabled={active === processSteps.length - 1}
+              className="font-medium text-accent-400 transition-colors hover:text-accent-300 disabled:invisible"
+            >
+              Next: {processSteps[active + 1]?.title} →
+            </button>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
@@ -196,30 +202,52 @@ const StageExplorer = () => {
 const HowWeWork = () => {
   usePageMeta(pageMeta.howWeWork)
   const v = useMotionVariants()
+  const [stage, setStage] = useState(0)
 
   return (
     <>
-      <PageHero
-        eyebrow="How We Work"
-        title="What working together actually looks like."
-        description="The stages are the easy part. This is the detail behind them: what we do at each step, what we need from you, what you get, and how you always know where things stand."
-      >
-        <Button to={routes.startProject} size="lg">
-          Start a Project
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Button>
-      </PageHero>
+      <SplitScreen
+        label="How We Work"
+        cols="lg:grid-cols-[0.8fr_1.2fr]"
+        left={
+          <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
+            <motion.p variants={v.fadeUp} className="eyebrow">
+              How We Work
+            </motion.p>
+            <motion.h1
+              variants={v.fadeUp}
+              className="mt-3 text-4xl leading-[1.05] tracking-tight [@media(min-height:820px)]:xl:text-[2.75rem]"
+            >
+              What working together actually looks like.
+            </motion.h1>
+            <motion.p variants={v.fadeUp} className="mt-3 text-base leading-relaxed text-silver-400">
+              Every stage answers one question, produces something you can review, and ends with a
+              decision. Pick a stage.
+            </motion.p>
+            <motion.div variants={v.fadeUp} className="mt-5 hidden lg:block">
+              <StageTabs active={stage} setActive={setStage} compact />
+            </motion.div>
+            <motion.div variants={v.fadeUp} className="mt-5">
+              <Button to={routes.startProject} size="md">
+                Start a Project
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </motion.div>
+          </motion.div>
+        }
+        right={
+          <GlassPanel>
+            <StagePanel active={stage} setActive={setStage} />
+          </GlassPanel>
+        }
+      />
 
-      {/* Stage explorer */}
-      <Section>
-        <SectionHeader
-          eyebrow="Stage by stage"
-          title="Every stage answers one question."
-          description="Pick a stage to see who does what, what it produces, and the decision that has to be made before the next one starts."
-        />
-        <motion.div variants={v.fadeUp} {...revealOnce}>
-          <StageExplorer />
-        </motion.div>
+      {/* Small screens: the stage explorer below the intro */}
+      <Section className="lg:hidden">
+        <StageTabs active={stage} setActive={setStage} />
+        <div className="surface surface-static mt-4 p-6">
+          <StagePanel active={stage} setActive={setStage} />
+        </div>
       </Section>
 
       {/* Rhythm */}

@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight, ArrowUpRight } from 'lucide-react'
-import { PageHero, Section } from '../components/ui/Section'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
+import { Section } from '../components/ui/Section'
+import { SplitScreen, GlassPanel, panelSwap } from '../components/ui/SplitScreen'
 import Button from '../components/ui/Button'
 import FinalCTA from '../components/home/FinalCTA'
 import { industryPages } from '../data/industries'
@@ -11,25 +13,173 @@ import { routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants, revealOnce } from '../lib/motion'
 
-/** Industries hub. (Spec §13) Lightweight landing pages, no invented client claims. */
+/**
+ * Industries hub. (Spec §13) No invented client claims.
+ *
+ * Screen 1: the sectors on the left; hovering one previews it on the right
+ * (what matters there, the services we bring, and the delivered work in that
+ * sector). On small screens the sectors are shown as cards instead.
+ */
+
+const IndustryPreview = ({ industry }) => {
+  const services = industry.services.map(getService).filter(Boolean)
+  const work = getProjectsByIndustry(industry.id)
+  return (
+    <motion.div {...panelSwap}>
+      <p className="eyebrow">{industry.label}</p>
+      <h2 className="mt-2 text-2xl font-semibold leading-snug text-silver-100">{industry.headline}</h2>
+      <p className="mt-3 text-sm leading-relaxed text-silver-300 [@media(max-height:760px)]:line-clamp-2">
+        {industry.description}
+      </p>
+
+      <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
+        What usually matters here
+      </p>
+      <ul className="mt-2.5 grid gap-2 xl:grid-cols-2">
+        {industry.focusAreas.map((f) => (
+          <li key={f} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
+            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
+        What we bring
+      </p>
+      <ul className="mt-2.5 flex flex-wrap gap-1.5">
+        {services.map((service) => (
+          <li key={service.slug}>
+            <Link
+              to={`${routes.services}/${service.slug}`}
+              className="inline-block rounded border border-ink-700 bg-ink-950/70 px-2.5 py-1 text-xs text-silver-300 transition-colors hover:border-accent-700/60 hover:text-silver-100"
+            >
+              {service.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
+        Delivered in this sector
+      </p>
+      {work.length > 0 ? (
+        <ul className="mt-2.5 space-y-1.5">
+          {work.slice(0, 4).map((p) => (
+            <li key={p.slug}>
+              <Link
+                to={`${routes.work}/${p.slug}`}
+                className="group inline-flex items-center gap-2 text-sm text-silver-200 transition-colors hover:text-accent-400"
+              >
+                <ArrowUpRight className="h-3.5 w-3.5 text-accent-500" aria-hidden="true" />
+                {p.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-2.5 text-sm text-silver-500">
+          No published project here yet. The capabilities above are the ones we would bring.
+        </p>
+      )}
+
+      <div className="mt-6">
+        <Button to={`${routes.industries}/${industry.id}`} size="sm">
+          Open {industry.label}
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Button>
+      </div>
+    </motion.div>
+  )
+}
+
 const Industries = () => {
   usePageMeta(pageMeta.industries)
   const v = useMotionVariants()
+  const [active, setActive] = useState(industryPages[0].id)
+  const activeIndustry = industryPages.find((i) => i.id === active) ?? industryPages[0]
 
   return (
     <>
-      <PageHero
-        eyebrow="Industries"
-        title="Who we build for."
-        description="Every sector brings its own constraints, vocabulary and definition of done. Here is how we approach the ones we work in most."
-      >
-        <Button to={routes.startProject} size="lg">
-          Start a Project
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Button>
-      </PageHero>
+      <SplitScreen
+        label="Industries"
+        cols="lg:grid-cols-[0.9fr_1.1fr]"
+        left={
+          <>
+            <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
+              <motion.p variants={v.fadeUp} className="eyebrow">
+                Industries
+              </motion.p>
+              <motion.h1
+                variants={v.fadeUp}
+                className="mt-3 text-4xl leading-[1.05] tracking-tight [@media(min-height:820px)]:xl:text-5xl"
+              >
+                Who we build for.
+              </motion.h1>
+              <motion.p variants={v.fadeUp} className="mt-3 max-w-xl text-base leading-relaxed text-silver-400">
+                Every sector has its own constraints and definition of done. Hover a sector to see
+                how we approach it.
+              </motion.p>
+            </motion.div>
 
-      <Section>
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              variants={v.stagger(0.03, 0.2)}
+              className="mt-5 grid min-h-0 gap-1.5 overflow-y-auto sm:grid-cols-2"
+            >
+              {industryPages.map((industry) => {
+                const count = getProjectsByIndustry(industry.id).length
+                const selected = industry.id === activeIndustry.id
+                return (
+                  <motion.li key={industry.id} variants={v.fadeUp}>
+                    <Link
+                      to={`${routes.industries}/${industry.id}`}
+                      onMouseEnter={() => setActive(industry.id)}
+                      onFocus={() => setActive(industry.id)}
+                      className={`flex items-center justify-between gap-3 rounded-lg border px-3.5 py-2.5 text-sm transition-colors ${
+                        selected
+                          ? 'border-accent-700/70 bg-accent-950/35 text-silver-100'
+                          : 'border-ink-800 bg-ink-900/50 text-silver-300 hover:border-ink-600'
+                      }`}
+                    >
+                      <span className="font-medium">{industry.label}</span>
+                      {count > 0 && (
+                        <span
+                          className={`grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[10px] font-semibold ${
+                            selected ? 'bg-accent-600 text-white' : 'bg-ink-800 text-silver-400'
+                          }`}
+                          title={`${count} delivered ${count === 1 ? 'project' : 'projects'}`}
+                        >
+                          {count}
+                        </span>
+                      )}
+                    </Link>
+                  </motion.li>
+                )
+              })}
+            </motion.ul>
+
+            <p className="mt-4 text-xs leading-relaxed text-silver-500">
+              Not listed? The engineering discipline does not change.{' '}
+              <Link to={routes.startProject} className="text-accent-400 hover:text-accent-300">
+                Tell us about your sector
+              </Link>
+              .
+            </p>
+          </>
+        }
+        right={
+          <GlassPanel>
+            <AnimatePresence mode="wait">
+              <IndustryPreview key={activeIndustry.id} industry={activeIndustry} />
+            </AnimatePresence>
+          </GlassPanel>
+        }
+      />
+
+      {/* Small screens: the sectors as cards (the preview panel is desktop-only) */}
+      <Section className="lg:hidden">
         <motion.ul variants={v.stagger(0.05)} {...revealOnce} className="grid gap-5 lg:grid-cols-2">
           {industryPages.map((industry) => {
             const count = getProjectsByIndustry(industry.id).length
@@ -76,10 +226,6 @@ const Industries = () => {
           })}
         </motion.ul>
 
-        <p className="mt-10 max-w-prose text-sm leading-relaxed text-silver-500">
-          Working in a sector that is not listed? The engineering discipline does not change, so get
-          in touch and tell us about the constraints you work under.
-        </p>
       </Section>
 
       <FinalCTA location="industries_hub" />
