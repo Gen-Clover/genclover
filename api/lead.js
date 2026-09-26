@@ -16,10 +16,19 @@
  * Variables). Until one is set, the endpoint returns 503 with a clear message
  * and the form tells the visitor to email us instead — it never fails silently.
  *
- *   RESEND_API_KEY     Sends the notification email via Resend.
+ *   Email through Microsoft 365 (Microsoft Graph), sent from our own mailbox:
+ *   MS_TENANT_ID       Directory (tenant) ID of the genclover.com Microsoft 365
+ *   MS_MAIL_CLIENT_ID  Application (client) ID of the gc-website-mail app
+ *   MS_MAIL_CLIENT_SECRET Client secret of that app (Mail.Send, application)
+ *   LEAD_NOTIFY_FROM   Mailbox internal notifications are sent from
+ *                      (default: no-reply@genclover.com). Replies to them go to
+ *                      the inquirer via reply-to, never to this mailbox.
+ *
+ *   Sender policy: internal notifications come from no-reply@genclover.com;
+ *   anything sent to people outside the company comes from contact@genclover.com,
+ *   so their replies reach a monitored inbox.
  *   LEAD_NOTIFY_TO     Destination address, or several separated by commas
  *                      (default: contact@genclover.com).
- *   LEAD_NOTIFY_FROM   Verified sender (default: website@genclover.com).
  *
  *   LEAD_WEBHOOK_URL   Alternative: POST the lead record to a webhook
  *                      (CRM, Zapier, Make, an internal service).
@@ -36,7 +45,7 @@ const NOTIFY_TO = (process.env.LEAD_NOTIFY_TO || 'contact@genclover.com')
   .split(',')
   .map((a) => a.trim())
   .filter(Boolean)
-const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'website@genclover.com'
+const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'no-reply@genclover.com'
 
 /* ------------------------------------------------------------- rate limit */
 
@@ -137,29 +146,72 @@ const validate = (body) => {
 
 /* ------------------------------------------------------------ forwarding */
 
-const sendViaResend = async (record) => {
-  // Layout, labels and the plain-text part live in _leadEmail.js.
-  const { subject, html, text } = buildLeadEmail(record)
+/**
+ * Microsoft 365 via Microsoft Graph.
+ *
+ * The site signs in as its own app registration (client credentials, no
+ * user password) and sends from the NOTIFY_FROM mailbox, so the email is
+ * genuinely from @genclover.com, passes the domain's existing SPF/DKIM/DMARC,
+ * and a copy lands in that mailbox's Sent Items. The app's Mail.Send
+ * permission should be limited to that one mailbox (see README).
+ */
+const graphConfigured = () =>
+  Boolean(process.env.MS_TENANT_ID && process.env.MS_MAIL_CLIENT_ID && process.env.MS_MAIL_CLIENT_SECRET)
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: `Gen Clover Website <${NOTIFY_FROM}>`,
-      to: NOTIFY_TO,
-      reply_to: record.contact.email,
-      subject,
-      html,
-      text,
-    }),
-  })
+/** Access tokens last about an hour; reuse one while this instance is warm. */
+let graphToken = { value: null, expiresAt: 0 }
 
+const getGraphToken = async () => {
+  if (graphToken.value && Date.now() < graphToken.expiresAt - 60_000) return graphToken.value
+
+  const response = await fetch(
+    `https://login.microsoftonline.com/${encodeURIComponent(process.env.MS_TENANT_ID)}/oauth2/v2.0/token`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: process.env.MS_MAIL_CLIENT_ID,
+        client_secret: process.env.MS_MAIL_CLIENT_SECRET,
+        scope: 'https://graph.microsoft.com/.default',
+        grant_type: 'client_credentials',
+      }),
+    }
+  )
+  const payload = await response.json().catch(() => ({}))
+  if (!response.ok || !payload.access_token) {
+    throw new Error(`Microsoft sign-in failed (${response.status}): ${payload.error_description ?? payload.error ?? ''}`)
+  }
+  graphToken = { value: payload.access_token, expiresAt: Date.now() + payload.expires_in * 1000 }
+  return graphToken.value
+}
+
+const sendViaMicrosoft = async (record) => {
+  // Layout and labels live in _leadEmail.js.
+  const { subject, html } = buildLeadEmail(record)
+  const token = await getGraphToken()
+
+  const response = await fetch(
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(NOTIFY_FROM)}/sendMail`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: {
+          subject,
+          body: { contentType: 'HTML', content: html },
+          toRecipients: NOTIFY_TO.map((address) => ({ emailAddress: { address } })),
+          // Replying answers the person who sent the brief, not the website mailbox.
+          replyTo: [{ emailAddress: { address: record.contact.email, name: record.contact.name } }],
+        },
+        saveToSentItems: true,
+      }),
+    }
+  )
+
+  // Graph answers 202 Accepted with an empty body on success.
   if (!response.ok) {
     const detail = await response.text().catch(() => '')
-    throw new Error(`Resend rejected the request (${response.status}): ${detail}`)
+    throw new Error(`Microsoft Graph rejected the email (${response.status}): ${detail.slice(0, 500)}`)
   }
 }
 
@@ -250,13 +302,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (process.env.RESEND_API_KEY) {
-      await sendViaResend(record)
+    if (graphConfigured()) {
+      await sendViaMicrosoft(record)
     } else if (process.env.LEAD_WEBHOOK_URL) {
       await sendViaWebhook(record)
     } else {
       // Fail loudly rather than pretending a lead was captured.
-      console.error('[lead] No delivery method configured (RESEND_API_KEY or LEAD_WEBHOOK_URL).')
+      console.error('[lead] No delivery method configured (MS_TENANT_ID/MS_MAIL_CLIENT_ID/MS_MAIL_CLIENT_SECRET or LEAD_WEBHOOK_URL).')
       return res.status(503).json({
         message: 'Our inquiry system is not reachable right now.',
       })

@@ -187,13 +187,47 @@ instead — it never silently drops a lead.
 
 | Variable | Purpose |
 | --- | --- |
-| `RESEND_API_KEY` | Send the notification email via Resend |
-| `LEAD_NOTIFY_TO` | Destination address (default `contact@genclover.com`) |
-| `LEAD_NOTIFY_FROM` | Verified sender (default `website@genclover.com`) |
+| `MS_TENANT_ID` | Directory (tenant) ID of the genclover.com Microsoft 365 |
+| `MS_MAIL_CLIENT_ID` | Application (client) ID of the gc-website-mail app registration |
+| `MS_MAIL_CLIENT_SECRET` | Client secret of that app registration |
+| `LEAD_NOTIFY_FROM` | Mailbox internal notifications are sent from (default `no-reply@genclover.com`) |
+| `LEAD_NOTIFY_TO` | Destination address, or several separated by commas (default `contact@genclover.com`) |
 | `LEAD_WEBHOOK_URL` | *Alternative:* POST the lead record to a CRM/webhook |
 | `LEAD_WEBHOOK_TOKEN` | Optional bearer token for that webhook |
 
 Never commit these. `.env.example` documents them; `.env*` is gitignored.
+
+The notification email is sent through Microsoft 365 with Microsoft Graph, from our own
+`@genclover.com` mailbox, so it passes the domain's existing SPF, DKIM and DMARC with no
+extra DNS records. The app registration needs the **application** permission `Mail.Send`
+with admin consent, limited to the sending mailbox with an Exchange application access
+policy so the website cannot send as anyone else.
+
+Sender policy: internal notifications (such as a new inquiry) are sent from
+`no-reply@genclover.com`, with reply-to set to the inquirer. Anything sent to people outside
+the company comes from `contact@genclover.com`, so replies reach a monitored inbox. When an
+external email is added, add `contact@genclover.com` to the same access policy group.
+
+The full setup (every admin-portal change and PowerShell command, verification, secret
+renewal and troubleshooting) is recorded in
+[`docs/MICROSOFT-365-MAIL-SETUP.md`](docs/MICROSOFT-365-MAIL-SETUP.md).
+
+### Microsoft 365 naming convention
+
+Everything we create in Microsoft 365 and Vercel follows one pattern, so future apps and
+mailboxes sort together and say what they do. Names describe the job, never a person or a
+vendor. One app registration per capability, so each has only the permission it needs and
+a leaked secret affects one thing.
+
+| Thing | Pattern | In use |
+| --- | --- | --- |
+| Entra app registration | `gc-<system>-<capability>` | `gc-website-mail` |
+| Client secret description | `<where-used>-<yyyy-mm created>` | `vercel-2026-09` |
+| Sending-permission group | `gc-app-<app>-senders` | `gc-app-website-mail-senders@genclover.com` (hidden) |
+| Shared mailbox | the role, not a person | `no-reply@` (internal automation), `contact@` (outsiders) |
+| Mailbox display name | "Gen Clover" + team | `no-reply@` → "Gen Clover" |
+| Exchange mail flow rule | `gc-mailflow-<action>-<target>` | `gc-mailflow-reject-no-reply` |
+| Vercel variable | `MS_<CAPABILITY>_<VALUE>` | `MS_MAIL_CLIENT_ID`, `MS_MAIL_CLIENT_SECRET` (`MS_TENANT_ID` is shared) |
 
 The brief collects an optional budget as any ISO currency plus an approximate amount, and a
 required phone number with a searchable country calling code. Both are validated again in
