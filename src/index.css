@@ -296,6 +296,23 @@
       0 16px 36px -16px rgb(16 18 22 / 0.18);
   }
 
+  /*
+   * The expand button on a Work card's diagram. With a mouse it appears only
+   * while the card is hovered (or the button has keyboard focus), so it does
+   * not sit on top of the diagram. Touch screens have no hover, so there it
+   * is always shown.
+   */
+  @media (hover: hover) {
+    .expand-hint {
+      opacity: 0;
+      transition: opacity 200ms, border-color 200ms, color 200ms;
+    }
+    .group:hover .expand-hint,
+    .expand-hint:focus-visible {
+      opacity: 1;
+    }
+  }
+
   /* Thin red rule used as a section divider */
   .rule-accent {
     @apply h-px w-full bg-accent-line;

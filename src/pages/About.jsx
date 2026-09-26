@@ -1,5 +1,5 @@
-import { useEffect, useId, useRef, useState } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { useId, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { ArrowRight, Mail, MapPin, Globe2, Layers, Briefcase, Pause, Play } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { CloverMark, PETAL_PATH } from '../components/brand/Logo'
@@ -8,6 +8,7 @@ import { publishedProjects } from '../data/projects'
 import { contact, routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants, revealOnce } from '../lib/motion'
+import { useAutoAdvance } from '../lib/useAutoAdvance'
 
 /**
  * About. Two screens, then the shared footer:
@@ -23,29 +24,13 @@ const PETAL_ANGLES = [45, 135, 225, 315]
 const PETAL_FOR_PILLAR = [3, 0, 1, 2]
 
 const CloverStory = () => {
-  const reduced = useReducedMotion()
-  const [active, setActive] = useState(0)
-  const [hovered, setHovered] = useState(false)
-  // Picking a leaf or pressing pause stops the rotation for good. A tap on iOS
-  // never focuses the button, so focus cannot be what pauses it.
-  const [stopped, setStopped] = useState(false)
-  const rootRef = useRef(null)
+  // Rotates while on screen; picking a leaf holds it, then it rotates on.
+  // Only the Pause button stops it for good.
+  const { ref: rootRef, active, choose, stopped, toggle, reduced } = useAutoAdvance(brandPillars.length, {
+    interval: 2800,
+  })
   const tabsRef = useRef([])
-  const inView = useInView(rootRef, { amount: 0.4 })
   const uid = useId().replace(/:/g, '')
-
-  const playing = !reduced && !stopped && !hovered && inView
-
-  useEffect(() => {
-    if (!playing) return undefined
-    const id = setInterval(() => setActive((i) => (i + 1) % brandPillars.length), 2800)
-    return () => clearInterval(id)
-  }, [playing])
-
-  const choose = (i) => {
-    setStopped(true)
-    setActive(i)
-  }
 
   const onKeyDown = (e) => {
     const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
@@ -62,8 +47,6 @@ const CloverStory = () => {
     <div
       ref={rootRef}
       className="grid items-center gap-8 sm:grid-cols-[13rem_1fr]"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <svg viewBox="-80 -80 160 160" className="mx-auto w-full max-w-[10rem] sm:max-w-[13rem]" aria-hidden="true">
         <defs>
@@ -148,7 +131,7 @@ const CloverStory = () => {
         {!reduced && (
           <button
             type="button"
-            onClick={() => setStopped((s) => !s)}
+            onClick={toggle}
             className="mt-2 inline-flex min-h-[44px] items-center gap-2 rounded-md text-xs text-silver-500 transition-colors hover:text-silver-200"
           >
             {stopped ? (

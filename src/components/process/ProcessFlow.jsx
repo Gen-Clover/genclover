@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, useScroll, useSpring, useReducedMotion, useInView } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useSpring, useReducedMotion } from 'framer-motion'
 import { Pause, Play } from 'lucide-react'
 import StageIcon from './StageIcon'
 import { processSteps } from '../../data/process'
 import { EASE } from '../../lib/motion'
+import { useAutoAdvance } from '../../lib/useAutoAdvance'
 
 /**
  * The Discover → Grow delivery flow, animated.
@@ -21,60 +22,36 @@ import { EASE } from '../../lib/motion'
  * immediately instead of following the scroll.
  */
 
-const ADVANCE_MS = 3200
+/** Time on each stage while the rail plays itself. */
+const ADVANCE_MS = 2000
 
 /* ------------------------------------------------------------------ rail */
 
 export const ProcessRail = () => {
-  const reduced = useReducedMotion()
-  const [active, setActive] = useState(0)
-  const [hovered, setHovered] = useState(false)
-  // Once the visitor picks a stage or presses pause, the rail stays where they
-  // put it. Tapping on iOS never focuses a button, so focus alone cannot be
-  // relied on to pause it.
-  const [stopped, setStopped] = useState(false)
-  const rootRef = useRef(null)
-  const inView = useInView(rootRef, { amount: 0.4 })
+  // Plays itself while on screen; picking a stage holds it, then it plays on.
+  // Only the Pause button stops it for good.
+  const { ref: rootRef, active, choose, playing, stopped, toggle, reduced } = useAutoAdvance(
+    processSteps.length,
+    { interval: ADVANCE_MS }
+  )
   const tabsRef = useRef([])
 
-  const playing = !reduced && !stopped && !hovered && inView
-
-  // Auto-advance so the flow plays itself, only while it is on screen.
-  useEffect(() => {
-    if (!playing) return undefined
-    const id = setInterval(() => setActive((i) => (i + 1) % processSteps.length), ADVANCE_MS)
-    return () => clearInterval(id)
-  }, [playing])
-
-  const choose = useCallback((i) => {
-    setStopped(true)
-    setActive(i)
-  }, [])
-
-  const handleKeyDown = useCallback((e) => {
+  const handleKeyDown = (e) => {
     const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
     if (!(e.key in keys)) return
     e.preventDefault()
-    setStopped(true)
-    setActive((i) => {
-      const next = (i + keys[e.key] + processSteps.length) % processSteps.length
-      tabsRef.current[next]?.focus()
-      return next
-    })
-  }, [])
+    const next = (active + keys[e.key] + processSteps.length) % processSteps.length
+    choose(next)
+    tabsRef.current[next]?.focus()
+  }
 
   return (
-    <div
-      ref={rootRef}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <div ref={rootRef}>
       {/* ------------------------------------------------------- the rail */}
       <div
         role="tablist"
         aria-label="Our delivery process, Discover through Grow"
         onKeyDown={handleKeyDown}
-        onFocusCapture={() => setStopped(true)}
         className="grid grid-cols-7"
       >
         {processSteps.map((step, i) => {
@@ -197,7 +174,7 @@ export const ProcessRail = () => {
         <div className="mt-3 flex justify-end">
           <button
             type="button"
-            onClick={() => setStopped((s) => !s)}
+            onClick={toggle}
             className="inline-flex min-h-[44px] items-center gap-2 rounded-md px-2 text-xs text-silver-500 transition-colors hover:text-silver-200"
           >
             {stopped ? (

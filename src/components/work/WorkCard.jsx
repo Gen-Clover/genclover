@@ -75,7 +75,7 @@ const WorkCard = ({ project, priority = false, className = '' }) => {
             }}
             aria-label={`Enlarge the ${project.title} architecture diagram`}
             title="Enlarge diagram"
-            className="absolute right-2.5 top-2.5 z-10 grid h-9 w-9 place-items-center rounded-lg border border-ink-700 bg-ink-900/80 text-silver-300 backdrop-blur-sm transition-colors hover:border-accent-600 hover:text-accent-400"
+            className="expand-hint absolute right-2.5 top-2.5 z-10 grid h-9 w-9 place-items-center rounded-lg border border-ink-700 bg-ink-900/80 text-silver-300 backdrop-blur-sm transition-colors hover:border-accent-600 hover:text-accent-400"
           >
             <Maximize2 className="h-4 w-4" aria-hidden="true" />
           </button>
