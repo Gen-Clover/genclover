@@ -8,6 +8,7 @@
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { createServer } from 'vite'
+import { loadPublicJobs } from './_jobs.mjs'
 
 const server = await createServer({
   server: { middlewareMode: true },
@@ -21,7 +22,7 @@ try {
   const { services } = await load('/src/data/services.js')
   const { publishedProjects } = await load('/src/data/projects.js')
   const { industryPages } = await load('/src/data/industries.js')
-  const { jobs } = await load('/src/data/jobs.js')
+  const jobs = await loadPublicJobs()
 
   const paths = [
     routes.home,
