@@ -133,9 +133,9 @@ const StagePanel = ({ active, setActive }) => {
               <p className="eyebrow">
                 Stage {step.number} · {step.title}
               </p>
-              <h3 className="mt-1.5 text-xl font-semibold leading-snug text-silver-100">
+              <h2 className="mt-1.5 text-xl font-semibold leading-snug text-silver-100">
                 {step.question}
-              </h3>
+              </h2>
             </div>
           </div>
 
@@ -255,14 +255,16 @@ const HowWeWork = () => {
             description="A predictable rhythm of updates and demos, so progress is visible without meetings for the sake of meetings."
             className="!mb-0"
           />
-          <motion.ol variants={v.stagger(0.07)} {...revealOnce} className="relative space-y-4">
+          <motion.ol variants={v.stagger(0.07)} {...revealOnce} tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel relative space-y-4 md:block">
             {rhythm.map((item, i) => (
               <motion.li
                 key={item.title}
                 variants={v.fadeUp}
                 className="tile flex gap-5 rounded-xl border border-ink-800 bg-ink-950 p-5"
               >
-                <span className="font-display text-sm font-semibold tracking-brand text-accent-500">
+                <span className="font-display text-sm font-semibold tracking-brand text-accent-400">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <div>
@@ -285,7 +287,9 @@ const HowWeWork = () => {
         <motion.ul
           variants={v.stagger(0.06)}
           {...revealOnce}
-          className="grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 md:grid-cols-2"
+          tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 md:grid-cols-2"
         >
           {groundRules.map((rule) => (
             <motion.li key={rule.title} variants={v.fadeUp} className="bg-ink-950 p-7">
@@ -304,7 +308,9 @@ const HowWeWork = () => {
           title="You do not have to commit to everything at once."
           description="Most engagements begin in one of these ways. Tell us where you are, and we will suggest the right starting point."
         />
-        <motion.ul variants={v.stagger(0.07)} {...revealOnce} className="grid gap-5 md:grid-cols-2">
+        <motion.ul variants={v.stagger(0.07)} {...revealOnce} tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel grid gap-5 md:grid-cols-2">
           {startingPoints.map((point) => (
             <motion.li key={point.title} variants={v.fadeUp} className="surface flex flex-col p-7">
               <h3 className="text-lg font-semibold text-silver-100">{point.title}</h3>
@@ -327,7 +333,9 @@ const HowWeWork = () => {
           title="Launch is where the product starts earning."
           description="Three levels of ongoing care. Which one fits depends on how much the product is expected to change."
         />
-        <motion.ul variants={v.stagger(0.08)} {...revealOnce} className="grid gap-5 md:grid-cols-3">
+        <motion.ul variants={v.stagger(0.08)} {...revealOnce} tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel grid gap-5 md:grid-cols-3">
           {carePlans.map((plan) => (
             <motion.li
               key={plan.name}

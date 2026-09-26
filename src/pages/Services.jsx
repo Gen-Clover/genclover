@@ -12,6 +12,7 @@ import { processSteps } from '../data/process'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants, revealOnce } from '../lib/motion'
 import { trackEvent, events } from '../lib/analytics'
+import { previewFirstTap, canHover, isKeyboardFocus } from '../lib/pointer'
 
 /**
  * Services hub. (Spec §6)
@@ -93,7 +94,7 @@ const ServicePreview = ({ service }) => {
         <ol className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-4">
           {detail.approach.map((step, i) => (
             <li key={step.title} className="border-t border-accent-800/70 pt-2.5">
-              <span className="font-display text-[10px] font-semibold tracking-brand text-accent-500">
+              <span className="font-display text-[10px] font-semibold tracking-brand text-accent-400">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <p className="mt-1 text-xs font-medium leading-snug text-silver-200">{step.title}</p>
@@ -148,8 +149,8 @@ const Services = () => {
                 variants={v.fadeUp}
                 className="mt-3 max-w-xl text-base leading-relaxed text-silver-400"
               >
-                From websites to AI, data and the infrastructure that runs them. Hover a service to
-                preview it, or open it for the full picture.
+                From websites to AI, data and the infrastructure that runs them. Hover or tap a
+                service to preview it, and open it for the full picture.
               </motion.p>
             </motion.div>
 
@@ -166,14 +167,16 @@ const Services = () => {
                   <motion.li key={service.slug} variants={v.fadeUp}>
                     <Link
                       to={`${routes.services}/${service.slug}`}
-                      onMouseEnter={() => setActive(service.slug)}
-                      onFocus={() => setActive(service.slug)}
-                      onClick={() =>
-                        trackEvent(events.SERVICE_CTA_CLICK, {
-                          service: service.slug,
-                          location: 'services_hub',
-                        })
-                      }
+                      onMouseEnter={() => canHover() && setActive(service.slug)}
+                      onFocus={(e) => isKeyboardFocus(e) && setActive(service.slug)}
+                      onClick={(e) => {
+                        previewFirstTap(selected, () => setActive(service.slug))(e)
+                        if (!e.defaultPrevented)
+                          trackEvent(events.SERVICE_CTA_CLICK, {
+                            service: service.slug,
+                            location: 'services_hub',
+                          })
+                      }}
                       className={`group relative flex items-center gap-3.5 rounded-xl border px-4 py-2.5 transition-colors ${
                         selected
                           ? 'border-accent-700/70 bg-accent-950/35'

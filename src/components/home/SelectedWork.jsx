@@ -31,7 +31,9 @@ const SelectedWork = () => {
       <motion.div
         variants={v.stagger(0.07)}
         {...revealOnce}
-        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
         {homepageProjects.map((project, i) => (
           <WorkCard key={project.slug} project={project} priority={i < 3} />

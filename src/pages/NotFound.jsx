@@ -20,7 +20,7 @@ const NotFound = () => {
   ]
 
   return (
-    <main className="relative grid min-h-[75vh] place-items-center overflow-hidden bg-ink-950 px-4 py-32">
+    <section className="relative grid min-h-[75vh] place-items-center overflow-hidden bg-ink-950 px-4 py-32">
       <div className="grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-900/20 blur-[110px]"
@@ -58,7 +58,7 @@ const NotFound = () => {
           </ul>
         </nav>
       </div>
-    </main>
+    </section>
   )
 }
 

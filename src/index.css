@@ -107,7 +107,7 @@
     --grid-line: 10 12 16;
     --grid-line-alpha: 0.045;
     --glow-accent: 224 31 38;
-    --glow-ring-strength: 0.18;
+    --glow-ring-strength: 0.08;
     --shadow-color: 16 18 22;
     --shadow-strength: 0.16;
     --visual-a: #f2f4f7;
@@ -208,6 +208,37 @@
   }
 
   /*
+   * Phones: turn a stacked list of cards into a swipeable row, one card and a
+   * glimpse of the next on screen, so long card sections stop filling several
+   * screens. Tablets and up keep their normal grid.
+   */
+  @media (max-width: 767px) {
+    .mobile-carousel {
+      display: flex !important;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: -1rem;
+      padding-inline: 1rem;
+      padding-bottom: 4px;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      scrollbar-width: none;
+    }
+    .mobile-carousel::-webkit-scrollbar {
+      display: none;
+    }
+    .mobile-carousel > * {
+      margin-top: 0 !important;
+      flex: 0 0 84%;
+      scroll-snap-align: start;
+      border: 1px solid rgb(var(--ink-800));
+      border-radius: 0.75rem;
+    }
+  }
+
+  /*
    * Cursor light: a soft light that follows the pointer across the whole page.
    * Dark theme: red light added with `screen`, so black turns faintly red.
    * Light theme: a rose-to-peach tint laid on with `multiply`, so white warms
@@ -240,9 +271,16 @@
     );
     mix-blend-mode: multiply;
   }
-  @media (hover: none) {
+  @media (hover: none), (prefers-reduced-motion: reduce) {
     .cursor-light {
       display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-ring-pulse,
+    .animate-ping,
+    .animate-marquee {
+      animation: none !important;
     }
   }
 
@@ -277,6 +315,10 @@
   /* Subtle diagonal structure from the brand system */
   .diagonal-sheen {
     @apply bg-diagonal-sheen;
+  }
+  /* On white the red sheen reads as a smudge; keep only a trace of it. */
+  :root[data-theme='light'] .diagonal-sheen {
+    opacity: 0.25;
   }
 
   .grid-lines {

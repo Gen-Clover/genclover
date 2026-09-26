@@ -228,14 +228,15 @@ const About = () => {
                 {facts.map((fact) => {
                   const Icon = fact.icon
                   return (
-                    <div key={fact.label} className="flex gap-4">
-                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-accent-500" aria-hidden="true" />
-                      <div>
-                        <dt className="font-display text-[11px] uppercase tracking-brand text-silver-500">
-                          {fact.label}
-                        </dt>
-                        <dd className="mt-1 text-sm leading-relaxed text-silver-200">{fact.value}</dd>
-                      </div>
+                    <div key={fact.label} className="relative pl-8">
+                      <dt className="font-display text-[11px] uppercase tracking-brand text-silver-500">
+                        <Icon
+                          className="absolute left-0 top-0.5 h-4 w-4 text-accent-500"
+                          aria-hidden="true"
+                        />
+                        {fact.label}
+                      </dt>
+                      <dd className="mt-1 text-sm leading-relaxed text-silver-200">{fact.value}</dd>
                     </div>
                   )
                 })}

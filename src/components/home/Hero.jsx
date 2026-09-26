@@ -110,20 +110,20 @@ const Hero = () => {
           initial="hidden"
           animate="visible"
           variants={v.stagger(0.08, 0.45)}
-          className="mt-12 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4"
+          className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 lg:mt-14 lg:grid-cols-4"
           aria-label="How we think about technology"
         >
           {brandPillars.map((pillar, i) => (
-            <motion.li key={pillar.label} variants={v.fadeUp} className="relative bg-ink-950/90 p-5 md:p-6">
+            <motion.li key={pillar.label} variants={v.fadeUp} className="relative bg-ink-950/90 p-4 md:p-6">
               <div className="flex items-center gap-3">
-                <span className="font-display text-[11px] font-semibold tracking-brand text-accent-500">
+                <span className="font-display text-[11px] font-semibold tracking-brand text-accent-400">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <h2 className="font-display text-xs font-semibold uppercase tracking-brand text-silver-100">
                   {pillar.label}
                 </h2>
               </div>
-              <p className="mt-2.5 text-sm leading-relaxed text-silver-400">{pillar.description}</p>
+              <p className="mt-2 text-xs leading-relaxed text-silver-400 sm:mt-2.5 sm:text-sm">{pillar.description}</p>
             </motion.li>
           ))}
         </motion.ol>

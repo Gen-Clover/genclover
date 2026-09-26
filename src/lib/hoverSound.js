@@ -6,8 +6,9 @@ import { useEffect, useState, useCallback } from 'react'
  * Synthesized with the Web Audio API (a short filtered noise burst), so there
  * is no audio file to download. Browsers only allow sound after the visitor has
  * interacted with the page, so ticks start after the first click, tap or key
- * press. Mouse only: touch and keyboard never trigger it. Visitors can mute it
- * from the header; the choice is remembered in localStorage under `gc-sound`.
+ * press. Mouse only: touch and keyboard never trigger it. Off by default;
+ * visitors turn it on from the header, and the choice is remembered in
+ * localStorage under `gc-sound`.
  */
 
 const STORAGE_KEY = 'gc-sound'
@@ -26,16 +27,21 @@ const TILE_SELECTOR = [
 
 let ctx = null
 let noise = null
-let enabled = true
+let enabled = false
 let lastTile = null
 let lastAt = 0
 const listeners = new Set()
 
+/**
+ * Off by default: most visitors dislike sound they did not ask for (surveys
+ * put annoyance with unrequested website audio well above 30%), so the tick
+ * plays only after the visitor turns it on with the header toggle.
+ */
 const readPref = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) !== 'off'
+    return localStorage.getItem(STORAGE_KEY) === 'on'
   } catch {
-    return true
+    return false
   }
 }
 
@@ -161,7 +167,7 @@ const UNLOCK_EVENTS = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchend
 
 /** State for the header's mute toggle. `locked` = waiting for a first click. */
 export const useSoundSetting = () => {
-  const [on, setOn] = useState(() => (typeof window === 'undefined' ? true : readPref()))
+  const [on, setOn] = useState(() => (typeof window === 'undefined' ? false : readPref()))
   const [locked, setLocked] = useState(() => !ctx || ctx.state !== 'running')
 
   useEffect(() => {

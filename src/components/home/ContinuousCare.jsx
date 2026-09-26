@@ -25,7 +25,9 @@ const ContinuousCare = () => {
       <motion.ul
         variants={v.stagger(0.08)}
         {...revealOnce}
-        className="grid gap-5 md:grid-cols-3"
+        tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel grid gap-5 md:grid-cols-3"
       >
         {carePlans.map((plan) => (
           <motion.li
