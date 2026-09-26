@@ -50,6 +50,14 @@ try {
       description: j.metaDescription,
       noIndex: j.status === 'closed',
     })),
+    // Its own file, so /admin never depends on the SPA fallback. Deeper admin
+    // paths (/admin/jobs/…) are reached from inside the app or via the fallback.
+    {
+      path: '/admin',
+      title: 'Admin | Gen Clover',
+      description: 'Gen Clover admin portal.',
+      noIndex: true,
+    },
   ]
 
   const template = readFileSync(resolve('dist/index.html'), 'utf8')
