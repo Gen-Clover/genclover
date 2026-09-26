@@ -39,11 +39,15 @@ const readPref = () => {
   }
 }
 
+const lockListeners = new Set()
+const notifyLock = () => lockListeners.forEach((fn) => fn(ctx?.state !== 'running'))
+
 const getContext = () => {
   if (ctx) return ctx
   const Ctx = window.AudioContext || window.webkitAudioContext
   if (!Ctx) return null
   ctx = new Ctx()
+  ctx.onstatechange = notifyLock
   // One reusable buffer of white noise, a few milliseconds long.
   const length = Math.floor(ctx.sampleRate * 0.03)
   noise = ctx.createBuffer(1, length, ctx.sampleRate)
@@ -109,6 +113,10 @@ const tak = () => {
 
 const onPointerOver = (e) => {
   if (!enabled || e.pointerType !== 'mouse') return
+  // Browsers only allow audio after a click, tap or key press. Where the
+  // browser already permits it (e.g. Chrome on a site the visitor uses
+  // often), this starts the sound without waiting for a click.
+  if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {})
   const tile = e.target.closest?.(TILE_SELECTOR)
   if (!tile || tile === lastTile) return
   lastTile = tile
@@ -125,36 +133,45 @@ const onPointerOut = (e) => {
 
 const unlock = () => {
   const c = getContext()
-  if (c && c.state === 'suspended') c.resume().catch(() => {})
+  if (c && c.state === 'suspended') c.resume().then(notifyLock).catch(() => {})
 }
 
 /** Call once at the app root. */
 export const useHoverSound = () => {
   useEffect(() => {
     enabled = readPref()
-    const opts = { passive: true }
+    // Create the audio engine up front (it starts suspended), so the first
+    // click anywhere only has to resume it.
+    getContext()
+    notifyLock()
+    const opts = { passive: true, capture: true }
     document.addEventListener('pointerover', onPointerOver, opts)
     document.addEventListener('pointerout', onPointerOut, opts)
-    ;['pointerdown', 'keydown', 'touchstart'].forEach((type) =>
-      window.addEventListener(type, unlock, opts)
-    )
+    ;UNLOCK_EVENTS.forEach((type) => window.addEventListener(type, unlock, opts))
     return () => {
       document.removeEventListener('pointerover', onPointerOver)
       document.removeEventListener('pointerout', onPointerOut)
-      ;['pointerdown', 'keydown', 'touchstart'].forEach((type) =>
-        window.removeEventListener(type, unlock)
-      )
+      UNLOCK_EVENTS.forEach((type) => window.removeEventListener(type, unlock, opts))
     }
   }, [])
 }
 
-/** State for the header's mute toggle. */
+/** Events browsers accept as permission to start audio. */
+const UNLOCK_EVENTS = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchend']
+
+/** State for the header's mute toggle. `locked` = waiting for a first click. */
 export const useSoundSetting = () => {
   const [on, setOn] = useState(() => (typeof window === 'undefined' ? true : readPref()))
+  const [locked, setLocked] = useState(() => !ctx || ctx.state !== 'running')
 
   useEffect(() => {
     listeners.add(setOn)
-    return () => listeners.delete(setOn)
+    lockListeners.add(setLocked)
+    setLocked(!ctx || ctx.state !== 'running')
+    return () => {
+      listeners.delete(setOn)
+      lockListeners.delete(setLocked)
+    }
   }, [])
 
   const toggle = useCallback(() => {
@@ -171,5 +188,5 @@ export const useSoundSetting = () => {
     }
   }, [])
 
-  return { on, toggle }
+  return { on, toggle, locked }
 }
