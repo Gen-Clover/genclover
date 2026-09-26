@@ -6,10 +6,12 @@ import WorkCard from '../work/WorkCard'
 import { homepageProjects } from '../../data/projects'
 import { routes } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
+import { useSwipeRow } from '../ui/SwipeRow'
 
 /** 03 — Selected Work. The three flagship projects; the rest are on /work. */
 const SelectedWork = () => {
   const v = useMotionVariants()
+  const work = useSwipeRow(homepageProjects.length, 'Selected work')
 
   if (homepageProjects.length === 0) return null
 
@@ -31,14 +33,15 @@ const SelectedWork = () => {
       <motion.div
         variants={v.stagger(0.07)}
         {...revealOnce}
-        tabIndex={0}
-        aria-label="Swipe for more"
+        ref={work.ref}
+        {...work.props}
         className="mobile-carousel grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
         {homepageProjects.map((project, i) => (
           <WorkCard key={project.slug} project={project} priority={i < 3} />
         ))}
       </motion.div>
+      {work.dots}
     </Section>
   )
 }

@@ -3,6 +3,7 @@ import { Quote } from 'lucide-react'
 import { Section, SectionHeader } from '../ui/Section'
 import { testimonials, verifiedStats, capabilityProof, PROOF_POLICY_NOTE } from '../../data/proof'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
+import { useSwipeRow } from '../ui/SwipeRow'
 
 /**
  * 08 — Proof. Verified proof only. (Spec §5.2, §14, §18)
@@ -13,6 +14,7 @@ import { useMotionVariants, revealOnce } from '../../lib/motion'
  */
 const Proof = () => {
   const v = useMotionVariants()
+  const swipe = useSwipeRow(capabilityProof.length, 'What we stand behind')
   const hasStats = verifiedStats.length > 0
   const hasTestimonials = testimonials.length > 0
 
@@ -44,8 +46,8 @@ const Proof = () => {
       <motion.ul
         variants={v.stagger(0.06)}
         {...revealOnce}
-        tabIndex={0}
-        aria-label="Swipe for more"
+        ref={swipe.ref}
+        {...swipe.props}
         className="mobile-carousel grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2"
       >
         {capabilityProof.map((item) => {
@@ -59,6 +61,7 @@ const Proof = () => {
           )
         })}
       </motion.ul>
+      {swipe.dots}
 
       {/* Verified testimonials — appears only once approved quotes exist */}
       {hasTestimonials && (

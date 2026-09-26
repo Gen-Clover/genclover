@@ -1,7 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll, useSpring, useReducedMotion } from 'framer-motion'
+import { Pause, Play } from 'lucide-react'
+import StageIcon from './StageIcon'
 import { processSteps } from '../../data/process'
 import { EASE } from '../../lib/motion'
+import { useAutoAdvance } from '../../lib/useAutoAdvance'
 
 /**
  * The Discover → Grow delivery flow, animated.
@@ -19,57 +22,61 @@ import { EASE } from '../../lib/motion'
  * immediately instead of following the scroll.
  */
 
-const ADVANCE_MS = 3200
+/** Time on each stage while the rail plays itself. */
+const ADVANCE_MS = 2000
 
 /* ------------------------------------------------------------------ rail */
 
 export const ProcessRail = () => {
-  const reduced = useReducedMotion()
-  const [active, setActive] = useState(0)
-  const [paused, setPaused] = useState(false)
+  // Plays itself while on screen; picking a stage holds it, then it plays on.
+  // Only the Pause button stops it for good.
+  const { ref: rootRef, active, choose, playing, stopped, toggle, reduced } = useAutoAdvance(
+    processSteps.length,
+    { interval: ADVANCE_MS }
+  )
   const tabsRef = useRef([])
 
-  // Auto-advance so the flow plays itself; pauses on hover/focus, and never
-  // runs at all for visitors who prefer reduced motion.
-  useEffect(() => {
-    if (reduced || paused) return undefined
-    const id = setInterval(() => setActive((i) => (i + 1) % processSteps.length), ADVANCE_MS)
-    return () => clearInterval(id)
-  }, [reduced, paused])
-
-  const handleKeyDown = useCallback((e) => {
+  const handleKeyDown = (e) => {
     const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
     if (!(e.key in keys)) return
     e.preventDefault()
-    setActive((i) => {
-      const next = (i + keys[e.key] + processSteps.length) % processSteps.length
-      tabsRef.current[next]?.focus()
-      return next
-    })
-  }, [])
-
-  const activeStep = processSteps[active]
+    const next = (active + keys[e.key] + processSteps.length) % processSteps.length
+    choose(next)
+    tabsRef.current[next]?.focus()
+  }
 
   return (
-    <div
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-    >
+    <div ref={rootRef}>
       {/* ------------------------------------------------------- the rail */}
       <div
         role="tablist"
         aria-label="Our delivery process, Discover through Grow"
         onKeyDown={handleKeyDown}
-        className="flex items-start justify-between gap-1 sm:gap-2"
+        className="grid grid-cols-7"
       >
         {processSteps.map((step, i) => {
           const isActive = i === active
           const isPassed = i < active
 
           return (
-            <div key={step.number} className="flex min-w-0 flex-1 items-start">
+            <div key={step.number} className="relative min-w-0">
+              {/* Connector to the next stage, filling left to right as the flow
+                  advances. Positioned from node centre to node centre so the
+                  column can be the full tap target. */}
+              {i < processSteps.length - 1 && (
+                <span
+                  className="absolute left-[calc(50%+1.25rem)] right-[calc(-50%+1.25rem)] top-[1.375rem] h-px overflow-hidden bg-ink-700"
+                  aria-hidden="true"
+                >
+                  <motion.span
+                    className="absolute inset-0 block origin-left bg-accent-500"
+                    initial={false}
+                    animate={{ scaleX: i < active ? 1 : 0 }}
+                    transition={{ duration: reduced ? 0 : 0.5, ease: EASE }}
+                  />
+                </span>
+              )}
+
               <button
                 ref={(el) => (tabsRef.current[i] = el)}
                 type="button"
@@ -77,32 +84,31 @@ export const ProcessRail = () => {
                 id={`process-tab-${i}`}
                 aria-selected={isActive}
                 aria-controls={`process-panel-${i}`}
+                aria-label={`Stage ${step.number}: ${step.title}`}
                 tabIndex={isActive ? 0 : -1}
-                onClick={() => setActive(i)}
-                className="group flex shrink-0 flex-col items-center gap-2.5 rounded-lg px-1 py-1"
+                onClick={() => choose(i)}
+                className="group relative flex min-h-[44px] w-full flex-col items-center gap-2.5 rounded-lg"
               >
-                {/* Node */}
-                <span className="relative grid h-8 w-8 place-items-center sm:h-9 sm:w-9">
-                  {isActive && !reduced && (
+                {/* Node: an animated icon that shows what the stage is */}
+                <span className="relative grid h-11 w-11 place-items-center">
+                  {isActive && playing && (
                     <span
-                      className="animate-node-pulse absolute inset-0 rounded-full bg-accent-500"
+                      className="animate-node-pulse absolute inset-1 rounded-full bg-accent-500"
                       aria-hidden="true"
                     />
                   )}
                   <motion.span
-                    animate={{
-                      scale: isActive ? 1 : 0.88,
-                    }}
+                    animate={{ scale: isActive ? 1 : 0.86 }}
                     transition={{ duration: reduced ? 0 : 0.35, ease: EASE }}
-                    className={`relative grid h-full w-full place-items-center rounded-full border font-display text-[11px] font-semibold transition-colors duration-300 sm:text-xs ${
+                    className={`relative grid h-full w-full place-items-center rounded-full border transition-colors duration-300 ${
                       isActive
                         ? 'border-accent-500 bg-accent-600 text-white'
                         : isPassed
                           ? 'border-accent-700 bg-accent-950 text-accent-300'
-                          : 'border-ink-600 bg-ink-850 text-silver-500 group-hover:border-ink-500'
+                          : 'border-ink-600 bg-ink-850 text-silver-500 group-hover:border-ink-500 group-hover:text-silver-300'
                     }`}
                   >
-                    {step.number}
+                    <StageIcon stage={step.title} fallback={step.icon} active={isActive} className="h-5 w-5" />
                   </motion.span>
                 </span>
 
@@ -115,51 +121,33 @@ export const ProcessRail = () => {
                   {step.title}
                 </span>
               </button>
-
-              {/* Connector, filling left to right as the flow advances */}
-              {i < processSteps.length - 1 && (
-                <span
-                  className="relative mt-4 h-px min-w-0 flex-1 overflow-hidden bg-ink-700 sm:mt-[1.125rem]"
-                  aria-hidden="true"
-                >
-                  <motion.span
-                    className="absolute inset-0 block origin-left bg-accent-500"
-                    initial={false}
-                    animate={{ scaleX: i < active ? 1 : 0 }}
-                    transition={{ duration: reduced ? 0 : 0.5, ease: EASE }}
-                  />
-                </span>
-              )}
             </div>
           )
         })}
       </div>
 
       {/* ------------------------------------------------ the active stage */}
-      <div className="mt-8">
+      {/* Every panel shares one grid cell, so the box is always as tall as the
+          longest stage and the page below never jumps as the rail advances. */}
+      <div className="mt-6 grid">
         {processSteps.map((step, i) => {
           const isActive = i === active
-          const Icon = step.icon
           return (
             <div
               key={step.number}
               id={`process-panel-${i}`}
               role="tabpanel"
               aria-labelledby={`process-tab-${i}`}
-              hidden={!isActive}
+              className={`[grid-area:1/1] ${isActive ? '' : 'invisible'}`}
             >
               <motion.div
                 initial={false}
-                animate={
-                  isActive
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: reduced ? 0 : 8 }
-                }
+                animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: reduced ? 0 : 8 }}
                 transition={{ duration: reduced ? 0 : 0.4, ease: EASE }}
-                className="surface flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:gap-6 md:p-8"
+                className="surface surface-static flex h-full flex-col gap-4 p-6 sm:flex-row sm:items-start sm:gap-6 md:p-8"
               >
-                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-ink-700 bg-ink-900">
-                  <Icon className="h-5 w-5 text-accent-500" aria-hidden="true" />
+                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-ink-700 bg-ink-900 text-accent-500">
+                  <StageIcon stage={step.title} fallback={step.icon} className="h-5 w-5" />
                 </span>
                 <div className="min-w-0">
                   <div className="flex items-baseline gap-3">
@@ -181,9 +169,23 @@ export const ProcessRail = () => {
         })}
       </div>
 
-      <p className="sr-only" aria-live="polite">
-        Stage {activeStep.number}: {activeStep.title}. {activeStep.summary}
-      </p>
+      {/* Pause / play, so the moving rail can always be stopped (WCAG 2.2.2) */}
+      {!reduced && (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={toggle}
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-md px-2 text-xs text-silver-500 transition-colors hover:text-silver-200"
+          >
+            {stopped ? (
+              <Play className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <Pause className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
+            {stopped ? 'Play the stages' : 'Pause'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -26,6 +26,8 @@
  */
 
 import { isValidPhoneNumber } from 'libphonenumber-js/min'
+import { serviceEnquiryOptions } from '../src/data/services.js'
+import { businessTypeOptions, regionOptions, timelineOptions } from '../src/data/leadOptions.js'
 
 const NOTIFY_TO = process.env.LEAD_NOTIFY_TO || 'contact@genclover.com'
 const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'website@genclover.com'
@@ -60,14 +62,13 @@ const isRateLimited = (ip) => {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const CURRENCY_RE = /^[A-Z]{3}$/
 
+/** The same option lists the form renders, so the two can never drift apart. */
+const values = (options) => options.map((o) => o.value)
 const ALLOWED = {
-  service: [
-    'websites', 'web-applications', 'ecommerce', 'ai-automation', 'data-analytics',
-    'technology-solutions', 'devops-mlops', 'digital-marketing-seo', 'other',
-  ],
-  businessType: ['startup', 'small-business', 'growing-business', 'corporate', 'enterprise', 'other'],
-  region: ['india', 'usa', 'uk', 'europe', 'middle-east', 'asia-pacific', 'other'],
-  timeline: ['asap', '1-2-months', '2-3-months', '3-6-months', '6-plus-months', 'flexible', 'not-sure', ''],
+  service: values(serviceEnquiryOptions),
+  businessType: values(businessTypeOptions),
+  region: values(regionOptions),
+  timeline: [...values(timelineOptions), ''],
 }
 
 /** Trim, cap length, and strip control characters and angle brackets. */
@@ -80,8 +81,15 @@ const clean = (value, maxLength) =>
         .slice(0, maxLength)
     : ''
 
+/**
+ * Returns the cleaned values and `errors` keyed by the form's field names, so
+ * the form can highlight exactly the fields the server rejected.
+ */
 const validate = (body) => {
-  const errors = []
+  const errors = {}
+  const fail = (field, message) => {
+    if (!errors[field]) errors[field] = message
+  }
   const v = {
     service: clean(body.service, 60),
     businessType: clean(body.businessType, 60),
@@ -98,24 +106,25 @@ const validate = (body) => {
     consent: body.consent === true,
   }
 
+  if (!v.service) fail('service', 'Please choose the service you need.')
+  if (!v.businessType) fail('businessType', 'Please choose a business type.')
+  if (!v.region) fail('region', 'Please choose your location.')
   Object.entries(ALLOWED).forEach(([field, allowed]) => {
-    if (!allowed.includes(v[field])) errors.push(`${field} is not a recognized option.`)
+    if (!allowed.includes(v[field])) fail(field, 'Please choose one of the listed options.')
   })
 
-  if (!v.service) errors.push('service is required.')
-  if (!v.businessType) errors.push('businessType is required.')
-  if (!v.region) errors.push('region is required.')
-  if (v.details.length < 20) errors.push('details must be at least 20 characters.')
-  if (!v.name) errors.push('name is required.')
-  if (!EMAIL_RE.test(v.email)) errors.push('email is not valid.')
+  if (v.details.length < 20) fail('details', 'A sentence or two more would really help us.')
+  if (!v.name) fail('name', 'Please enter your name.')
+  if (!EMAIL_RE.test(v.email)) fail('email', 'That does not look like a valid email address.')
   if (v.budgetAmount) {
-    if (v.budgetAmount.length > 12) errors.push('budgetAmount is too large.')
-    if (!CURRENCY_RE.test(v.budgetCurrency)) errors.push('budgetCurrency is not valid.')
+    if (v.budgetAmount.length > 12) fail('budgetAmount', 'That figure looks too large. Please check it.')
+    if (!CURRENCY_RE.test(v.budgetCurrency)) fail('budgetAmount', 'Please choose a currency for the amount.')
   }
-  if (!v.phoneCountry || !isValidPhoneNumber(v.phone, v.phoneCountry)) {
-    errors.push('phone is not valid.')
+  if (!v.phoneCountry) fail('phoneCountry', 'Please choose a country code.')
+  else if (!isValidPhoneNumber(v.phone, v.phoneCountry)) {
+    fail('phone', 'That number does not look right for the selected country.')
   }
-  if (!v.consent) errors.push('consent is required.')
+  if (!v.consent) fail('consent', 'We need your agreement before we can contact you.')
 
   return { values: v, errors }
 }
@@ -218,7 +227,12 @@ export default async function handler(req, res) {
       .json({ message: 'Too many inquiries from this connection. Please try again shortly.' })
   }
 
-  const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body ?? {})
+  let body
+  try {
+    body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body ?? {})
+  } catch {
+    return res.status(400).json({ message: 'The request could not be read.' })
+  }
 
   // Spam signals: a filled honeypot, or a form completed impossibly fast.
   if (body.company_website) {
@@ -230,7 +244,7 @@ export default async function handler(req, res) {
   }
 
   const { values, errors } = validate(body)
-  if (errors.length > 0) {
+  if (Object.keys(errors).length > 0) {
     return res.status(400).json({ message: 'Please check the highlighted fields.', errors })
   }
 

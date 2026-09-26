@@ -1,429 +1,701 @@
-import { useRef } from 'react'
-import { motion, useScroll, useSpring, useReducedMotion } from 'framer-motion'
-import { Check, ArrowRight, ArrowDown, ShieldCheck, Sparkles } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  motion,
+  AnimatePresence,
+  animate,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from 'framer-motion'
+import { Check, ArrowRight, ShieldCheck, Sparkles, Pause, Play, Maximize2 } from 'lucide-react'
 import { SectionHeader, Section } from '../ui/Section'
+import ProjectVisual from '../ui/ProjectVisual'
+import DiagramPreview from './DiagramPreview'
 import { useMotionVariants, revealOnce, EASE } from '../../lib/motion'
+import { useAutoAdvance } from '../../lib/useAutoAdvance'
+import { routes } from '../../data/site'
 
 /**
- * Deep case-study sections.
+ * Case-study sections for the project page. (Spec §7.3)
+ *
+ * The page tells each thing once:
+ *   Story          challenge → approach → outcome, one chapter each
+ *   HowItWorks     the architecture diagram beside a step-by-step walkthrough
+ *   InsideTheSystem the parts and the safeguards, as tabs
+ *   BuiltWith      the stack and the services applied
+ *   Roadmap, ClosingStatement
  *
  * Every section is data-driven and renders only when the project carries that
- * content, so a lightly documented project degrades to the short format while a
- * fully documented engagement gets the long one. Nothing here is project
- * specific — the shapes live in `project.caseStudy` in data/projects.js.
+ * content, so a lightly documented project degrades gracefully. Each one
+ * prefers the detailed case-study version of a piece of content and falls
+ * back to the short project copy, never showing both.
  *
  * All motion is routed through useMotionVariants / useReducedMotion, so a
  * visitor with prefers-reduced-motion gets the same content without movement.
  */
 
-/* ------------------------------------------------------------- flow strip */
+/* ---------------------------------------------------------------- counter */
 
-/**
- * The numbered loop that runs under a case-study hero:
- * 01 Detect -> 02 Diagnose -> 03 Fix -> 04 Review -> 05 Hand off
- * Connectors draw left to right as the strip enters view.
- */
-export const FlowStrip = ({ flow }) => {
+/** Counts the number inside a stat up from zero the first time it is seen. */
+const CountUp = ({ value }) => {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-40px' })
   const reduced = useReducedMotion()
-  if (!flow?.length) return null
+  const match = String(value).match(/^([^\d]*)([\d,.]+)(.*)$/)
+  const [shown, setShown] = useState(match && !reduced ? `${match[1]}0${match[3]}` : String(value))
+
+  useEffect(() => {
+    if (!match || reduced || !inView) return undefined
+    const [, prefix, digits, suffix] = match
+    const target = Number(digits.replace(/,/g, ''))
+    const decimals = digits.includes('.') ? digits.split('.')[1].length : 0
+    const grouped = digits.includes(',')
+    const controls = animate(0, target, {
+      duration: Math.min(1.6, 0.6 + target / 400),
+      ease: EASE,
+      onUpdate: (n) => {
+        const num = grouped
+          ? Math.round(n).toLocaleString('en')
+          : n.toFixed(decimals)
+        setShown(`${prefix}${num}${suffix}`)
+      },
+    })
+    return () => controls.stop()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, reduced, value])
 
   return (
-    <div className="border-y border-ink-800 bg-ink-900/60">
-      <div className="container py-7">
-        <ol className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-0">
-          {flow.map((step, i) => (
-            <li key={step.number} className="flex min-w-0 flex-1 items-start gap-3 sm:gap-0">
-              <motion.div
-                initial={reduced ? { opacity: 1 } : { opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.45, ease: EASE, delay: i * 0.08 }}
-                className="min-w-0 sm:pr-4"
-              >
-                <div className="flex items-baseline gap-2">
-                  {/* accent-400, not 500: at 11px the mid red only reaches
-                      4.18:1 on the strip background, just under AA. */}
-                  <span className="font-display text-[11px] font-semibold tracking-brand text-accent-400">
-                    {step.number}
-                  </span>
-                  <span className="text-sm font-semibold text-silver-100">{step.title}</span>
-                </div>
-                <p className="mt-1 text-xs leading-relaxed text-silver-500">{step.detail}</p>
-              </motion.div>
-
-              {i < flow.length - 1 && (
-                <span
-                  className="relative mt-2.5 hidden h-px flex-1 overflow-hidden bg-ink-700 sm:block"
-                  aria-hidden="true"
-                >
-                  <motion.span
-                    className="absolute inset-0 block origin-left bg-accent-600"
-                    initial={reduced ? { scaleX: 1 } : { scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true, margin: '-60px' }}
-                    transition={{ duration: 0.5, ease: EASE, delay: i * 0.08 + 0.2 }}
-                  />
-                </span>
-              )}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+    <span ref={ref} className="tabular-nums">
+      {shown}
+    </span>
   )
 }
 
-/* ------------------------------------------------------------------ stats */
-
 /** Key figures about the system as built. Never performance claims. */
-export const StatRow = ({ stats }) => {
+export const HeroStats = ({ stats }) => {
   const v = useMotionVariants()
   if (!stats?.length) return null
-
   return (
     <motion.ul
-      variants={v.stagger(0.07)}
-      {...revealOnce}
-      className="grid grid-cols-2 gap-4 md:grid-cols-4"
+      variants={v.stagger(0.08, 0.35)}
+      initial="hidden"
+      animate="visible"
+      className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 lg:grid-cols-4"
     >
       {stats.map((stat) => (
-        <motion.li key={stat.label} variants={v.fadeUp} className="surface p-5">
-          <p className="font-display text-2xl font-bold leading-none text-silver-100 md:text-3xl">
-            {stat.value}
-            {stat.unit && (
-              <span className="ml-1 text-base font-medium text-silver-400">{stat.unit}</span>
-            )}
+        <motion.li key={stat.label} variants={v.fadeUp} className="bg-ink-950/90 p-5 md:p-6">
+          <p className="font-display text-3xl font-bold leading-none text-silver-100 md:text-4xl">
+            <CountUp value={stat.value} />
+            {stat.unit && <span className="ml-1 text-base font-medium text-silver-400">{stat.unit}</span>}
           </p>
-          <p className="mt-2.5 text-xs leading-relaxed text-silver-400">{stat.label}</p>
+          <p className="mt-3 text-xs leading-relaxed text-silver-400 md:text-sm">{stat.label}</p>
         </motion.li>
       ))}
     </motion.ul>
   )
 }
 
-/* ------------------------------------------------------------- at a glance */
+/* ------------------------------------------------------------------ story */
 
-export const AtAGlance = ({ data }) => {
-  const v = useMotionVariants()
-  if (!data?.points?.length) return null
-
-  return (
-    <Section muted>
-      <SectionHeader eyebrow="At a glance" title={data.headline} description={data.intro} />
-      <motion.ol variants={v.stagger(0.07)} {...revealOnce} className="grid gap-5 md:grid-cols-3">
-        {data.points.map((point, i) => (
-          <motion.li key={point.title} variants={v.fadeUp} className="surface p-7">
-            <span className="font-display text-xs font-semibold tracking-brand text-silver-600">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <h3 className="mt-3 text-base font-semibold text-silver-100">{point.title}</h3>
-            <p className="mt-2.5 text-sm leading-relaxed text-silver-400">{point.text}</p>
-          </motion.li>
-        ))}
-      </motion.ol>
-    </Section>
-  )
-}
-
-/* ------------------------------------------------- generic points section */
-
-/**
- * Used for the challenge breakdown, the approach, safeguards and lessons.
- * `icon` picks the bullet treatment: 'dot' | 'check' | 'shield'.
- */
-export const PointsSection = ({
-  eyebrow,
-  title,
-  description,
-  points,
-  columns = 3,
-  icon = 'dot',
-  muted = false,
-  footnote,
-}) => {
-  const v = useMotionVariants()
-  if (!points?.length) return null
-
-  const Bullet = icon === 'check' ? Check : icon === 'shield' ? ShieldCheck : null
-  const cols =
-    columns === 2 ? 'md:grid-cols-2' : columns === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'
-
-  return (
-    <Section muted={muted}>
-      <SectionHeader eyebrow={eyebrow} title={title} description={description} />
-      <motion.ul variants={v.stagger(0.06)} {...revealOnce} className={`grid gap-5 ${cols}`}>
-        {points.map((point) => (
-          <motion.li key={point.title} variants={v.fadeUp} className="surface p-6 md:p-7">
-            {Bullet ? (
-              <Bullet className="h-4 w-4 text-accent-500" aria-hidden="true" />
-            ) : (
-              <span className="block h-1.5 w-1.5 rounded-full bg-accent-500" aria-hidden="true" />
-            )}
-            <h3 className="mt-4 text-base font-semibold text-silver-100">{point.title}</h3>
-            <p className="mt-2.5 text-sm leading-relaxed text-silver-400">{point.text}</p>
-          </motion.li>
-        ))}
-      </motion.ul>
-      {footnote && (
-        <p className="mt-8 max-w-prose text-sm leading-relaxed text-silver-500">{footnote}</p>
-      )}
-    </Section>
-  )
-}
-
-/* ------------------------------------------------------ before / after */
-
-export const BeforeAfter = ({ data }) => {
-  const v = useMotionVariants()
-  if (!data?.before?.length) return null
-
-  return (
-    <Section muted>
-      <SectionHeader eyebrow={data.eyebrow ?? 'Where it started'} title={data.headline} description={data.intro} />
-      <motion.div variants={v.stagger(0.1)} {...revealOnce} className="grid gap-5 lg:grid-cols-2">
-        {[
-          { label: data.beforeLabel ?? 'Before', items: data.before, tone: 'before' },
-          { label: data.afterLabel ?? 'After', items: data.after, tone: 'after' },
-        ].map((col) => (
-          <motion.div
-            key={col.label}
-            variants={v.fadeUp}
-            className={`surface p-7 ${col.tone === 'after' ? 'border-accent-800/60' : ''}`}
-          >
-            <p className={col.tone === 'after' ? 'eyebrow' : 'font-display text-[11px] font-semibold uppercase tracking-eyebrow text-silver-500'}>
-              {col.label}
-            </p>
-            <ul className="mt-5 space-y-3.5">
-              {col.items.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-silver-300">
-                  <span
-                    className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
-                      col.tone === 'after' ? 'bg-accent-500' : 'bg-ink-500'
-                    }`}
-                    aria-hidden="true"
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
-      </motion.div>
-      {data.footnote && (
-        <p className="mt-8 text-sm leading-relaxed text-silver-500">{data.footnote}</p>
-      )}
-    </Section>
-  )
-}
-
-/* ------------------------------------------------------------ architecture */
-
-/**
- * Layered architecture diagram.
- *
- * Drawn from data rather than as a hand-authored SVG per project, so every case
- * study gets the same diagram language. Layers reveal top to bottom and the
- * connector between them draws as you reach it, which is what makes it read as
- * a flow rather than a stack of boxes.
- */
-export const ArchitectureFlow = ({ data }) => {
-  const v = useMotionVariants()
+/** Before / after as a switch: the list swaps in place rather than sitting side by side. */
+const BeforeAfterSwitch = ({ data }) => {
+  const [side, setSide] = useState('after')
   const reduced = useReducedMotion()
-  if (!data?.layers?.length) return null
+  const sides = [
+    { id: 'before', label: data.beforeLabel ?? 'Before', items: data.before },
+    { id: 'after', label: data.afterLabel ?? 'After', items: data.after },
+  ]
+  const current = sides.find((s) => s.id === side)
 
   return (
-    <Section>
-      <SectionHeader eyebrow="Architecture" title={data.headline} description={data.intro} />
-
-      <div
-        className="relative"
-        role="img"
-        aria-label={data.alt ?? `Architecture diagram for this project: ${data.layers.map((l) => l.label).join(', then ')}.`}
-      >
-        {data.layers.map((layer, li) => (
-          <div key={layer.label}>
-            <motion.div
-              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.5, ease: EASE }}
-              className={`surface overflow-hidden p-6 md:p-7 ${
-                layer.emphasis ? 'border-accent-800/60' : ''
+    <div className="mt-8 rounded-xl border border-ink-800 bg-ink-950 p-5 md:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="font-display text-[11px] font-semibold uppercase tracking-eyebrow text-silver-500">
+          {data.eyebrow ?? 'Where it started, and where it is now'}
+        </p>
+        <div role="tablist" aria-label="Compare before and after" className="relative flex rounded-lg border border-ink-700 bg-ink-900 p-1">
+          {sides.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              role="tab"
+              aria-selected={side === s.id}
+              onClick={() => setSide(s.id)}
+              className={`relative min-h-[36px] rounded-md px-3.5 text-xs font-semibold transition-colors ${
+                side === s.id ? 'text-silver-100' : 'text-silver-500 hover:text-silver-300'
               }`}
             >
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="eyebrow">{layer.label}</p>
-                {layer.note && (
-                  <p className="font-display text-[11px] tracking-wide text-silver-500">
-                    {layer.note}
-                  </p>
-                )}
-              </div>
-
-              <motion.ul
-                variants={v.stagger(0.05)}
-                {...revealOnce}
-                className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-              >
-                {layer.nodes.map((node) => (
-                  <motion.li
-                    key={node.title}
-                    variants={v.fadeUp}
-                    className="rounded-lg border border-ink-700 bg-ink-900 p-4"
-                  >
-                    <p className="text-sm font-semibold text-silver-100">{node.title}</p>
-                    {node.lines?.map((line) => (
-                      <p key={line} className="mt-1 text-xs leading-relaxed text-silver-500">
-                        {line}
-                      </p>
-                    ))}
-                  </motion.li>
-                ))}
-              </motion.ul>
-            </motion.div>
-
-            {li < data.layers.length - 1 && (
-              <div className="relative flex h-12 items-center justify-center" aria-hidden="true">
-                <span className="absolute inset-y-0 w-px overflow-hidden bg-ink-700">
-                  <motion.span
-                    className="absolute inset-0 block origin-top bg-accent-600"
-                    initial={reduced ? { scaleY: 1 } : { scaleY: 0 }}
-                    whileInView={{ scaleY: 1 }}
-                    viewport={{ once: true, margin: '-40px' }}
-                    transition={{ duration: 0.45, ease: EASE }}
-                  />
-                </span>
+              {side === s.id && (
                 <motion.span
-                  initial={reduced ? { opacity: 1 } : { opacity: 0, scale: 0.6 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.35, ease: EASE, delay: 0.3 }}
-                  className="relative grid h-6 w-6 place-items-center rounded-full border border-ink-700 bg-ink-950"
-                >
-                  <ArrowDown className="h-3 w-3 text-accent-500" />
-                </motion.span>
-              </div>
-            )}
-          </div>
-        ))}
+                  layoutId="before-after-pill"
+                  className={`absolute inset-0 rounded-md ${s.id === 'after' ? 'bg-accent-600/80' : 'bg-ink-700'}`}
+                  transition={{ duration: reduced ? 0 : 0.3, ease: EASE }}
+                />
+              )}
+              <span className="relative">{s.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
-
-      {data.footnote && (
-        <p className="mt-8 max-w-prose text-sm leading-relaxed text-silver-500">{data.footnote}</p>
-      )}
-    </Section>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.ul
+          key={side}
+          role="tabpanel"
+          initial={reduced ? { opacity: 0 } : { opacity: 0, x: side === 'after' ? 16 : -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={reduced ? { opacity: 0 } : { opacity: 0, x: side === 'after' ? -16 : 16 }}
+          transition={{ duration: 0.25, ease: EASE }}
+          className="mt-5 grid gap-3 sm:grid-cols-2"
+        >
+          {current.items.map((item) => (
+            <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-silver-300">
+              <span
+                className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${side === 'after' ? 'bg-accent-500' : 'bg-ink-500'}`}
+                aria-hidden="true"
+              />
+              {item}
+            </li>
+          ))}
+        </motion.ul>
+      </AnimatePresence>
+      {data.footnote && <p className="mt-5 text-xs leading-relaxed text-silver-500">{data.footnote}</p>}
+    </div>
   )
 }
 
-/* ------------------------------------------------------------- walkthrough */
+const Chapter = ({ chapter, index, onVisible }) => {
+  const v = useMotionVariants()
+  const ref = useRef(null)
+  const inView = useInView(ref, { margin: '-45% 0px -45% 0px' })
+  useEffect(() => {
+    if (inView) onVisible(index)
+  }, [inView, index, onVisible])
+
+  const Bullet = chapter.id === 'approach' ? Check : null
+
+  return (
+    <article ref={ref} id={`chapter-${chapter.id}`} className="scroll-mt-28 border-t border-ink-800 py-10 first:border-t-0 first:pt-0 md:py-14">
+      <motion.div variants={v.fadeUp} {...revealOnce}>
+        <p className="flex items-center gap-3 font-display text-xs font-semibold tracking-brand">
+          <span className="text-silver-500">{String(index + 1).padStart(2, '0')}</span>
+          <span className="h-px w-6 bg-accent-600" aria-hidden="true" />
+          <span className="uppercase text-accent-400">{chapter.label}</span>
+        </p>
+        <h2 className="mt-4 max-w-3xl text-2xl leading-tight md:text-3xl">{chapter.headline ?? chapter.label}</h2>
+        {chapter.body && (
+          <p className="mt-4 max-w-prose text-base leading-relaxed text-silver-400 md:text-lg">{chapter.body}</p>
+        )}
+      </motion.div>
+
+      {chapter.points?.length > 0 && (
+        <motion.ul
+          variants={v.stagger(0.07)}
+          {...revealOnce}
+          className={`mt-8 grid gap-4 ${chapter.points.length % 3 === 0 ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}
+        >
+          {chapter.points.map((point) => (
+            <motion.li key={point.title} variants={v.fadeUp} className="surface p-5 md:p-6">
+              {Bullet ? (
+                <Bullet className="h-4 w-4 text-accent-500" aria-hidden="true" />
+              ) : (
+                <span className="block h-1.5 w-1.5 rounded-full bg-accent-500" aria-hidden="true" />
+              )}
+              <h3 className="mt-3.5 text-base font-semibold text-silver-100">{point.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-silver-400">{point.text}</p>
+            </motion.li>
+          ))}
+        </motion.ul>
+      )}
+
+      {chapter.outcomes?.length > 0 && (
+        <motion.div variants={v.fadeUp} {...revealOnce} className="mt-8 rounded-xl border border-accent-800/50 bg-accent-950/20 p-5 md:p-6">
+          <p className="eyebrow">What changed</p>
+          <ul className="mt-4 space-y-3">
+            {chapter.outcomes.map((o) => (
+              <li key={o} className="flex items-start gap-3 text-sm leading-relaxed text-silver-200">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-500" aria-hidden="true" />
+                {o}
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
+
+      {chapter.beforeAfter?.before?.length > 0 && <BeforeAfterSwitch data={chapter.beforeAfter} />}
+
+      {chapter.footnote && <p className="mt-6 max-w-prose text-sm leading-relaxed text-silver-500">{chapter.footnote}</p>}
+    </article>
+  )
+}
 
 /**
- * One run, start to finish. A scroll-linked rail fills as the visitor moves
- * down the steps, so the sequence reads as a single journey.
+ * Challenge → approach → outcome. On large screens a chapter index stays
+ * pinned beside the text, marks the chapter being read and fills as the
+ * visitor scrolls through the story.
  */
-export const Walkthrough = ({ data }) => {
+export const Story = ({ project, cs }) => {
   const reduced = useReducedMotion()
   const ref = useRef(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.8', 'end 0.6'] })
-  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 26, restDelta: 0.001 })
+  const [current, setCurrent] = useState(0)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.6', 'end 0.6'] })
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.001 })
 
-  if (!data?.steps?.length) return null
+  // The detailed version when there is one, the short project copy otherwise.
+  const pick = (detail, prose) => detail?.intro ?? (detail?.points?.length ? null : prose)
+  const chapters = [
+    {
+      id: 'challenge',
+      label: 'Challenge',
+      headline: cs?.challengeDetail?.headline,
+      body: pick(cs?.challengeDetail, project.challenge),
+      points: cs?.challengeDetail?.points,
+      footnote: cs?.challengeDetail?.footnote,
+    },
+    {
+      id: 'approach',
+      label: 'Approach',
+      headline: cs?.approachDetail?.headline,
+      body: pick(cs?.approachDetail, project.approach),
+      points: cs?.approachDetail?.points,
+    },
+    {
+      id: 'outcome',
+      label: 'Outcome',
+      headline: cs?.atAGlance?.headline,
+      body: pick(cs?.atAGlance, project.solution),
+      points: cs?.atAGlance?.points,
+      outcomes: project.outcomes,
+      beforeAfter: cs?.beforeAfter,
+    },
+  ].filter((c) => c.body || c.points?.length || c.outcomes?.length)
+
+  if (!chapters.length) return null
 
   return (
     <Section muted>
-      <SectionHeader
-        eyebrow={data.eyebrow ?? 'One run, end to end'}
-        title={data.headline}
-        description={data.intro}
-      />
+      <div ref={ref} className="grid gap-10 lg:grid-cols-[13rem_1fr] lg:gap-16">
+        <nav aria-label="Case study chapters" className="hidden lg:block">
+          <div className="sticky top-28">
+            <p className="eyebrow">The story</p>
+            <div className="relative mt-6 pl-5">
+              <span className="absolute bottom-1 left-0 top-1 w-px bg-ink-700" aria-hidden="true" />
+              <motion.span
+                className="absolute bottom-1 left-0 top-1 w-px origin-top bg-accent-500"
+                style={reduced ? { scaleY: 1 } : { scaleY: progress }}
+                aria-hidden="true"
+              />
+              <ol className="space-y-5">
+                {chapters.map((c, i) => (
+                  <li key={c.id}>
+                    <a
+                      href={`#chapter-${c.id}`}
+                      aria-current={current === i ? 'step' : undefined}
+                      className={`group flex items-baseline gap-3 text-sm font-medium transition-colors ${
+                        current === i ? 'text-silver-100' : 'text-silver-500 hover:text-silver-300'
+                      }`}
+                    >
+                      <span className={`font-display text-xs tracking-brand ${current === i ? 'text-accent-400' : 'text-silver-600'}`}>
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      {c.label}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </nav>
 
-      <div ref={ref} className="relative">
-        <div
-          className="absolute bottom-0 left-[0.9375rem] top-2 w-px bg-ink-700 md:left-[1.1875rem]"
-          aria-hidden="true"
-        >
-          <motion.div
-            className="absolute inset-x-0 top-0 h-full origin-top bg-gradient-to-b from-accent-500 to-accent-700"
-            style={reduced ? { scaleY: 1 } : { scaleY: progress }}
-          />
-        </div>
-
-        <ol className="space-y-5">
-          {data.steps.map((step, i) => (
-            <motion.li
-              key={step.title}
-              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px 0px -15% 0px' }}
-              transition={{ duration: 0.5, ease: EASE }}
-              className="group relative flex gap-5 md:gap-7"
-            >
-              <span className="relative z-10 shrink-0">
-                <span className="grid h-8 w-8 place-items-center rounded-full border border-ink-700 bg-ink-900 font-display text-[11px] font-semibold text-accent-400 transition-colors group-hover:border-accent-600 md:h-10 md:w-10 md:text-xs">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-              </span>
-              <div className="min-w-0 flex-1 pb-1">
-                <h3 className="text-base font-semibold text-silver-100 md:text-lg">{step.title}</h3>
-                <p className="mt-2 max-w-prose text-sm leading-relaxed text-silver-400">
-                  {step.text}
-                </p>
-              </div>
-            </motion.li>
+        <div>
+          {chapters.map((c, i) => (
+            <Chapter key={c.id} chapter={c} index={i} onVisible={setCurrent} />
           ))}
-        </ol>
+        </div>
       </div>
-
-      {data.caption && (
-        <p className="mt-8 text-xs leading-relaxed text-silver-500">{data.caption}</p>
-      )}
     </Section>
   )
 }
 
-/* -------------------------------------------------------- component table */
+/* ----------------------------------------------------------- how it works */
 
 /**
- * The parts that make up the system — agents, services, modules — each with the
- * guardrail that keeps it honest. The guardrail line is the interesting part:
- * it is what separates a demo from something that can run unattended.
+ * The architecture diagram, with a button beneath it that opens it full size.
+ * The button sits outside the diagram so it never covers part of it.
  */
-export const ComponentList = ({ data }) => {
+const DiagramFrame = ({ project, footnote }) => {
+  const [open, setOpen] = useState(null)
+  const ref = useRef(null)
+  const close = useCallback(() => setOpen(null), [])
+  return (
+    <div ref={ref}>
+      <ProjectVisual project={project} priority aspect="aspect-[16/9]" />
+      <div className="mt-3 flex items-start justify-between gap-4">
+        <p className="text-xs leading-relaxed text-silver-500">{footnote}</p>
+        <button
+          type="button"
+          onClick={() => setOpen('modal')}
+          aria-label={`Enlarge the ${project.title} architecture diagram`}
+          className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-ink-700 bg-ink-900 px-3 text-xs font-medium text-silver-300 transition-colors hover:border-accent-600 hover:text-accent-400"
+        >
+          <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />
+          Enlarge
+        </button>
+      </div>
+      <DiagramPreview project={project} mode={open} anchorRef={ref} onClose={close} />
+    </div>
+  )
+}
+
+/** Steps that play themselves, with a progress bar on the current one. */
+const StepPlayer = ({ steps, heading, caption }) => {
+  const INTERVAL = 3400
+  const { ref, active, choose, playing, stopped, toggle, reduced, holding } = useAutoAdvance(steps.length, {
+    interval: INTERVAL,
+    hold: 9000,
+    amount: 0.3,
+  })
+
+  return (
+    <div ref={ref}>
+      <div className="flex items-baseline justify-between gap-4">
+        {heading && <h3 className="text-lg font-semibold text-silver-100">{heading}</h3>}
+        <p className="shrink-0 font-display text-xs tracking-brand text-silver-500">
+          {String(active + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}
+        </p>
+      </div>
+
+      <ol className="mt-5 space-y-2">
+        {steps.map((step, i) => {
+          const isActive = i === active
+          const done = i < active
+          return (
+            <li key={step.title}>
+              <button
+                type="button"
+                onClick={() => choose(i)}
+                aria-expanded={isActive}
+                className={`relative w-full overflow-hidden rounded-xl border px-4 py-3 text-left transition-colors ${
+                  isActive
+                    ? 'border-accent-700/70 bg-accent-950/30'
+                    : 'border-ink-800 bg-ink-950 hover:border-ink-600'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  <span
+                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border font-display text-[11px] font-semibold transition-colors ${
+                      isActive
+                        ? 'border-accent-500 bg-accent-600 text-white'
+                        : done
+                          ? 'border-accent-700 bg-accent-950 text-accent-300'
+                          : 'border-ink-600 bg-ink-900 text-silver-500'
+                    }`}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-silver-100' : 'text-silver-300'}`}>
+                    {step.title}
+                  </span>
+                </span>
+                <AnimatePresence initial={false}>
+                  {isActive && (
+                    <motion.span
+                      key="text"
+                      initial={reduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      animate={reduced ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+                      exit={reduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                      className="block overflow-hidden"
+                    >
+                      <span className="block pl-10 pt-2 text-sm leading-relaxed text-silver-400">{step.text}</span>
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                {isActive && playing && !holding && (
+                  <motion.span
+                    key={`bar-${active}`}
+                    className="absolute inset-x-0 bottom-0 block h-0.5 origin-left bg-accent-500"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: INTERVAL / 1000, ease: 'linear' }}
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            </li>
+          )
+        })}
+      </ol>
+
+      <div className="mt-3 flex items-center justify-between gap-4">
+        {caption ? <p className="text-xs leading-relaxed text-silver-500">{caption}</p> : <span />}
+        {!reduced && (
+          <button
+            type="button"
+            onClick={toggle}
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-md px-2 text-xs text-silver-500 transition-colors hover:text-silver-200"
+          >
+            {stopped ? <Play className="h-3.5 w-3.5" aria-hidden="true" /> : <Pause className="h-3.5 w-3.5" aria-hidden="true" />}
+            {stopped ? 'Play' : 'Pause'}
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * The system in one place: the diagram, and beside it one run through the
+ * system, step by step. Uses the case study's walkthrough when it has one,
+ * else its delivery flow.
+ */
+export const HowItWorks = ({ project, cs }) => {
   const v = useMotionVariants()
-  if (!data?.items?.length) return null
+  const steps = cs?.walkthrough?.steps?.length
+    ? cs.walkthrough.steps
+    : (cs?.flow ?? []).map((f) => ({ title: f.title, text: f.detail }))
 
   return (
     <Section>
       <SectionHeader
-        eyebrow={data.eyebrow ?? 'The parts'}
-        title={data.headline}
-        description={data.intro}
+        eyebrow="How it works"
+        title={cs?.architecture?.headline ?? 'How the system fits together.'}
+        description={cs?.architecture?.intro}
       />
-      <motion.ol variants={v.stagger(0.06)} {...revealOnce} className="space-y-4">
-        {data.items.map((item, i) => (
-          <motion.li
-            key={item.name}
-            variants={v.fadeUp}
-            className="surface surface-hover grid gap-4 p-6 md:grid-cols-[auto_1fr_1fr] md:items-start md:gap-7 md:p-7"
-          >
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-ink-700 bg-ink-900 font-display text-xs font-semibold text-accent-400">
+      <div className="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
+        <motion.div variants={v.fadeUp} {...revealOnce} className="lg:sticky lg:top-28 lg:self-start">
+          <DiagramFrame project={project} footnote={cs?.architecture?.footnote} />
+        </motion.div>
+        {steps.length > 0 && (
+          <motion.div variants={v.fadeUp} {...revealOnce}>
+            <StepPlayer
+              steps={steps}
+              heading={cs?.walkthrough?.headline ?? 'One run, step by step.'}
+              caption={cs?.walkthrough?.caption}
+            />
+          </motion.div>
+        )}
+      </div>
+    </Section>
+  )
+}
+
+/* ------------------------------------------------------- inside the system */
+
+const ComponentCards = ({ items }) => {
+  const v = useMotionVariants()
+  return (
+    <motion.ul variants={v.stagger(0.06)} initial="hidden" animate="visible" className="grid gap-4 md:grid-cols-2">
+      {items.map((item, i) => (
+        <motion.li key={item.name} variants={v.fadeUp} className="surface flex flex-col p-5 md:p-6">
+          <div className="flex items-center gap-3">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-ink-700 bg-ink-900 font-display text-xs font-semibold text-accent-400">
               {item.index ?? String(i + 1)}
             </span>
-            <div>
-              <h3 className="text-base font-semibold text-silver-100">{item.name}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-silver-400">{item.what}</p>
-            </div>
-            {item.guardrail && (
-              <div className="rounded-lg border border-ink-800 bg-ink-900 p-4">
-                <p className="font-display text-[11px] font-semibold uppercase tracking-eyebrow text-accent-400">
-                  {item.guardrailLabel ?? 'Guardrail'}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-silver-400">{item.guardrail}</p>
-              </div>
+            <h4 className="text-base font-semibold text-silver-100">{item.name}</h4>
+          </div>
+          <p className="mt-3 flex-1 text-sm leading-relaxed text-silver-400">{item.what}</p>
+          {item.guardrail && (
+            <p className="mt-4 border-t border-ink-800 pt-3 text-sm leading-relaxed text-silver-300">
+              <span className="mr-2 font-display text-[10px] font-semibold uppercase tracking-eyebrow text-accent-400">
+                {item.guardrailLabel ?? 'Guardrail'}
+              </span>
+              {item.guardrail}
+            </p>
+          )}
+        </motion.li>
+      ))}
+    </motion.ul>
+  )
+}
+
+const SafeguardCards = ({ points }) => {
+  const v = useMotionVariants()
+  return (
+    <motion.ul
+      variants={v.stagger(0.05)}
+      initial="hidden"
+      animate="visible"
+      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {points.map((point) => (
+        <motion.li key={point.title} variants={v.fadeUp} className="surface p-5 md:p-6">
+          <ShieldCheck className="h-4 w-4 text-accent-500" aria-hidden="true" />
+          <h4 className="mt-3.5 text-base font-semibold text-silver-100">{point.title}</h4>
+          <p className="mt-2 text-sm leading-relaxed text-silver-400">{point.text}</p>
+        </motion.li>
+      ))}
+    </motion.ul>
+  )
+}
+
+const FeatureList = ({ items }) => {
+  const v = useMotionVariants()
+  return (
+    <motion.ul variants={v.stagger(0.04)} initial="hidden" animate="visible" className="grid gap-3 md:grid-cols-2">
+      {items.map((feature) => (
+        <motion.li
+          key={feature}
+          variants={v.fadeUp}
+          className="tile flex items-start gap-3.5 rounded-lg border border-ink-800 bg-ink-900 px-5 py-4"
+        >
+          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500" aria-hidden="true" />
+          <span className="text-sm leading-relaxed text-silver-300">{feature}</span>
+        </motion.li>
+      ))}
+    </motion.ul>
+  )
+}
+
+/**
+ * The parts of the system and the controls around them, as tabs. The plain
+ * feature list is only used when a project has no component breakdown, since
+ * the two describe the same things.
+ */
+export const InsideTheSystem = ({ project, cs }) => {
+  const reduced = useReducedMotion()
+  const tabs = [
+    cs?.components?.items?.length && {
+      id: 'parts',
+      label: cs.components.eyebrow ?? 'The parts',
+      headline: cs.components.headline,
+      intro: cs.components.intro,
+      render: () => <ComponentCards items={cs.components.items} />,
+    },
+    !cs?.components?.items?.length &&
+      project.features?.length && {
+        id: 'features',
+        label: 'Key capabilities',
+        headline: 'What it does.',
+        render: () => <FeatureList items={project.features} />,
+      },
+    cs?.safeguards?.points?.length && {
+      id: 'safeguards',
+      label: cs.safeguards.eyebrow ?? 'Safeguards',
+      headline: cs.safeguards.headline,
+      intro: cs.safeguards.intro,
+      render: () => <SafeguardCards points={cs.safeguards.points} />,
+    },
+  ].filter(Boolean)
+  const [activeId, setActiveId] = useState(tabs[0]?.id)
+  if (!tabs.length) return null
+  const tab = tabs.find((t) => t.id === activeId) ?? tabs[0]
+
+  return (
+    <Section muted>
+      <SectionHeader
+        eyebrow="Inside the system"
+        title={tabs.length > 1 ? 'What it is made of, and what keeps it safe.' : tab.headline}
+      />
+
+      {tabs.length > 1 && (
+        <div role="tablist" aria-label="Inside the system" className="mb-8 flex flex-wrap gap-1 border-b border-ink-800">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              id={`system-tab-${t.id}`}
+              aria-selected={t.id === tab.id}
+              aria-controls="system-panel"
+              onClick={() => setActiveId(t.id)}
+              className={`relative min-h-[44px] px-4 text-sm font-semibold transition-colors ${
+                t.id === tab.id ? 'text-silver-100' : 'text-silver-500 hover:text-silver-300'
+              }`}
+            >
+              {t.label}
+              {t.id === tab.id && (
+                <motion.span
+                  layoutId="system-tab-underline"
+                  className="absolute inset-x-2 -bottom-px h-0.5 bg-accent-500"
+                  transition={{ duration: reduced ? 0 : 0.3, ease: EASE }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div id="system-panel" role={tabs.length > 1 ? 'tabpanel' : undefined} aria-labelledby={tabs.length > 1 ? `system-tab-${tab.id}` : undefined}>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={tab.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {tabs.length > 1 && tab.headline && (
+              <h3 className="text-xl font-semibold text-silver-100 md:text-2xl">{tab.headline}</h3>
             )}
-          </motion.li>
-        ))}
-      </motion.ol>
+            {tab.intro && <p className="mt-3 max-w-prose text-sm leading-relaxed text-silver-400 md:text-base">{tab.intro}</p>}
+            <div className={tabs.length > 1 && (tab.headline || tab.intro) ? 'mt-7' : ''}>{tab.render()}</div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </Section>
+  )
+}
+
+/* -------------------------------------------------------------- built with */
+
+/** The stack by layer, and the services the project drew on. */
+export const BuiltWith = ({ project, cs, services }) => {
+  const v = useMotionVariants()
+  const groups = cs?.techStack?.groups?.length
+    ? cs.techStack.groups
+    : project.technologies?.length
+      ? [{ title: 'Technology', items: project.technologies }]
+      : []
+  if (!groups.length && !services.length) return null
+
+  return (
+    <Section>
+      <SectionHeader
+        eyebrow="Built with"
+        title={cs?.techStack?.headline ?? 'What it runs on.'}
+        description={cs?.techStack?.intro}
+      />
+      {groups.length > 0 && (
+        <motion.dl
+          variants={v.stagger(0.05)}
+          {...revealOnce}
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {groups.map((group) => (
+            <motion.div key={group.title} variants={v.fadeUp} className="surface p-5">
+              <dt className="font-display text-[11px] font-semibold uppercase tracking-eyebrow text-silver-500">
+                {group.title}
+              </dt>
+              <dd className="mt-3 flex flex-wrap gap-1.5">
+                {group.items.map((item) => (
+                  <span key={item} className="rounded border border-ink-700 bg-ink-900 px-2 py-0.5 text-xs text-silver-300">
+                    {item}
+                  </span>
+                ))}
+              </dd>
+            </motion.div>
+          ))}
+        </motion.dl>
+      )}
+
+      {services.length > 0 && (
+        <motion.div variants={v.fadeUp} {...revealOnce} className="mt-8 flex flex-wrap items-center gap-2">
+          <span className="mr-2 font-display text-[11px] font-semibold uppercase tracking-eyebrow text-silver-500">
+            Services applied
+          </span>
+          {services.map((service) => (
+            <Link
+              key={service.slug}
+              to={`${routes.services}/${service.slug}`}
+              className="inline-flex min-h-[36px] items-center rounded-md border border-ink-700 bg-ink-900 px-3 text-xs text-silver-300 transition-colors hover:border-accent-700/60 hover:text-silver-100"
+            >
+              {service.title}
+            </Link>
+          ))}
+        </motion.div>
+      )}
     </Section>
   )
 }
@@ -436,18 +708,10 @@ export const Roadmap = ({ data }) => {
 
   return (
     <Section muted>
-      <SectionHeader
-        eyebrow={data.eyebrow ?? 'Roadmap'}
-        title={data.headline}
-        description={data.intro}
-      />
-      <motion.div
-        variants={v.stagger(0.07)}
-        {...revealOnce}
-        className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
-      >
+      <SectionHeader eyebrow={data.eyebrow ?? 'Roadmap'} title={data.headline} description={data.intro} />
+      <motion.div variants={v.stagger(0.07)} {...revealOnce} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {data.groups.map((group) => (
-          <motion.div key={group.title} variants={v.fadeUp} className="surface p-7">
+          <motion.div key={group.title} variants={v.fadeUp} className="surface p-6 md:p-7">
             <div className="flex items-center gap-2.5">
               <Sparkles className="h-4 w-4 text-accent-500" aria-hidden="true" />
               <h3 className="text-base font-semibold text-silver-100">{group.title}</h3>
@@ -467,54 +731,37 @@ export const Roadmap = ({ data }) => {
   )
 }
 
-/* -------------------------------------------------------------- tech stack */
-
-export const TechStack = ({ data }) => {
-  const v = useMotionVariants()
-  if (!data?.groups?.length) return null
-
-  return (
-    <Section>
-      <SectionHeader
-        eyebrow="Technology"
-        title={data.headline ?? 'What it runs on.'}
-        description={data.intro}
-      />
-      <motion.dl variants={v.stagger(0.05)} {...revealOnce} className="grid gap-4 md:grid-cols-2">
-        {data.groups.map((group) => (
-          <motion.div key={group.title} variants={v.fadeUp} className="surface p-6">
-            <dt className="text-sm font-semibold text-silver-100">{group.title}</dt>
-            <dd className="mt-3 flex flex-wrap gap-1.5">
-              {group.items.map((item) => (
-                <span
-                  key={item}
-                  className="rounded border border-ink-700 bg-ink-900 px-2 py-0.5 text-[11px] text-silver-400"
-                >
-                  {item}
-                </span>
-              ))}
-            </dd>
-          </motion.div>
-        ))}
-      </motion.dl>
-    </Section>
-  )
-}
-
 /* ------------------------------------------------------------- closing line */
 
+/** The closing line, revealed word by word. */
 export const ClosingStatement = ({ text }) => {
-  const v = useMotionVariants()
+  const reduced = useReducedMotion()
   if (!text) return null
+  const words = text.split(' ')
 
   return (
     <Section>
       <motion.p
-        variants={v.fadeUp}
-        {...revealOnce}
-        className="mx-auto max-w-3xl text-center font-display text-xl leading-relaxed text-silver-200 md:text-2xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-80px' }}
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : 0.045 } } }}
+        className="mx-auto max-w-3xl text-center font-display text-xl leading-relaxed text-silver-200 md:text-3xl"
       >
-        {text}
+        {words.map((word, i) => (
+          <span key={i}>
+            <motion.span
+              variants={{
+                hidden: reduced ? { opacity: 1 } : { opacity: 0.12, y: 6 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+              }}
+              className="inline-block"
+            >
+              {word}
+            </motion.span>
+            {i < words.length - 1 ? ' ' : ''}
+          </span>
+        ))}
       </motion.p>
     </Section>
   )

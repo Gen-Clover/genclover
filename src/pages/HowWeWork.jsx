@@ -5,6 +5,7 @@ import { Section, SectionHeader } from '../components/ui/Section'
 import { SplitScreen, GlassPanel } from '../components/ui/SplitScreen'
 import Button from '../components/ui/Button'
 import FinalCTA from '../components/home/FinalCTA'
+import StageIcon from '../components/process/StageIcon'
 import Faq from '../components/ui/Faq'
 import {
   processSteps,
@@ -19,6 +20,7 @@ import { PRICING_STATEMENT } from '../data/services'
 import { routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants, revealOnce } from '../lib/motion'
+import { useSwipeRow } from '../components/ui/SwipeRow'
 
 /**
  * How We Work. (Spec §11, §12)
@@ -33,7 +35,7 @@ import { useMotionVariants, revealOnce } from '../lib/motion'
 /* ------------------------------------------------------ stage explorer */
 
 /** Vertical list of stages (tabs). */
-const StageTabs = ({ active, setActive, compact = false }) => {
+const StageTabs = ({ active, setActive, idPrefix, compact = false }) => {
   const tabsRef = useRef([])
   const onKeyDown = (e) => {
     const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }
@@ -63,9 +65,9 @@ const StageTabs = ({ active, setActive, compact = false }) => {
             ref={(el) => (tabsRef.current[i] = el)}
             type="button"
             role="tab"
-            id={`stage-tab-${i}`}
+            id={`${idPrefix}-tab-${i}`}
             aria-selected={selected}
-            aria-controls="stage-panel"
+            aria-controls={`${idPrefix}-panel`}
             tabIndex={selected ? 0 : -1}
             onClick={() => setActive(i)}
             onMouseEnter={compact ? () => setActive(i) : undefined}
@@ -105,10 +107,9 @@ const StageTabs = ({ active, setActive, compact = false }) => {
 }
 
 /** Detail of the selected stage. */
-const StagePanel = ({ active, setActive }) => {
+const StagePanel = ({ active, setActive, idPrefix }) => {
   const reduced = useReducedMotion()
   const step = processSteps[active]
-  const Icon = step.icon
   const columns = [
     { title: 'What we do', items: step.weDo, icon: Wrench },
     { title: 'What we need from you', items: step.youBring, icon: Users },
@@ -116,7 +117,7 @@ const StagePanel = ({ active, setActive }) => {
   ]
 
   return (
-    <div id="stage-panel" role="tabpanel" aria-labelledby={`stage-tab-${active}`}>
+    <div id={`${idPrefix}-panel`} role="tabpanel" aria-labelledby={`${idPrefix}-tab-${active}`}>
       <AnimatePresence mode="wait">
         <motion.div
           key={step.number}
@@ -126,8 +127,8 @@ const StagePanel = ({ active, setActive }) => {
           transition={{ duration: 0.25 }}
         >
           <div className="flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent-800 bg-accent-950/50">
-              <Icon className="h-5 w-5 text-accent-400" aria-hidden="true" />
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent-800 bg-accent-950/50 text-accent-400">
+              <StageIcon stage={step.title} fallback={step.icon} active className="h-5 w-5" />
             </span>
             <div>
               <p className="eyebrow">
@@ -199,6 +200,10 @@ const HowWeWork = () => {
   usePageMeta(pageMeta.howWeWork)
   const v = useMotionVariants()
   const [stage, setStage] = useState(0)
+  const rhythmRow = useSwipeRow(rhythm.length, 'How we keep you informed')
+  const rulesRow = useSwipeRow(groundRules.length, 'Ground rules')
+  const startRow = useSwipeRow(startingPoints.length, 'Ways to start')
+  const careRow = useSwipeRow(carePlans.length, 'Care plans')
 
   return (
     <>
@@ -221,7 +226,7 @@ const HowWeWork = () => {
               decision. Pick a stage.
             </motion.p>
             <motion.div variants={v.fadeUp} className="mt-5 hidden lg:block">
-              <StageTabs active={stage} setActive={setStage} compact />
+              <StageTabs active={stage} setActive={setStage} idPrefix="stage-lg" compact />
             </motion.div>
             <motion.div variants={v.fadeUp} className="mt-5">
               <Button to={routes.startProject} size="md">
@@ -233,16 +238,16 @@ const HowWeWork = () => {
         }
         right={
           <GlassPanel>
-            <StagePanel active={stage} setActive={setStage} />
+            <StagePanel active={stage} setActive={setStage} idPrefix="stage-lg" />
           </GlassPanel>
         }
       />
 
       {/* Small screens: the stage explorer below the intro */}
       <Section className="lg:hidden">
-        <StageTabs active={stage} setActive={setStage} />
+        <StageTabs active={stage} setActive={setStage} idPrefix="stage-sm" />
         <div className="surface surface-static mt-4 p-6">
-          <StagePanel active={stage} setActive={setStage} />
+          <StagePanel active={stage} setActive={setStage} idPrefix="stage-sm" />
         </div>
       </Section>
 
@@ -255,8 +260,8 @@ const HowWeWork = () => {
             description="A predictable rhythm of updates and demos, so progress is visible without meetings for the sake of meetings."
             className="!mb-0"
           />
-          <motion.ol variants={v.stagger(0.07)} {...revealOnce} tabIndex={0}
-        aria-label="Swipe for more"
+          <motion.ol variants={v.stagger(0.07)} {...revealOnce} ref={rhythmRow.ref}
+        {...rhythmRow.props}
         className="mobile-carousel relative space-y-4 md:block">
             {rhythm.map((item, i) => (
               <motion.li
@@ -274,6 +279,7 @@ const HowWeWork = () => {
               </motion.li>
             ))}
           </motion.ol>
+          {rhythmRow.dots}
         </div>
       </Section>
 
@@ -287,8 +293,8 @@ const HowWeWork = () => {
         <motion.ul
           variants={v.stagger(0.06)}
           {...revealOnce}
-          tabIndex={0}
-        aria-label="Swipe for more"
+          ref={rulesRow.ref}
+        {...rulesRow.props}
         className="mobile-carousel grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 md:grid-cols-2"
         >
           {groundRules.map((rule) => (
@@ -299,6 +305,7 @@ const HowWeWork = () => {
             </motion.li>
           ))}
         </motion.ul>
+        {rulesRow.dots}
       </Section>
 
       {/* Ways to start */}
@@ -308,8 +315,8 @@ const HowWeWork = () => {
           title="You do not have to commit to everything at once."
           description="Most engagements begin in one of these ways. Tell us where you are, and we will suggest the right starting point."
         />
-        <motion.ul variants={v.stagger(0.07)} {...revealOnce} tabIndex={0}
-        aria-label="Swipe for more"
+        <motion.ul variants={v.stagger(0.07)} {...revealOnce} ref={startRow.ref}
+        {...startRow.props}
         className="mobile-carousel grid gap-5 md:grid-cols-2">
           {startingPoints.map((point) => (
             <motion.li key={point.title} variants={v.fadeUp} className="surface flex flex-col p-7">
@@ -324,6 +331,7 @@ const HowWeWork = () => {
             </motion.li>
           ))}
         </motion.ul>
+        {startRow.dots}
       </Section>
 
       {/* Continuous care */}
@@ -333,8 +341,8 @@ const HowWeWork = () => {
           title="Launch is where the product starts earning."
           description="Three levels of ongoing care. Which one fits depends on how much the product is expected to change."
         />
-        <motion.ul variants={v.stagger(0.08)} {...revealOnce} tabIndex={0}
-        aria-label="Swipe for more"
+        <motion.ul variants={v.stagger(0.08)} {...revealOnce} ref={careRow.ref}
+        {...careRow.props}
         className="mobile-carousel grid gap-5 md:grid-cols-3">
           {carePlans.map((plan) => (
             <motion.li
@@ -356,6 +364,7 @@ const HowWeWork = () => {
             </motion.li>
           ))}
         </motion.ul>
+        {careRow.dots}
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           <p className="rounded-xl border border-ink-800 bg-ink-900 p-6 text-sm leading-relaxed text-silver-400">
             {CARE_PRICING_NOTE}

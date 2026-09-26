@@ -1,6 +1,6 @@
 import { serviceEnquiryOptions } from '../data/services'
 import { isValidPhoneNumber } from 'libphonenumber-js/min'
-import { businessTypeOptions, regionOptions, timelineOptions } from '../data/industries'
+import { businessTypeOptions, regionOptions, timelineOptions } from '../data/leadOptions'
 
 /**
  * The Start a Project brief. (Spec §9)

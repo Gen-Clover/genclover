@@ -5,6 +5,7 @@ import { CloverMark } from '../brand/Logo'
 import { differentiators } from '../../data/process'
 import { site } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
+import { useSwipeRow } from '../ui/SwipeRow'
 
 /**
  * 05 — Why Gen Clover. Approach and value. (Spec §5.2)
@@ -22,6 +23,7 @@ const ICONS = {
 
 const WhyGenClover = () => {
   const v = useMotionVariants()
+  const swipe = useSwipeRow(differentiators.length, 'What working with us looks like')
 
   return (
     <Section muted>
@@ -50,8 +52,8 @@ const WhyGenClover = () => {
       <motion.ul
         variants={v.stagger(0.06)}
         {...revealOnce}
-        tabIndex={0}
-        aria-label="Swipe for more"
+        ref={swipe.ref}
+        {...swipe.props}
         className="mobile-carousel mt-10 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3"
       >
         {differentiators.map((item, i) => {
@@ -76,6 +78,7 @@ const WhyGenClover = () => {
           )
         })}
       </motion.ul>
+      {swipe.dots}
     </Section>
   )
 }

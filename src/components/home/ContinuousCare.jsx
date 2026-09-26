@@ -5,6 +5,7 @@ import Button from '../ui/Button'
 import { carePlans, CARE_PRICING_NOTE } from '../../data/process'
 import { routes } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
+import { useSwipeRow } from '../ui/SwipeRow'
 
 /**
  * 07 — Continuous Care. (Spec §5.2, §12)
@@ -12,6 +13,7 @@ import { useMotionVariants, revealOnce } from '../../lib/motion'
  */
 const ContinuousCare = () => {
   const v = useMotionVariants()
+  const swipe = useSwipeRow(carePlans.length, 'Care plans')
 
   return (
     <Section>
@@ -25,8 +27,8 @@ const ContinuousCare = () => {
       <motion.ul
         variants={v.stagger(0.08)}
         {...revealOnce}
-        tabIndex={0}
-        aria-label="Swipe for more"
+        ref={swipe.ref}
+        {...swipe.props}
         className="mobile-carousel grid gap-5 md:grid-cols-3"
       >
         {carePlans.map((plan) => (
@@ -58,6 +60,7 @@ const ContinuousCare = () => {
           </motion.li>
         ))}
       </motion.ul>
+      {swipe.dots}
 
       <motion.div
         variants={v.fadeUp}

@@ -179,7 +179,7 @@ const Industries = () => {
 
       {/* Small screens: the sectors as cards (the preview panel is desktop-only) */}
       <Section className="lg:hidden">
-        <motion.ul variants={v.stagger(0.05)} {...revealOnce} className="grid gap-5 lg:grid-cols-2">
+        <motion.ul variants={v.stagger(0.05)} {...revealOnce} className="grid gap-5 md:grid-cols-2">
           {industryPages.map((industry) => {
             const services = industry.services.map(getService).filter(Boolean).slice(0, 3)
 

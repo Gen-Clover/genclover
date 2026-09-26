@@ -8,6 +8,10 @@
     <link rel="apple-touch-icon" href="/brand/gen-clover-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+    />
 
     <meta name="theme-color" content="#050506" />
 
@@ -24,6 +28,9 @@
           if (stored === 'light' || stored === 'dark') theme = stored
         } catch (e) {}
         document.documentElement.setAttribute('data-theme', theme)
+        // The phone's browser bar matches the page background.
+        var bar = document.querySelector('meta[name="theme-color"]')
+        if (bar) bar.setAttribute('content', theme === 'light' ? '#ffffff' : '#050506')
       })()
     </script>
 

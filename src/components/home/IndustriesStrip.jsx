@@ -4,7 +4,6 @@ import { ArrowRight } from 'lucide-react'
 import { Section, SectionHeader } from '../ui/Section'
 import Button from '../ui/Button'
 import { industryPages } from '../../data/industries'
-import { getProjectsByIndustry } from '../../data/projects'
 import { routes } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
 
@@ -29,7 +28,6 @@ const IndustriesStrip = () => {
 
       <motion.ul variants={v.stagger(0.04)} {...revealOnce} className="flex flex-wrap gap-2.5">
         {industryPages.map((industry) => {
-          const count = getProjectsByIndustry(industry.id).length
           return (
             <motion.li key={industry.id} variants={v.fadeUp}>
               <Link
@@ -39,11 +37,6 @@ const IndustriesStrip = () => {
                 <span className="text-sm font-medium text-silver-200 group-hover:text-silver-100">
                   {industry.label}
                 </span>
-                {count > 0 && (
-                  <span className="rounded bg-ink-700 px-1.5 py-0.5 text-[11px] text-silver-400">
-                    {count}
-                  </span>
-                )}
                 <ArrowRight
                   className="h-3.5 w-3.5 text-silver-600 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-accent-400"
                   aria-hidden="true"

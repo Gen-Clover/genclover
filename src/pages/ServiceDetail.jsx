@@ -49,7 +49,11 @@ const ServiceDetail = () => {
   // one so the final row never ends with an empty cell.
   const LAST_SPAN = { 2: 'lg:col-span-2', 3: 'lg:col-span-3', 4: 'lg:col-span-4' }
   const leftover = (4 + service.capabilities.length - 1) % 4
-  const lastSpan = leftover ? LAST_SPAN[4 - leftover + 1] ?? '' : ''
+  // Two-column tablets: the first card spans the row, so an even number of
+  // capabilities leaves the last row half empty unless the last card stretches.
+  const smLast = (service.capabilities.length - 1) % 2 === 1 ? 'sm:col-span-2' : ''
+  const lgLast = leftover ? LAST_SPAN[4 - leftover + 1] ?? '' : smLast ? 'lg:col-span-1' : ''
+  const lastSpan = `${smLast} ${lgLast}`
   const cta = (location) => () =>
     trackEvent(events.SERVICE_CTA_CLICK, { service: service.slug, location })
 
@@ -71,7 +75,7 @@ const ServiceDetail = () => {
               >
                 Services
               </Link>
-              <span className="text-silver-700" aria-hidden="true">/</span>
+              <span className="text-silver-600" aria-hidden="true">/</span>
               <span className="inline-flex items-center gap-2 text-sm text-silver-300">
                 <Icon className="h-4 w-4 text-accent-500" aria-hidden="true" />
                 {service.title}
@@ -164,7 +168,7 @@ const ServiceDetail = () => {
         <motion.ul
           variants={v.stagger(0.04)}
           {...revealOnce}
-          className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid gap-4 sm:grid-cols-2 lg:auto-rows-fr lg:grid-cols-4"
         >
           {service.capabilities.map((cap, i) => (
             <motion.li

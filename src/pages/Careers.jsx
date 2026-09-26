@@ -129,7 +129,7 @@ const Careers = () => {
                           className={`shrink-0 rounded border px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-brand ${
                             isClosed
                               ? 'border-ink-600 text-silver-500'
-                              : 'border-emerald-600/50 text-emerald-400'
+                              : 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-600/50 dark:bg-transparent dark:text-emerald-400'
                           }`}
                         >
                           {isClosed ? 'Closed' : 'Open'}
