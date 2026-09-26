@@ -40,6 +40,8 @@ const ProjectBriefForm = () => {
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [submitError, setSubmitError] = useState(null)
+  // Where the thank-you email went, if the server confirms it was sent.
+  const [confirmedTo, setConfirmedTo] = useState(null)
   const [startedAt] = useState(() => Date.now())
   const honeypotRef = useRef(null)
   const headingRef = useRef(null)
@@ -187,6 +189,7 @@ const ProjectBriefForm = () => {
       }
 
       trackEvent(events.FORM_SUBMIT, { service: values.service, region: values.region })
+      setConfirmedTo(payload.confirmation === true ? values.email.trim() : null)
       setStatus('success')
     } catch (error) {
       trackEvent(events.FORM_ERROR, { step: step.id })
@@ -203,6 +206,13 @@ const ProjectBriefForm = () => {
           <Check className="h-6 w-6 text-accent-400" aria-hidden="true" />
         </span>
         <h2 className="mt-6 text-2xl font-semibold text-silver-100">Thank you. Brief received.</h2>
+        {confirmedTo && (
+          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-silver-300">
+            We have sent a confirmation to{' '}
+            <span className="break-all font-medium text-silver-100">{confirmedTo}</span>. If it is not
+            in your inbox in a few minutes, check your spam folder.
+          </p>
+        )}
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-silver-400">
           We read every inquiry properly rather than replying with a template, so give us a
           working day or two. If it is urgent, email us directly at{' '}
@@ -232,7 +242,7 @@ const ProjectBriefForm = () => {
       className="surface surface-static overflow-hidden"
     >
       {/* Progress */}
-      <div className="border-b border-ink-800 px-6 py-5 md:px-8">
+      <div className="border-b border-ink-800 px-5 py-3.5 md:px-7 short:py-3">
         <div className="flex items-center justify-between text-xs">
           <span className="font-display uppercase tracking-brand text-silver-400">
             Step {step.number} of {TOTAL_STEPS}
@@ -240,7 +250,7 @@ const ProjectBriefForm = () => {
           <span className="text-silver-600">{Math.round(progress)}%</span>
         </div>
         <div
-          className="mt-3 h-1 overflow-hidden rounded-full bg-ink-700"
+          className="mt-2.5 h-1 overflow-hidden rounded-full bg-ink-700"
           role="progressbar"
           aria-valuenow={step.number}
           aria-valuemin={1}
@@ -256,7 +266,7 @@ const ProjectBriefForm = () => {
         </div>
       </div>
 
-      <div className="px-6 py-8 md:px-8 md:py-10">
+      <div className="px-5 py-6 md:px-7 short:py-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={step.id}
@@ -270,15 +280,15 @@ const ProjectBriefForm = () => {
               tabIndex={-1}
               /* Focused programmatically so the step change is announced; the
                  visible ring is suppressed because the visitor did not Tab here. */
-              className="text-xl font-semibold text-silver-100 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 md:text-2xl"
+              className="text-xl font-semibold text-silver-100 outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
             >
               {step.question}
             </h2>
-            <p className="mt-2.5 max-w-prose text-sm leading-relaxed text-silver-400">
+            <p className="mt-1.5 max-w-prose text-sm leading-relaxed text-silver-400">
               {step.help}
             </p>
 
-            <div className="mt-7">
+            <div className="mt-5 short:mt-4">
               {step.kind === 'choice' && (
                 <OptionGrid
                   name={step.id}
@@ -383,7 +393,7 @@ const ProjectBriefForm = () => {
         {status === 'error' && (
           <div
             role="alert"
-            className="mt-7 flex items-start gap-3 rounded-lg border border-accent-700 bg-accent-950/50 p-4"
+            className="mt-5 flex items-start gap-3 rounded-lg border border-accent-700 bg-accent-950/50 p-4"
           >
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-accent-400" aria-hidden="true" />
             <p className="text-sm leading-relaxed text-silver-200">
@@ -398,18 +408,19 @@ const ProjectBriefForm = () => {
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between gap-3 border-t border-ink-800 px-6 py-5 md:px-8">
-        <Button
-          type="button"
-          variant="ghost"
-          size="md"
-          onClick={goBack}
-          disabled={stepIndex === 0}
-          className={stepIndex === 0 ? 'invisible' : ''}
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Back
-        </Button>
+      <div className="flex items-center justify-between gap-6 border-t border-ink-800 px-5 py-3.5 md:px-7 short:py-3">
+        {/* Step 1 has no Back, so the space explains the form instead. */}
+        {stepIndex === 0 ? (
+          <p className="max-w-xl text-sm leading-relaxed text-silver-400">
+            Eight short questions. It takes a couple of minutes and means our first reply is about
+            your project rather than a generic capability deck.
+          </p>
+        ) : (
+          <Button type="button" variant="ghost" size="md" onClick={goBack}>
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back
+          </Button>
+        )}
 
         {isLast ? (
           <Button type="submit" size="md" disabled={status === 'submitting'}>
@@ -426,7 +437,7 @@ const ProjectBriefForm = () => {
             )}
           </Button>
         ) : (
-          <Button type="button" size="md" onClick={goNext}>
+          <Button type="button" size="md" onClick={goNext} className="shrink-0">
             Continue
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Button>

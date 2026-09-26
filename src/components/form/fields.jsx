@@ -77,7 +77,7 @@ export const OptionGrid = ({ name, options, value, error, onChange }) => {
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         onKeyDown={handleKeyDown}
-        className="grid gap-2.5 sm:grid-cols-2"
+        className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
       >
         {options.map((option, i) => {
           const selected = value === option.value
@@ -89,7 +89,7 @@ export const OptionGrid = ({ name, options, value, error, onChange }) => {
               aria-checked={selected}
               tabIndex={selected || (!value && i === 0) ? 0 : -1}
               onClick={() => onChange(name, option.value)}
-              className={`flex items-center justify-between gap-3 rounded-lg border px-4 py-3.5 text-left text-sm transition-colors ${
+              className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-3 text-left text-sm transition-colors short:py-2.5 short:text-[13px] ${
                 selected
                   ? 'border-accent-600 bg-accent-950/50 text-silver-100'
                   : 'border-ink-700 bg-ink-900 text-silver-300 hover:border-ink-600 hover:bg-ink-850'
