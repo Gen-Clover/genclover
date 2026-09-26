@@ -17,7 +17,8 @@
  * and the form tells the visitor to email us instead — it never fails silently.
  *
  *   RESEND_API_KEY     Sends the notification email via Resend.
- *   LEAD_NOTIFY_TO     Destination address (default: contact@genclover.com).
+ *   LEAD_NOTIFY_TO     Destination address, or several separated by commas
+ *                      (default: contact@genclover.com).
  *   LEAD_NOTIFY_FROM   Verified sender (default: website@genclover.com).
  *
  *   LEAD_WEBHOOK_URL   Alternative: POST the lead record to a webhook
@@ -28,8 +29,13 @@
 import { isValidPhoneNumber } from 'libphonenumber-js/min'
 import { serviceEnquiryOptions } from '../src/data/services.js'
 import { businessTypeOptions, regionOptions, timelineOptions } from '../src/data/leadOptions.js'
+import { buildLeadEmail } from './_leadEmail.js'
 
-const NOTIFY_TO = process.env.LEAD_NOTIFY_TO || 'contact@genclover.com'
+/** One address, or several separated by commas. */
+const NOTIFY_TO = (process.env.LEAD_NOTIFY_TO || 'contact@genclover.com')
+  .split(',')
+  .map((a) => a.trim())
+  .filter(Boolean)
 const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'website@genclover.com'
 
 /* ------------------------------------------------------------- rate limit */
@@ -132,43 +138,8 @@ const validate = (body) => {
 /* ------------------------------------------------------------ forwarding */
 
 const sendViaResend = async (record) => {
-  const lines = [
-    ['Service', record.service],
-    ['Business type', record.clientSegment],
-    ['Region', record.country],
-    [
-      'Budget',
-      record.budget
-        ? `${record.budget.currency} ${Number(record.budget.amount).toLocaleString('en')}`
-        : 'Not provided',
-    ],
-    ['Timeline', record.timeline || 'Not provided'],
-    ['Name', record.contact.name],
-    ['Company', record.contact.company || 'Not provided'],
-    ['Email', record.contact.email],
-    ['Phone', record.contact.phone],
-    ['Source page', record.sourcePage],
-    ['Referrer', record.attribution?.referrer || '-'],
-    ['Campaign', record.attribution?.utmCampaign || '-'],
-    ['Received', record.timestamp],
-  ]
-
-  const escape = (s) =>
-    String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-
-  const html = `
-    <h2>New project inquiry</h2>
-    <table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
-      ${lines
-        .map(
-          ([k, val]) =>
-            `<tr><td style="color:#666">${escape(k)}</td><td><strong>${escape(val)}</strong></td></tr>`
-        )
-        .join('')}
-    </table>
-    <h3>Project details</h3>
-    <p style="white-space:pre-wrap;font-family:sans-serif;font-size:14px">${escape(record.description)}</p>
-  `
+  // Layout, labels and the plain-text part live in _leadEmail.js.
+  const { subject, html, text } = buildLeadEmail(record)
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -178,16 +149,17 @@ const sendViaResend = async (record) => {
     },
     body: JSON.stringify({
       from: `Gen Clover Website <${NOTIFY_FROM}>`,
-      to: [NOTIFY_TO],
+      to: NOTIFY_TO,
       reply_to: record.contact.email,
-      subject: `New inquiry - ${record.service} - ${record.contact.name}`,
+      subject,
       html,
+      text,
     }),
   })
 
   if (!response.ok) {
-    const text = await response.text().catch(() => '')
-    throw new Error(`Resend rejected the request (${response.status}): ${text}`)
+    const detail = await response.text().catch(() => '')
+    throw new Error(`Resend rejected the request (${response.status}): ${detail}`)
   }
 }
 
