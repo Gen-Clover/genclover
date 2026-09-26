@@ -2,9 +2,9 @@
  * The notification email for a new project inquiry.
  *
  * Built for inboxes, not browsers: table layout and inline styles (Gmail and
- * Outlook strip <style> blocks and ignore flex/grid), a light card that reads
- * well in both light and dark mail themes, and a plain-text part alongside the
- * HTML, which also helps deliverability.
+ * Outlook strip <style> blocks and ignore flex/grid) and a light card that
+ * reads well in both light and dark mail themes. A plain-text version is also
+ * returned, for delivery methods that can carry one.
  *
  * Every value that came from the visitor is escaped. Option values (slugs) are
  * shown with the same labels the form used.
