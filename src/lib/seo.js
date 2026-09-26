@@ -113,7 +113,7 @@ export const pageMeta = {
   careers: {
     title: 'Careers | Gen Clover',
     description:
-      'Careers at Gen Clover, a technology and digital product company. See current and recent roles, and send a general application.',
+      'Careers at Gen Clover. Search open and recent roles by location, experience, job type and remote, hybrid or on-site, or send a general application.',
     path: '/careers',
   },
   startProject: {

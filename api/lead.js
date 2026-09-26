@@ -23,12 +23,17 @@
  *   LEAD_NOTIFY_FROM   Mailbox internal notifications are sent from
  *                      (default: no-reply@genclover.com). Replies to them go to
  *                      the inquirer via reply-to, never to this mailbox.
+ *   LEAD_NOTIFY_TO     Destination address, or several separated by commas
+ *                      (default: contact@genclover.com).
+ *   LEAD_CONFIRM_FROM  Mailbox the thank-you to the inquirer is sent from
+ *                      (default: contact@genclover.com; "off" disables it).
+ *                      Must be in the app's access policy group.
+ *   LEAD_CONFIRM_CC    Copy of the thank-you, comma-separated
+ *                      (default: contact@genclover.com; "none" for no copy).
  *
  *   Sender policy: internal notifications come from no-reply@genclover.com;
  *   anything sent to people outside the company comes from contact@genclover.com,
  *   so their replies reach a monitored inbox.
- *   LEAD_NOTIFY_TO     Destination address, or several separated by commas
- *                      (default: contact@genclover.com).
  *
  *   LEAD_WEBHOOK_URL   Alternative: POST the lead record to a webhook
  *                      (CRM, Zapier, Make, an internal service).
@@ -38,7 +43,7 @@
 import { isValidPhoneNumber } from 'libphonenumber-js/min'
 import { serviceEnquiryOptions } from '../src/data/services.js'
 import { businessTypeOptions, regionOptions, timelineOptions } from '../src/data/leadOptions.js'
-import { buildLeadEmail } from './_leadEmail.js'
+import { buildLeadEmail, buildConfirmationEmail } from './_leadEmail.js'
 
 /** One address, or several separated by commas. */
 const NOTIFY_TO = (process.env.LEAD_NOTIFY_TO || 'contact@genclover.com')
@@ -46,6 +51,17 @@ const NOTIFY_TO = (process.env.LEAD_NOTIFY_TO || 'contact@genclover.com')
   .map((a) => a.trim())
   .filter(Boolean)
 const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'no-reply@genclover.com'
+
+/** Thank-you to the inquirer. "off" / "none" switch the sender / the copy off. */
+const confirmSetting = (name, fallback) => {
+  const value = (process.env[name] ?? fallback).trim()
+  return ['off', 'none', 'false'].includes(value.toLowerCase()) ? '' : value
+}
+const CONFIRM_FROM = confirmSetting('LEAD_CONFIRM_FROM', 'contact@genclover.com')
+const CONFIRM_CC = confirmSetting('LEAD_CONFIRM_CC', 'contact@genclover.com')
+  .split(',')
+  .map((a) => a.trim())
+  .filter(Boolean)
 
 /* ------------------------------------------------------------- rate limit */
 
@@ -185,13 +201,13 @@ const getGraphToken = async () => {
   return graphToken.value
 }
 
-const sendViaMicrosoft = async (record) => {
-  // Layout and labels live in _leadEmail.js.
-  const { subject, html } = buildLeadEmail(record)
-  const token = await getGraphToken()
+const recipients = (addresses) => addresses.map((address) => ({ emailAddress: { address } }))
 
+/** Send one email as `from` through Microsoft Graph. Throws if Graph refuses it. */
+const graphSend = async ({ from, to, cc = [], replyTo, subject, html }) => {
+  const token = await getGraphToken()
   const response = await fetch(
-    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(NOTIFY_FROM)}/sendMail`,
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(from)}/sendMail`,
     {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -199,9 +215,9 @@ const sendViaMicrosoft = async (record) => {
         message: {
           subject,
           body: { contentType: 'HTML', content: html },
-          toRecipients: NOTIFY_TO.map((address) => ({ emailAddress: { address } })),
-          // Replying answers the person who sent the brief, not the website mailbox.
-          replyTo: [{ emailAddress: { address: record.contact.email, name: record.contact.name } }],
+          toRecipients: recipients(to),
+          ...(cc.length ? { ccRecipients: recipients(cc) } : {}),
+          ...(replyTo ? { replyTo: [{ emailAddress: replyTo }] } : {}),
         },
         saveToSentItems: true,
       }),
@@ -211,7 +227,46 @@ const sendViaMicrosoft = async (record) => {
   // Graph answers 202 Accepted with an empty body on success.
   if (!response.ok) {
     const detail = await response.text().catch(() => '')
-    throw new Error(`Microsoft Graph rejected the email (${response.status}): ${detail.slice(0, 500)}`)
+    throw new Error(`Microsoft Graph rejected the email from ${from} (${response.status}): ${detail.slice(0, 500)}`)
+  }
+}
+
+/** The team notification, from no-reply@. Replying answers the inquirer. */
+const sendViaMicrosoft = async (record) => {
+  // Layout and labels live in _leadEmail.js.
+  const { subject, html } = buildLeadEmail(record)
+  await graphSend({
+    from: NOTIFY_FROM,
+    to: NOTIFY_TO,
+    replyTo: { address: record.contact.email, name: record.contact.name },
+    subject,
+    html,
+  })
+}
+
+/**
+ * The thank-you to the inquirer, from contact@ (outsiders hear from contact@),
+ * copied to contact@ so the team sees exactly what the client received.
+ *
+ * Sent after the team notification and never fatal: by then the inquiry has
+ * been captured, so a failure here is logged and the visitor still sees
+ * success. Returns whether it was sent.
+ */
+const sendConfirmation = async (record) => {
+  if (!CONFIRM_FROM) return false
+  try {
+    const { subject, html } = buildConfirmationEmail(record)
+    await graphSend({
+      from: CONFIRM_FROM,
+      to: [record.contact.email],
+      cc: CONFIRM_CC.filter((a) => a.toLowerCase() !== record.contact.email.toLowerCase()),
+      subject,
+      html,
+    })
+    return true
+  } catch (error) {
+    console.error('[lead] Confirmation failed (the inquiry itself was delivered):', error.message)
+    return false
   }
 }
 
@@ -304,6 +359,8 @@ export default async function handler(req, res) {
   try {
     if (graphConfigured()) {
       await sendViaMicrosoft(record)
+      const confirmation = await sendConfirmation(record)
+      return res.status(200).json({ ok: true, confirmation })
     } else if (process.env.LEAD_WEBHOOK_URL) {
       await sendViaWebhook(record)
     } else {

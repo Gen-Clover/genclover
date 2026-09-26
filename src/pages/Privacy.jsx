@@ -22,6 +22,13 @@ const Privacy = () => {
       ],
     },
     {
+      title: 'Job applications',
+      body: [
+        'When you apply through the careers page we collect your name, email address, phone number, current city, total experience, when you could start, an optional LinkedIn or portfolio link, an optional note, and your CV.',
+        'We use this only to consider you for the role you applied for and for future roles. Your application is sent by email to the Gen Clover team; it is not stored on this website. We may keep your application on file, with no fixed end date, so we can consider you for future roles. You can ask us to delete it at any time and we will.',
+      ],
+    },
+    {
       title: 'Why we collect it',
       body: [
         'To respond to your inquiry and to understand what you need well enough to reply usefully. That is the only purpose.',

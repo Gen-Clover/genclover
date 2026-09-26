@@ -92,5 +92,12 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    /**
+     * `short:` — desktop-width screens with little height (1366×768, or a 1080p
+     * laptop at 125-150% scaling). Used to tighten the Start a Project page
+     * so the whole first question stays above the fold.
+     */
+    ({ addVariant }) => addVariant('short', '@media (min-width: 1024px) and (max-height: 800px)'),
+  ],
 }

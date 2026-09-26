@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { createServer } from 'vite'
+import { loadPublicJobs } from './_jobs.mjs'
 
 const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
 
@@ -24,7 +25,7 @@ try {
   const { services } = await load('/src/data/services.js')
   const { publishedProjects } = await load('/src/data/projects.js')
   const { industryPages } = await load('/src/data/industries.js')
-  const { jobs } = await load('/src/data/jobs.js')
+  const jobs = await loadPublicJobs()
 
   const pages = [
     ...Object.values(pageMeta).map((m) => ({ path: m.path, title: m.title, description: m.description })),
