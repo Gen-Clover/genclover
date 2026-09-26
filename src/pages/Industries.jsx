@@ -12,6 +12,7 @@ import { getService } from '../data/services'
 import { routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
 import { useMotionVariants, revealOnce } from '../lib/motion'
+import { previewFirstTap, canHover, isKeyboardFocus } from '../lib/pointer'
 
 /**
  * Industries hub. (Spec §13) No invented client claims.
@@ -125,8 +126,8 @@ const Industries = () => {
                 Who we build for.
               </motion.h1>
               <motion.p variants={v.fadeUp} className="mt-3 max-w-xl text-base leading-relaxed text-silver-400">
-                Every sector has its own constraints and definition of done. Hover a sector to see
-                how we approach it.
+                Every sector has its own constraints and definition of done.
+                <span className="hidden lg:inline"> Hover or tap a sector to see how we approach it.</span>
               </motion.p>
             </motion.div>
 
@@ -134,7 +135,7 @@ const Industries = () => {
               initial="hidden"
               animate="visible"
               variants={v.stagger(0.03, 0.2)}
-              className="mt-5 grid min-h-0 gap-1.5 overflow-y-auto sm:grid-cols-2"
+              className="mt-5 hidden min-h-0 gap-1.5 overflow-y-auto sm:grid-cols-2 lg:grid"
             >
               {industryPages.map((industry) => {
                 const selected = industry.id === activeIndustry.id
@@ -142,8 +143,9 @@ const Industries = () => {
                   <motion.li key={industry.id} variants={v.fadeUp}>
                     <Link
                       to={`${routes.industries}/${industry.id}`}
-                      onMouseEnter={() => setActive(industry.id)}
-                      onFocus={() => setActive(industry.id)}
+                      onMouseEnter={() => canHover() && setActive(industry.id)}
+                      onFocus={(e) => isKeyboardFocus(e) && setActive(industry.id)}
+                      onClick={previewFirstTap(selected, () => setActive(industry.id))}
                       className={`flex items-center justify-between gap-3 rounded-lg border px-3.5 py-2.5 text-sm transition-colors ${
                         selected
                           ? 'border-accent-700/70 bg-accent-950/35 text-silver-100'

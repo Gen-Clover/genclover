@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { CloverMark } from '../brand/Logo'
 
@@ -48,7 +49,7 @@ const FlowDiagram = ({ flow, title, id }) => {
   const markerId = `pv-arrow-${id}`
   const steps = flow.slice(0, 8)
   const nodes = layoutNodes(steps.length)
-  const r = steps.length > 4 ? 15 : 17
+  const r = steps.length > 4 ? 17 : 19
   const last = steps.length - 1
 
   return (
@@ -101,18 +102,18 @@ const FlowDiagram = ({ flow, title, id }) => {
               y={y + 4}
               textAnchor="middle"
               className={`font-display ${emphasis ? 'fill-accent-400' : 'fill-silver-400'}`}
-              fontSize="11"
+              fontSize="12"
               fontWeight="600"
             >
               {step.number ?? String(i + 1).padStart(2, '0')}
             </text>
             <text
               x={x}
-              y={y + r + 16}
+              y={y + r + 18}
               textAnchor="middle"
               className="fill-silver-200"
-              fontSize="11.5"
-              fontWeight="500"
+              fontSize="14"
+              fontWeight="600"
             >
               {step.title}
             </text>
@@ -332,8 +333,23 @@ const ProjectVisual = ({
   const { heroImage, title, slug } = project
   const flow = project.caseStudy?.flow
   const layers = project.caseStudy?.architecture?.layers
+
+  // The architecture map needs room to be legible. In a narrow frame (phones,
+  // two-column tablets) the large-type delivery flow is shown instead.
+  const frameRef = useRef(null)
+  const [narrow, setNarrow] = useState(false)
+  useEffect(() => {
+    const el = frameRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return undefined
+    const ro = new ResizeObserver(([entry]) => setNarrow(entry.contentRect.width < 380))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   const diagram =
-    prefer === 'flow'
+    narrow && flow?.length
+      ? 'flow'
+      : prefer === 'flow'
       ? (flow?.length && 'flow') || (layers?.length && 'architecture')
       : (layers?.length && 'architecture') || (flow?.length && 'flow')
 
@@ -357,6 +373,7 @@ const ProjectVisual = ({
 
   return (
     <div
+      ref={frameRef}
       role={diagram ? undefined : 'img'}
       aria-label={diagram ? undefined : `${title}: Gen Clover brand graphic`}
       className={`relative overflow-hidden rounded-lg border border-ink-700 bg-ink-900 ${aspect} ${className}`}

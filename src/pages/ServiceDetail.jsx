@@ -67,7 +67,7 @@ const ServiceDetail = () => {
             <motion.div variants={v.fadeUp} className="flex items-center gap-3">
               <Link
                 to={routes.services}
-                className="text-sm text-silver-500 transition-colors hover:text-accent-400"
+                className="-my-3 inline-flex min-h-[44px] items-center text-sm text-silver-500 transition-colors hover:text-accent-400"
               >
                 Services
               </Link>
@@ -174,7 +174,7 @@ const ServiceDetail = () => {
                 i === 0 ? 'sm:col-span-2 lg:row-span-2 lg:p-8' : ''
               } ${i > 0 && i === service.capabilities.length - 1 ? lastSpan : ''}`}
             >
-              <span className="font-display text-xs font-semibold tracking-brand text-accent-500">
+              <span className="font-display text-xs font-semibold tracking-brand text-accent-400">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div className="mt-6">
@@ -216,7 +216,7 @@ const ServiceDetail = () => {
             />
             {detail.approach.map((step, i) => (
               <motion.li key={step.title} variants={v.fadeUp} className="relative">
-                <span className="relative z-10 grid h-10 w-10 place-items-center rounded-full border border-accent-600 bg-ink-950 font-display text-xs font-semibold text-accent-400">
+                <span className="relative z-10 grid h-10 w-10 place-items-center rounded-full border border-accent-600 bg-ink-950 font-display text-xs font-semibold text-accent-300">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-silver-100">{step.title}</h3>
@@ -319,7 +319,7 @@ const ServiceDetail = () => {
                     <li key={industry.id}>
                       <Link
                         to={`${routes.industries}/${industry.id}`}
-                        className="inline-block rounded border border-ink-700 bg-ink-900 px-2.5 py-1 text-xs text-silver-400 transition-colors hover:border-accent-700/60 hover:text-silver-200"
+                        className="inline-flex min-h-[36px] items-center rounded border border-ink-700 bg-ink-900 px-3 text-xs text-silver-400 transition-colors hover:border-accent-700/60 hover:text-silver-200"
                       >
                         {industry.label}
                       </Link>

@@ -44,7 +44,9 @@ const Proof = () => {
       <motion.ul
         variants={v.stagger(0.06)}
         {...revealOnce}
-        className="grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2"
+        tabIndex={0}
+        aria-label="Swipe for more"
+        className="mobile-carousel grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2"
       >
         {capabilityProof.map((item) => {
           const Icon = item.icon

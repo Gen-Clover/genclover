@@ -53,11 +53,11 @@ const WorkCard = ({ project, priority = false, className = '' }) => {
             />
           </h3>
 
-          <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-silver-400">
+          <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-silver-400 sm:line-clamp-3">
             {project.summary}
           </p>
 
-          <ul className="mt-4 flex flex-wrap gap-1.5">
+          <ul className="mt-4 hidden flex-wrap gap-1.5 sm:flex">
             {project.technologies.slice(0, 4).map((tech) => (
               <li
                 key={tech}
