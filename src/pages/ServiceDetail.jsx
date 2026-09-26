@@ -62,7 +62,7 @@ const ServiceDetail = () => {
           className="pointer-events-none absolute -right-32 -top-20 h-[36rem] w-[36rem] rounded-full bg-accent-900/20 blur-[140px]"
           aria-hidden="true"
         />
-        <div className="container relative grid gap-12 pb-16 pt-32 md:pt-40 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16 lg:pb-24">
+        <div className="container relative grid gap-12 pb-12 pt-28 md:pt-32 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16 lg:pb-16">
           <motion.div initial="hidden" animate="visible" variants={v.stagger(0.08)}>
             <motion.div variants={v.fadeUp} className="flex items-center gap-3">
               <Link

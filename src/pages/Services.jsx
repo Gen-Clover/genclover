@@ -51,7 +51,7 @@ const ServicePreview = ({ service }) => {
       </div>
 
       {detail?.intro && (
-        <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-silver-300 [@media(min-height:880px)]:line-clamp-3">{detail.intro[0]}</p>
+        <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-silver-300">{detail.intro[0]}</p>
       )}
 
       <div className="mt-5 grid gap-5 xl:grid-cols-2">
@@ -81,7 +81,7 @@ const ServicePreview = ({ service }) => {
                   <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
                   <span>
                     <span className="font-medium text-silver-100">{o.title}</span>
-                    <span className="hidden [@media(min-height:900px)]:inline">. {o.text}</span>
+                    <span className="text-silver-400">. {o.text}</span>
                   </span>
                 </li>
               ))}
@@ -91,7 +91,7 @@ const ServicePreview = ({ service }) => {
       </div>
 
       {detail?.approach && (
-        <ol className="mt-5 hidden grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-4 [@media(min-height:760px)]:grid">
+        <ol className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-4">
           {detail.approach.map((step, i) => (
             <li key={step.title} className="border-t border-accent-800/70 pt-2.5">
               <span className="font-display text-[10px] font-semibold tracking-brand text-accent-500">
@@ -141,7 +141,7 @@ const Services = () => {
               </motion.p>
               <motion.h1
                 variants={v.fadeUp}
-                className="mt-3 text-4xl leading-[1.05] tracking-tight [@media(min-height:820px)]:xl:text-5xl"
+                className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl"
               >
                 What we build.
               </motion.h1>
@@ -158,7 +158,7 @@ const Services = () => {
               initial="hidden"
               animate="visible"
               variants={v.stagger(0.04, 0.2)}
-              className="mt-6 grid gap-2 sm:grid-cols-2 [@media(min-height:820px)]:gap-2.5"
+              className="mt-6 grid gap-2 sm:grid-cols-2"
             >
               {services.map((service) => {
                 const Icon = service.icon
@@ -175,7 +175,7 @@ const Services = () => {
                           location: 'services_hub',
                         })
                       }
-                      className={`group relative flex items-center gap-3.5 rounded-xl border px-4 py-2.5 transition-colors [@media(min-height:820px)]:py-3 ${
+                      className={`group relative flex items-center gap-3.5 rounded-xl border px-4 py-2.5 transition-colors ${
                         selected
                           ? 'border-accent-700/70 bg-accent-950/35'
                           : 'border-ink-700 bg-ink-900/60 hover:border-ink-600'
@@ -217,7 +217,7 @@ const Services = () => {
           {/* part b — preview of the hovered service (large screens only) */}
           <div className="hidden min-h-0 lg:flex lg:items-center">
             <div
-              className="relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl [@media(min-height:820px)]:xl:p-8"
+              className="relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl xl:p-7"
               aria-live="polite"
             >
               <AnimatePresence mode="wait">

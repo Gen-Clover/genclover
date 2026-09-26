@@ -61,7 +61,7 @@ const Hero = () => {
         <div className="absolute left-7 top-0 h-full w-px bg-gradient-to-b from-transparent via-accent-700/40 to-transparent" />
       </div>
 
-      <div className="container relative pb-14 pt-32 md:pb-16 md:pt-40 lg:pb-16 lg:pt-40">
+      <div className="container relative pb-12 pt-28 md:pb-14 md:pt-32 lg:pb-14 lg:pt-32">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -110,7 +110,7 @@ const Hero = () => {
           initial="hidden"
           animate="visible"
           variants={v.stagger(0.08, 0.45)}
-          className="mt-16 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4"
+          className="mt-12 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4"
           aria-label="How we think about technology"
         >
           {brandPillars.map((pillar, i) => (

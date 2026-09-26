@@ -32,6 +32,7 @@ const WorkCard = ({ project, priority = false, className = '' }) => {
         <div className="relative overflow-hidden">
           <ProjectVisual
             project={project}
+            aspect="aspect-[16/9]"
             priority={priority}
             className="transition-transform duration-500 group-hover:scale-[1.03]"
           />

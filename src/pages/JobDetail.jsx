@@ -35,7 +35,7 @@ const JobDetail = () => {
     <>
       <header className="relative overflow-hidden border-b border-ink-800 bg-ink-950">
         <div className="grid-lines pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
-        <div className="container relative pb-14 pt-32 md:pt-40">
+        <div className="container relative pb-12 pt-28 md:pt-32">
           <Link
             to={routes.careers}
             className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"

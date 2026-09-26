@@ -139,7 +139,7 @@ const About = () => {
           className="pointer-events-none absolute -right-40 top-10 hidden h-[40rem] w-[40rem] rounded-full bg-accent-900/20 blur-[140px] lg:block"
           aria-hidden="true"
         />
-        <div className="container relative flex flex-col justify-center pb-16 pt-32 md:pt-36 lg:min-h-[100svh]">
+        <div className="container relative flex flex-col justify-center pb-12 pt-28 md:pt-32 lg:min-h-[100svh]">
           <motion.div initial="hidden" animate="visible" variants={v.stagger(0.08)}>
             <motion.div variants={v.fadeUp} className="flex items-center gap-3">
               <span className="h-px w-8 bg-accent-600" aria-hidden="true" />
@@ -196,7 +196,7 @@ const About = () => {
 
       {/* ----------------------------------- screen 2: the name + at a glance */}
       <section className="bg-ink-900">
-        <div className="container flex flex-col justify-center py-20 lg:min-h-[100svh]">
+        <div className="container flex flex-col justify-center py-14 lg:min-h-[100svh]">
           <div className="grid gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20">
             <motion.div variants={v.fadeUp} {...revealOnce}>
               <p className="eyebrow">The name</p>

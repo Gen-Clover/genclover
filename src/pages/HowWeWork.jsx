@@ -70,7 +70,7 @@ const StageTabs = ({ active, setActive, compact = false }) => {
             onClick={() => setActive(i)}
             onMouseEnter={compact ? () => setActive(i) : undefined}
             className={`group relative flex shrink-0 items-center gap-4 rounded-lg border px-4 text-left transition-colors ${
-              compact ? 'w-full py-2 [@media(min-height:860px)]:py-2.5' : 'py-3'
+              compact ? 'w-full py-2' : 'py-3'
             } ${
               selected
                 ? 'border-accent-700/70 bg-accent-950/40'
@@ -139,7 +139,7 @@ const StagePanel = ({ active, setActive }) => {
             </div>
           </div>
 
-          <p className="mt-4 text-sm leading-relaxed text-silver-400 [@media(max-height:780px)]:hidden">
+          <p className="mt-4 text-sm leading-relaxed text-silver-400">
             {step.detail}
           </p>
 
@@ -216,7 +216,7 @@ const HowWeWork = () => {
             </motion.p>
             <motion.h1
               variants={v.fadeUp}
-              className="mt-3 text-4xl leading-[1.05] tracking-tight [@media(min-height:820px)]:xl:text-[2.75rem]"
+              className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-[2.75rem]"
             >
               What working together actually looks like.
             </motion.h1>

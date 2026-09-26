@@ -15,21 +15,21 @@ import { CloverMark } from '../brand/Logo'
  */
 
 const VB_W = 400
-const VB_H = 250
+const VB_H = 225
 
 /** Node centers for 1–8 steps: one row up to four, otherwise a two-row snake. */
 const layoutNodes = (count) => {
   if (count <= 4) {
     const gap = VB_W / (count + 1)
-    return Array.from({ length: count }, (_, i) => ({ x: gap * (i + 1), y: 118 }))
+    return Array.from({ length: count }, (_, i) => ({ x: gap * (i + 1), y: 104 }))
   }
   const top = Math.ceil(count / 2)
   const bottom = count - top
   const gapTop = VB_W / (top + 1)
-  const nodes = Array.from({ length: top }, (_, i) => ({ x: gapTop * (i + 1), y: 78 }))
+  const nodes = Array.from({ length: top }, (_, i) => ({ x: gapTop * (i + 1), y: 66 }))
   // The second row runs right to left, so the flow reads as one continuous path.
   for (let i = 0; i < bottom; i += 1) {
-    nodes.push({ x: gapTop * (top - i), y: 172 })
+    nodes.push({ x: gapTop * (top - i), y: 152 })
   }
   return nodes
 }
@@ -157,8 +157,16 @@ const ArchitectureMap = ({ layers, title, id }) => {
   const gapX = 16
   const gapY = 18
   const panelW = (VB_W - padX * 2 - gapX * (perRow - 1)) / perRow
-  const panelH = (VB_H - padY * 2 - gapY * (rows - 1)) / rows
-  const fontSize = rows === 2 ? 8 : 8.5
+  const nodeH = rows === 2 ? 20 : 30
+  const nodeGap = rows === 2 ? 4 : 8
+  const headerH = rows === 2 ? 22 : 32
+  // Panels are only as tall as their content, so there is no empty band
+  // inside them; the whole map is then centered in the frame.
+  const maxNodes = Math.min(MAX_NODES, Math.max(1, ...list.map((l) => l.nodes.length)))
+  const contentH = headerH + maxNodes * nodeH + (maxNodes - 1) * nodeGap + 10
+  const panelH = Math.min((VB_H - padY * 2 - gapY * (rows - 1)) / rows, contentH)
+  const offsetY = (VB_H - (rows * panelH + gapY * (rows - 1))) / 2
+  const fontSize = rows === 2 ? 8.5 : 9.5
   const maxChars = Math.max(8, Math.floor((panelW - 20) / (fontSize * 0.62)))
 
   const panels = list.map((layer, i) => {
@@ -169,7 +177,7 @@ const ArchitectureMap = ({ layers, title, id }) => {
     return {
       layer,
       x: padX + visualCol * (panelW + gapX),
-      y: padY + row * (panelH + gapY),
+      y: offsetY + row * (panelH + gapY),
       row,
     }
   })
@@ -186,10 +194,6 @@ const ArchitectureMap = ({ layers, title, id }) => {
     const x = a.x + panelW / 2
     return `M ${x} ${a.y + panelH} L ${x} ${b.y}`
   })
-
-  const nodeH = rows === 2 ? 17 : 22
-  const nodeGap = rows === 2 ? 4 : 6
-  const headerH = rows === 2 ? 20 : 26
 
   return (
     <svg
@@ -220,8 +224,7 @@ const ArchitectureMap = ({ layers, title, id }) => {
       {panels.map(({ layer, x, y }, i) => {
         const nodes = layer.nodes.slice(0, MAX_NODES)
         const extra = layer.nodes.length - nodes.length
-        const blockH = nodes.length * nodeH + (nodes.length - 1) * nodeGap
-        const top = y + headerH + Math.max(0, (panelH - headerH - 8 - blockH) / 2)
+        const top = y + headerH
         return (
           <g key={`${id}-p${i}`}>
             <rect
@@ -239,7 +242,7 @@ const ArchitectureMap = ({ layers, title, id }) => {
             </rect>
             <text
               x={x + 8}
-              y={y + (rows === 2 ? 13 : 16)}
+              y={y + (rows === 2 ? 14 : 20)}
               className={`font-display ${layer.emphasis ? 'fill-accent-400' : 'fill-silver-500'}`}
               fontSize={fontSize - 0.5}
               fontWeight="600"
@@ -271,7 +274,7 @@ const ArchitectureMap = ({ layers, title, id }) => {
             {extra > 0 && (
               <text
                 x={x + panelW - 8}
-                y={y + (rows === 2 ? 13 : 16)}
+                y={y + (rows === 2 ? 14 : 20)}
                 textAnchor="end"
                 className="fill-silver-600"
                 fontSize={fontSize - 0.5}

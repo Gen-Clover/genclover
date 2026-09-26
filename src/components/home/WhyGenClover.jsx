@@ -50,7 +50,7 @@ const WhyGenClover = () => {
       <motion.ul
         variants={v.stagger(0.06)}
         {...revealOnce}
-        className="mt-12 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3"
+        className="mt-10 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3"
       >
         {differentiators.map((item, i) => {
           const Icon = ICONS[item.key] ?? Target

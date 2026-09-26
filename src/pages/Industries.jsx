@@ -28,7 +28,7 @@ const IndustryPreview = ({ industry }) => {
     <motion.div {...panelSwap}>
       <p className="eyebrow">{industry.label}</p>
       <h2 className="mt-2 text-2xl font-semibold leading-snug text-silver-100">{industry.headline}</h2>
-      <p className="mt-3 text-sm leading-relaxed text-silver-300 [@media(max-height:760px)]:line-clamp-2">
+      <p className="mt-3 text-sm leading-relaxed text-silver-300">
         {industry.description}
       </p>
 
@@ -112,7 +112,7 @@ const Industries = () => {
               </motion.p>
               <motion.h1
                 variants={v.fadeUp}
-                className="mt-3 text-4xl leading-[1.05] tracking-tight [@media(min-height:820px)]:xl:text-5xl"
+                className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl"
               >
                 Who we build for.
               </motion.h1>

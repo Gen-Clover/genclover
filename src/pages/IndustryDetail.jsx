@@ -41,7 +41,7 @@ const IndustryDetail = () => {
           className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-accent-900/20 blur-[110px]"
           aria-hidden="true"
         />
-        <div className="container relative pb-16 pt-32 md:pb-20 md:pt-40">
+        <div className="container relative pb-12 pt-28 md:pb-14 md:pt-32">
           <Link
             to={routes.industries}
             className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"

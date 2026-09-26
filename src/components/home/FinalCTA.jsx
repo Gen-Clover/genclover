@@ -25,7 +25,7 @@ const FinalCTA = ({
         aria-hidden="true"
       />
 
-      <div className="container relative py-20 md:py-28">
+      <div className="container relative py-14 md:py-20">
         <motion.div
           variants={v.stagger(0.08)}
           {...revealOnce}

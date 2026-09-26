@@ -42,7 +42,7 @@ export const SectionHeader = ({
     <motion.div
       variants={v.fadeUp}
       {...revealOnce}
-      className={`mb-10 flex flex-col gap-5 md:mb-14 ${
+      className={`mb-8 flex flex-col gap-5 md:mb-10 ${
         centered ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between'
       } ${className}`}
     >
@@ -83,7 +83,7 @@ export const PageHero = ({ eyebrow, title, description, children, className = ''
         className="pointer-events-none absolute -right-40 -top-40 h-[28rem] w-[28rem] rounded-full bg-accent-900/25 blur-[120px]"
         aria-hidden="true"
       />
-      <div className="container relative pb-14 pt-32 md:pb-20 md:pt-36">
+      <div className="container relative pb-12 pt-28 md:pb-14 md:pt-32">
         <motion.div initial="hidden" animate="visible" variants={v.stagger(0.09)} className="max-w-3xl">
           {eyebrow && (
             <motion.div variants={v.fadeUp}>
@@ -92,20 +92,20 @@ export const PageHero = ({ eyebrow, title, description, children, className = ''
           )}
           <motion.h1
             variants={v.fadeUp}
-            className="mt-5 text-4xl leading-[1.08] md:text-5xl lg:text-6xl"
+            className="mt-4 text-4xl leading-[1.08] md:text-5xl"
           >
             {title}
           </motion.h1>
           {description && (
             <motion.p
               variants={v.fadeUp}
-              className="mt-6 max-w-prose text-lg leading-relaxed text-silver-400"
+              className="mt-4 max-w-prose text-lg leading-relaxed text-silver-400"
             >
               {description}
             </motion.p>
           )}
           {children && (
-            <motion.div variants={v.fadeUp} className="mt-9 flex flex-wrap gap-3">
+            <motion.div variants={v.fadeUp} className="mt-7 flex flex-wrap gap-3">
               {children}
             </motion.div>
           )}

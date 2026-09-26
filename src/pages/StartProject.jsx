@@ -23,7 +23,7 @@ const StartProject = () => {
           className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-accent-900/20 blur-[110px]"
           aria-hidden="true"
         />
-        <div className="container relative pb-14 pt-32 md:pt-40">
+        <div className="container relative pb-12 pt-28 md:pt-32">
           <motion.div
             initial="hidden"
             animate="visible"

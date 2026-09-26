@@ -70,7 +70,7 @@ const ProjectDetail = () => {
       {/* ------------------------------------------------------------ hero */}
       <header className="relative overflow-hidden border-b border-ink-800 bg-ink-950">
         <div className="grid-lines pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
-        <div className="container relative pb-14 pt-32 md:pt-40">
+        <div className="container relative pb-12 pt-28 md:pt-32">
           <Link
             to={routes.work}
             className="-my-1.5 inline-flex items-center gap-2 py-1.5 text-sm text-silver-500 transition-colors hover:text-accent-400"
@@ -132,7 +132,7 @@ const ProjectDetail = () => {
       <Section className="!pt-14">
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:gap-14">
           <motion.div variants={v.fadeUp} {...revealOnce}>
-            <ProjectVisual project={project} priority aspect="aspect-[16/9]" prefer="flow" />
+            <ProjectVisual project={project} priority aspect="aspect-[16/9]" />
           </motion.div>
 
           <motion.dl

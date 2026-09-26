@@ -26,7 +26,7 @@ export const SplitScreen = ({ left, right, cols = 'lg:grid-cols-[1fr_1.05fr]', l
 /** The frosted panel on the right of a SplitScreen. */
 export const GlassPanel = ({ children, className = '' }) => (
   <div
-    className={`relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl [@media(min-height:820px)]:xl:p-8 ${className}`}
+    className={`relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl xl:p-7 ${className}`}
     aria-live="polite"
   >
     {children}
