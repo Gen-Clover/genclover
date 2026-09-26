@@ -1,21 +1,36 @@
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { ArrowRight, Database, Brain, Globe, CheckCircle } from 'lucide-react'
-import Hero from '../components/Hero'
-import ServicesSection from '../components/ServicesSection'
-import StatsSection from '../components/StatsSection'
-import CTA from '../components/CTA'
+import Hero from '../components/home/Hero'
+import SelectedWork from '../components/home/SelectedWork'
+import WhatWeDo from '../components/home/WhatWeDo'
+import WhyGenClover from '../components/home/WhyGenClover'
+import HowWeWorkPreview from '../components/home/HowWeWorkPreview'
+import IndustriesStrip from '../components/home/IndustriesStrip'
+import ContinuousCare from '../components/home/ContinuousCare'
+import Proof from '../components/home/Proof'
+import FinalCTA from '../components/home/FinalCTA'
+import { usePageMeta, pageMeta } from '../lib/seo'
 
+/**
+ * Homepage. Section order (§5.2, revised in content QA so the brand pillars
+ * sit in the hero and the process is the second screen):
+ * 01 Hero + pillars · 02 How We Work · 03 Selected Work · 04 What We Do ·
+ * 05 Why Gen Clover · 06 Industries · 07 Continuous Care · 08 Proof · 09 Final CTA
+ */
 const Home = () => {
+  usePageMeta(pageMeta.home)
+
   return (
-    <div className="overflow-hidden">
+    <>
       <Hero />
-      <ServicesSection />
-      <StatsSection />
-      <CTA />
-    </div>
+      <HowWeWorkPreview />
+      <SelectedWork />
+      <WhatWeDo />
+      <WhyGenClover />
+      <IndustriesStrip />
+      <ContinuousCare />
+      <Proof />
+      <FinalCTA />
+    </>
   )
 }
 
 export default Home
-

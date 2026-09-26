@@ -1,48 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Theme tokens.
+ *
+ * Dark is the default and the brand's primary expression. Light is a full
+ * inversion of the neutral scales plus darker accent reds (bright red does not
+ * carry enough contrast on white for text).
+ *
+ * The theme is chosen explicitly by the visitor and stored in localStorage —
+ * `prefers-color-scheme` is deliberately NOT consulted, so a first-time visitor
+ * always lands on dark regardless of their OS setting. See src/lib/theme.jsx.
+ *
+ * Values are space-separated RGB channels so Tailwind's `<alpha-value>` works
+ * (`bg-ink-900/60` etc.).
+ */
 @layer base {
+  :root,
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+
+    --ink-950: 5 5 6;
+    --ink-900: 10 10 12;
+    --ink-850: 15 15 18;
+    --ink-800: 20 20 24;
+    --ink-750: 26 26 31;
+    --ink-700: 35 35 41;
+    --ink-600: 46 46 54;
+    --ink-500: 102 102 111;
+
+    --silver-100: 245 246 248;
+    --silver-200: 219 221 226;
+    --silver-300: 182 186 195;
+    --silver-400: 154 160 169;
+    --silver-500: 135 140 149;
+    --silver-600: 123 128 138;
+
+    --accent-50: 255 241 241;
+    --accent-100: 255 223 224;
+    --accent-200: 255 193 195;
+    --accent-300: 248 137 141;
+    --accent-400: 239 78 84;
+    --accent-500: 224 31 38;
+    --accent-600: 193 21 27;
+    --accent-700: 156 17 22;
+    --accent-800: 116 12 16;
+    --accent-900: 78 8 11;
+    --accent-950: 42 4 6;
+
+    /* Decorative layers that cannot be expressed as a single token */
+    --grid-line: 255 255 255;
+    --grid-line-alpha: 0.025;
+    --glow-accent: 224 31 38;
+    --glow-ring-strength: 0.55;
+    --shadow-color: 0 0 0;
+    --shadow-strength: 0.9;
+    --visual-a: #0c0c0f;
+    --visual-b: #141418;
+    --visual-c: #0a0a0c;
+    --visual-d: #12060f;
+    --visual-e: #0f0f12;
+
+    /* Clover mark: neutral petals, theme-aware */
+    --clover-1: #FFFFFF;
+    --clover-2: #D2D5DC;
+    --clover-3: #7E838C;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+
+    /* Neutrals invert: ink becomes the light surface scale … */
+    --ink-950: 255 255 255;
+    --ink-900: 244 246 248;
+    --ink-850: 255 255 255;
+    --ink-800: 231 234 238;
+    --ink-750: 223 227 233;
+    --ink-700: 213 218 225;
+    --ink-600: 194 200 209;
+    --ink-500: 142 149 160;
+
+    /* … and silver becomes the dark text scale. */
+    --silver-100: 11 12 14;
+    --silver-200: 29 32 36;
+    --silver-300: 52 56 64;
+    --silver-400: 76 82 91;
+    --silver-500: 90 96 106;
+    --silver-600: 101 108 118;
+
+    /* Tints stay light, mid/dark reds darken so accent text clears AA on white */
+    --accent-50: 255 247 247;
+    --accent-100: 255 235 236;
+    --accent-200: 255 214 216;
+    --accent-300: 142 17 23;
+    --accent-400: 179 18 24;
+    --accent-500: 168 18 23;
+    --accent-600: 193 21 27;
+    --accent-700: 229 138 142;
+    --accent-800: 243 176 179;
+    --accent-900: 255 224 226;
+    --accent-950: 255 240 241;
+
+    --grid-line: 10 12 16;
+    --grid-line-alpha: 0.045;
+    --glow-accent: 224 31 38;
+    --glow-ring-strength: 0.18;
+    --shadow-color: 16 18 22;
+    --shadow-strength: 0.16;
+    --visual-a: #f2f4f7;
+    --visual-b: #ffffff;
+    --visual-c: #eef1f5;
+    --visual-d: #fbeced;
+    --visual-e: #f4f6f9;
+
+    --clover-1: #6B7280;
+    --clover-2: #464C55;
+    --clover-3: #23272E;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    @apply bg-black text-white;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-ink-950 text-silver-200 font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-silver-100 font-semibold tracking-tight;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible keyboard focus everywhere, without a permanent mouse-click ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent-500 ring-offset-2 ring-offset-ink-950 rounded-sm;
+  }
+
+  ::selection {
+    @apply bg-accent-600/40 text-silver-100;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-ink-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-600 rounded-full border-2 border-solid border-ink-900;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent-600;
+  }
+}
+
+@layer components {
+  /* Section rhythm — generous spacing per spec §4 */
+  .section {
+    @apply py-12 md:py-16;
+  }
+
+  .eyebrow {
+    @apply font-display text-[11px] md:text-xs font-semibold uppercase tracking-eyebrow text-accent-400;
+  }
+
+  /* Card surface used across Work, Services, Industries */
+  .surface {
+    @apply relative rounded-xl border border-ink-700 bg-ink-850/80 backdrop-blur-sm transition-colors duration-300;
+  }
+  .surface-hover {
+    @apply hover:border-accent-700/60 hover:bg-ink-800/80;
+  }
+
+  /*
+   * One hover treatment for every card and tile, so no tile is left static:
+   * - .surface cards and .tile boxes: border warms to accent, surface lifts.
+   * - tiles in the hairline grids (ul/ol with gap-px): background lifts and a
+   *   thin accent line appears along the top edge.
+   */
+  .surface:not(.surface-static):hover,
+  .tile:hover {
+    border-color: rgb(var(--accent-700) / 0.6);
+    background-color: rgb(var(--ink-800) / 0.8);
+  }
+  .tile {
+    transition: border-color 300ms, background-color 300ms, box-shadow 300ms;
+  }
+  ul.gap-px > li,
+  ol.gap-px > li {
+    transition: background-color 300ms, box-shadow 300ms;
+  }
+  ul.gap-px > li:hover,
+  ol.gap-px > li:hover {
+    background-color: rgb(var(--ink-900));
+    box-shadow: inset 0 1px 0 rgb(var(--accent-500) / 0.7);
+  }
+
+  /*
+   * Cursor light: a soft light that follows the pointer across the whole page.
+   * Dark theme: red light added with `screen`, so black turns faintly red.
+   * Light theme: a rose-to-peach tint laid on with `multiply`, so white warms
+   * without washing out text.
+   */
+  .cursor-light {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms;
+    background: radial-gradient(
+      520px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(224 31 38 / 0.16),
+      rgb(224 31 38 / 0.06) 35%,
+      transparent 65%
+    );
+    mix-blend-mode: screen;
+  }
+  .cursor-light[data-on='true'] {
+    opacity: 1;
+  }
+  :root[data-theme='light'] .cursor-light {
+    background: radial-gradient(
+      480px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(255 120 120 / 0.16),
+      rgb(255 190 150 / 0.10) 35%,
+      transparent 65%
+    );
+    mix-blend-mode: multiply;
+  }
+  @media (hover: none) {
+    .cursor-light {
+      display: none;
+    }
+  }
+
+  /* A white card on a white page needs elevation the dark theme gets for free */
+  :root[data-theme='light'] .surface {
+    box-shadow:
+      0 1px 2px rgb(16 18 22 / 0.04),
+      0 10px 28px -14px rgb(16 18 22 / 0.12);
+  }
+  :root[data-theme='light'] .surface-hover:hover {
+    box-shadow:
+      0 1px 2px rgb(16 18 22 / 0.05),
+      0 16px 36px -16px rgb(16 18 22 / 0.18);
+  }
+
+  /* Thin red rule used as a section divider */
+  .rule-accent {
+    @apply h-px w-full bg-accent-line;
   }
 }
 
 @layer utilities {
-  .gradient-text {
-    @apply bg-gradient-to-r from-red-500 to-red-400 bg-clip-text text-transparent;
+  .text-gradient {
+    @apply bg-gradient-to-r from-silver-100 via-silver-100 to-silver-300 bg-clip-text text-transparent;
   }
-  
-  .glass-effect {
-    @apply bg-black/80 backdrop-blur-lg border border-red-500/20;
+
+  .accent-dot::after {
+    content: '.';
+    @apply text-accent-500;
+  }
+
+  /* Subtle diagonal structure from the brand system */
+  .diagonal-sheen {
+    @apply bg-diagonal-sheen;
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(
+        to right,
+        rgb(var(--grid-line) / var(--grid-line-alpha)) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        rgb(var(--grid-line) / var(--grid-line-alpha)) 1px,
+        transparent 1px
+      );
+    background-size: 72px 72px;
   }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Spec §4.1 — respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a1a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #dc2626;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #ef4444;
-}
-
