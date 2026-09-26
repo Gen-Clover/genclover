@@ -1,5 +1,6 @@
 import { getStatus, getIndustry, getWorkCategory } from './taxonomy'
 import { caseStudyVisuals } from './caseStudyVisuals'
+import { architectureDiagrams } from './architectureDiagrams'
 
 /**
  * Single source of truth for the Work area. (Spec §8)
@@ -850,10 +851,14 @@ export const projects = [
  *
  * PROJECTS ARRAY ORDER IS THE PUBLIC ORDER.
  */
-const withCaseStudy = (project) => ({
-  ...project,
-  caseStudy: caseStudyVisuals[project.slug] ?? null,
-})
+const withCaseStudy = (project) => {
+  const visuals = caseStudyVisuals[project.slug]
+  const diagram = architectureDiagrams[project.slug]
+  return {
+    ...project,
+    caseStudy: visuals || diagram ? { ...visuals, ...(diagram ? { diagram } : {}) } : null,
+  }
+}
 
 /* ---------------------------------------------------------------- selectors */
 

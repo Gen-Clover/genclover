@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { CloverMark } from '../brand/Logo'
 
@@ -12,7 +12,9 @@ import { CloverMark } from '../brand/Logo'
  * rather than stock photos or fabricated interface mockups (Spec §4, §25).
  *
  * Order of preference: `project.heroImage` (a real image) → the requested
- * diagram → the other diagram → a plain brand panel.
+ * diagram → the other diagram → a plain brand panel. "Architecture" means the
+ * flow chart from architectureDiagrams.js when the project has one, else the
+ * layered map.
  */
 
 const VB_W = 400
@@ -235,7 +237,8 @@ const ArchitectureMap = ({ layers, title, id }) => {
         <g key={`c${i}`}>
           <path d={d} className="stroke-ink-600" strokeWidth="1.5" strokeDasharray="3 3" fill="none" />
           {!reduced && (
-            <circle r="2.6" className="fill-accent-500">
+            <circle r="2.6" opacity="0" className="fill-accent-500">
+              <set attributeName="opacity" to="1" begin={`${i * 0.4}s`} />
               <animateMotion
                 dur="1.6s"
                 begin={`${i * 0.4}s`}
@@ -323,6 +326,281 @@ const ArchitectureMap = ({ layers, title, id }) => {
   )
 }
 
+/* ---------------------------------------------------- architecture graph */
+
+/** Rough text width for Inter at a given size — enough to size pills. */
+const textWidth = (text, size) => text.length * size * 0.56
+
+const NODE_TONES = {
+  default: { box: 'fill-ink-900 stroke-ink-600', title: 'fill-silver-100', line: 'fill-silver-400' },
+  accent: { box: 'fill-accent-950/40 stroke-accent-700', title: 'fill-silver-100', line: 'fill-silver-400' },
+  highlight: { box: 'fill-ink-800 stroke-silver-500', title: 'fill-silver-100', line: 'fill-silver-300' },
+  muted: { box: 'fill-ink-900/60 stroke-ink-700', title: 'fill-silver-300', line: 'fill-silver-500' },
+}
+
+const GROUP = { header: 66, pad: 16, gap: 10, inline: 38, stacked: 52 }
+const groupHeight = (g) =>
+  GROUP.header + g.items.length * (GROUP[g.layout] + GROUP.gap) - GROUP.gap + GROUP.pad
+
+/** A multi-line label: string or array of strings, one tspan per line. */
+const Label = ({ text, x, y, anchor = 'middle', className = 'fill-silver-500', size = 11 }) => {
+  const lines = Array.isArray(text) ? text : [text]
+  return (
+    <text x={x} y={y} textAnchor={anchor} fontSize={size} className={className}>
+      {lines.map((l, i) => (
+        <tspan key={i} x={x} dy={i === 0 ? 0 : size + 3}>
+          {l}
+        </tspan>
+      ))}
+    </text>
+  )
+}
+
+/** Dots travelling along connectors, the same motion as the layered map. */
+const Pulse = ({ d, i, reduced }) =>
+  reduced ? null : (
+    <circle r="3.4" opacity="0" className="fill-accent-500">
+      {/* Hidden until its staggered start; otherwise it waits at the canvas origin. */}
+      <set attributeName="opacity" to="1" begin={`${(i * 0.3).toFixed(2)}s`} />
+      <animateMotion dur="1.8s" begin={`${(i * 0.3).toFixed(2)}s`} repeatCount="indefinite" path={d} />
+    </circle>
+  )
+
+/** Glow on the part of the system the project is about. */
+const Glow = ({ reduced }) =>
+  reduced ? null : (
+    <animate attributeName="stroke-opacity" values="1;0.35;1" dur="2.4s" repeatCount="indefinite" />
+  )
+
+const GraphDiagram = ({ diagram, uid, reduced }) => (
+  <>
+    {diagram.edges.map((e, i) => (
+      <g key={`e${i}`}>
+        <path
+          d={e.d}
+          fill="none"
+          strokeWidth="1.6"
+          className="stroke-ink-500"
+          strokeDasharray={e.dashed ? '6 5' : undefined}
+          markerEnd={e.arrow === 'none' ? undefined : `url(#${uid}-${e.dot ? 'dot' : 'arrow'})`}
+          markerStart={e.arrow === 'both' ? `url(#${uid}-arrow)` : undefined}
+        />
+        <Pulse d={e.d} i={i} reduced={reduced} />
+        {e.label && <Label text={e.label} x={e.lx} y={e.ly} anchor={e.anchor} />}
+      </g>
+    ))}
+
+    {diagram.nodes.map((n, i) => {
+      const tone = NODE_TONES[n.tone ?? 'default']
+      return (
+        <g key={`n${i}`}>
+          <rect x={n.x} y={n.y} width={n.w} height={n.h} rx="10" strokeWidth="1.2" className={tone.box} />
+          <text x={n.x + 14} y={n.y + 26} fontSize="14.5" fontWeight="600" className={tone.title}>
+            {n.title}
+          </text>
+          {n.lines?.map((l, li) => (
+            <text key={li} x={n.x + 14} y={n.y + 46 + li * 16} fontSize="12" className={tone.line}>
+              {l}
+            </text>
+          ))}
+        </g>
+      )
+    })}
+
+    {diagram.groups?.map((g, gi) => {
+      const h = groupHeight(g)
+      const itemH = GROUP[g.layout]
+      return (
+        <g key={`g${gi}`}>
+          <rect
+            x={g.x}
+            y={g.y}
+            width={g.w}
+            height={h}
+            rx="12"
+            strokeWidth="1.3"
+            className={g.emphasis ? 'fill-accent-950/30 stroke-accent-600' : 'fill-ink-900 stroke-ink-600'}
+          >
+            {g.emphasis && <Glow reduced={reduced} />}
+          </rect>
+          <text x={g.x + 16} y={g.y + 28} fontSize="15" fontWeight="700" className="fill-silver-100">
+            {g.title}
+          </text>
+          <text x={g.x + 16} y={g.y + 48} fontSize="12" className="fill-silver-400">
+            {g.subtitle}
+          </text>
+          {g.items.map((item, ii) => {
+            const top = g.y + GROUP.header + ii * (itemH + GROUP.gap)
+            return (
+              <g key={ii}>
+                <rect
+                  x={g.x + 14}
+                  y={top}
+                  width={g.w - 28}
+                  height={itemH}
+                  rx="8"
+                  strokeWidth="1.1"
+                  className={item.dashed ? 'fill-transparent stroke-accent-500' : 'fill-ink-850 stroke-ink-600'}
+                  strokeDasharray={item.dashed ? '5 4' : undefined}
+                />
+                {g.layout === 'inline' ? (
+                  <>
+                    <text x={g.x + 28} y={top + 24} fontSize="13" fontWeight="700" className="fill-silver-100">
+                      {item.title}
+                    </text>
+                    <text x={g.x + 160} y={top + 24} fontSize="12" className="fill-silver-300">
+                      {item.text}
+                    </text>
+                  </>
+                ) : (
+                  <>
+                    <text x={g.x + 28} y={top + 21} fontSize="13" fontWeight="700" className="fill-silver-100">
+                      {item.title}
+                    </text>
+                    <text x={g.x + 28} y={top + 39} fontSize="12" className="fill-silver-400">
+                      {item.text}
+                    </text>
+                  </>
+                )}
+              </g>
+            )
+          })}
+        </g>
+      )
+    })}
+  </>
+)
+
+const RowsDiagram = ({ diagram, reduced }) => {
+  const { width: W, height: H, rows } = diagram
+  const pad = 20
+  const gap = 14
+  const rowH = (H - pad * 2 - gap * (rows.length - 1)) / rows.length
+  const pillH = rowH - 26
+  const labelW = 190
+  const itemsX = pad + 16 + labelW + 18
+  const itemsMax = W - pad - 16 - itemsX
+
+  return rows.map((row, ri) => {
+    const y = pad + ri * (rowH + gap)
+    const natural = row.items.map((t) => Math.max(textWidth(t, 12.5) + 30, 104))
+    const gapX = 12
+    const total = natural.reduce((a, b) => a + b, 0) + gapX * (row.items.length - 1)
+    const scale = Math.min(1, itemsMax / total)
+    let cursor = itemsX
+    const itemTone = row.emphasis
+      ? 'fill-accent-950/50 stroke-accent-500'
+      : row.muted
+        ? 'fill-ink-900/60 stroke-ink-700'
+        : 'fill-ink-850 stroke-ink-500'
+    const itemText = row.emphasis ? 'fill-silver-100' : row.muted ? 'fill-silver-400' : 'fill-silver-200'
+    const connector = `M${pad + 16 + labelW / 2} ${y + rowH} V${y + rowH + gap}`
+
+    return (
+      <g key={row.label}>
+        <rect
+          x={pad}
+          y={y}
+          width={W - pad * 2}
+          height={rowH}
+          rx="12"
+          strokeWidth="1.2"
+          className={row.emphasis ? 'fill-accent-950/25 stroke-accent-600' : 'fill-ink-900/70 stroke-ink-700'}
+        >
+          {row.emphasis && <Glow reduced={reduced} />}
+        </rect>
+        <rect
+          x={pad + 16}
+          y={y + 13}
+          width={labelW}
+          height={pillH}
+          rx="8"
+          strokeWidth="1.2"
+          className={row.emphasis ? 'fill-accent-950/60 stroke-accent-500' : 'fill-ink-850 stroke-ink-500'}
+        />
+        <text x={pad + 30} y={y + rowH / 2 + 5} fontSize="14" fontWeight="700" className="fill-silver-100">
+          {row.label}
+        </text>
+        {row.items.map((item, ii) => {
+          const w = natural[ii] * scale
+          const x = cursor
+          cursor += w + gapX
+          return (
+            <g key={item}>
+              <rect x={x} y={y + 13} width={w} height={pillH} rx="8" strokeWidth="1.1" className={itemTone} />
+              <text x={x + 14} y={y + rowH / 2 + 4.5} fontSize="12.5" className={itemText}>
+                {item}
+              </text>
+            </g>
+          )
+        })}
+        {ri < rows.length - 1 && (
+          <g>
+            <path d={connector} strokeWidth="1.6" className="stroke-ink-500" />
+            <Pulse d={connector} i={ri} reduced={reduced} />
+          </g>
+        )}
+      </g>
+    )
+  })
+}
+
+/**
+ * A project's architecture as a flow chart (kind 'graph') or a stack of layers
+ * (kind 'rows'), from data/architectureDiagrams.js. Animated like the layered
+ * map: pulses travel the connectors and the key part of the system glows.
+ */
+export const ArchitectureGraph = ({ diagram, title, className = 'absolute inset-0 h-full w-full' }) => {
+  const reduced = useReducedMotion()
+  const uid = `ag-${useId().replace(/:/g, '')}`
+  const summary =
+    diagram.kind === 'rows'
+      ? diagram.rows.map((r) => r.label.replace(/^\d+\s*·\s*/, '')).join(', ')
+      : [...diagram.nodes.map((n) => n.title), ...(diagram.groups ?? []).map((g) => g.title)].join(', ')
+
+  return (
+    <svg
+      viewBox={`0 0 ${diagram.width} ${diagram.height}`}
+      className={className}
+      role="img"
+      aria-label={`${title}: architecture, ${summary}`}
+    >
+      <defs>
+        <marker id={`${uid}-arrow`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" className="fill-ink-500" />
+        </marker>
+        <marker id={`${uid}-dot`} viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7">
+          <circle cx="5" cy="5" r="4" className="fill-silver-300" />
+        </marker>
+      </defs>
+      {diagram.kind === 'rows' ? (
+        <RowsDiagram diagram={diagram} reduced={reduced} />
+      ) : (
+        <GraphDiagram diagram={diagram} uid={uid} reduced={reduced} />
+      )}
+    </svg>
+  )
+}
+
+/**
+ * The project's most detailed diagram at full size, for the enlarged preview:
+ * the flow chart when there is one, else the layered map, else the delivery flow.
+ */
+export const ProjectDiagram = ({ project }) => {
+  const cs = project.caseStudy
+  if (cs?.diagram) return <ArchitectureGraph diagram={cs.diagram} title={project.title} />
+  if (cs?.architecture?.layers?.length)
+    return <ArchitectureMap layers={cs.architecture.layers} title={project.title} id={`${project.slug}-lg`} />
+  if (cs?.flow?.length) return <FlowDiagram flow={cs.flow} title={project.title} id={`${project.slug}-lg`} />
+  return null
+}
+
+/** Canvas aspect of ProjectDiagram, so its frame can be sized to fit. */
+export const projectDiagramAspect = (project) => {
+  const d = project.caseStudy?.diagram
+  return d ? d.width / d.height : VB_W / VB_H
+}
+
 const ProjectVisual = ({
   project,
   className = '',
@@ -333,6 +611,8 @@ const ProjectVisual = ({
   const { heroImage, title, slug } = project
   const flow = project.caseStudy?.flow
   const layers = project.caseStudy?.architecture?.layers
+  const graph = project.caseStudy?.diagram
+  const hasArchitecture = Boolean(graph || layers?.length)
 
   // The architecture map needs room to be legible. In a narrow frame (phones,
   // two-column tablets) the large-type delivery flow is shown instead.
@@ -350,8 +630,8 @@ const ProjectVisual = ({
     narrow && flow?.length
       ? 'flow'
       : prefer === 'flow'
-      ? (flow?.length && 'flow') || (layers?.length && 'architecture')
-      : (layers?.length && 'architecture') || (flow?.length && 'flow')
+      ? (flow?.length && 'flow') || (hasArchitecture && 'architecture')
+      : (hasArchitecture && 'architecture') || (flow?.length && 'flow')
 
   if (heroImage) {
     return (
@@ -395,7 +675,12 @@ const ProjectVisual = ({
         className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-accent-700/70 to-transparent"
         aria-hidden="true"
       />
-      {diagram === 'architecture' && <ArchitectureMap layers={layers} title={title} id={slug} />}
+      {diagram === 'architecture' &&
+        (graph ? (
+          <ArchitectureGraph diagram={graph} title={title} />
+        ) : (
+          <ArchitectureMap layers={layers} title={title} id={slug} />
+        ))}
       {diagram === 'flow' && (
         <>
           <div className="absolute bottom-3 right-3" aria-hidden="true">
