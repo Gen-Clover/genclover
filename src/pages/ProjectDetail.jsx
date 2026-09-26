@@ -13,6 +13,7 @@ import {
   REPO_POLICY_NOTE,
 } from '../data/projects'
 import { getService } from '../data/services'
+import { caseStudies } from '../data/caseStudies'
 import { routes } from '../data/site'
 import { usePageMeta } from '../lib/seo'
 import {
@@ -56,7 +57,12 @@ const ProjectDetail = () => {
   const primaryService = getService(project.primaryService)
   const additionalServices = (project.additionalServices ?? []).map(getService).filter(Boolean)
   const related = getRelatedProjects(project)
-  const cs = project.caseStudy
+  // Card visuals (flow, architecture) plus the long-form case study, which is
+  // only bundled with this page.
+  const cs =
+    project.caseStudy || caseStudies[project.slug]
+      ? { ...caseStudies[project.slug], ...project.caseStudy }
+      : null
 
   const metaRows = [
     { label: 'Industry', value: industry?.label },

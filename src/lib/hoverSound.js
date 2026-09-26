@@ -138,6 +138,8 @@ const onPointerOut = (e) => {
 }
 
 const unlock = () => {
+  // Nothing to start while sound is off; the engine is created on first use.
+  if (!enabled) return
   const c = getContext()
   if (c && c.state === 'suspended') c.resume().then(notifyLock).catch(() => {})
 }
@@ -146,9 +148,10 @@ const unlock = () => {
 export const useHoverSound = () => {
   useEffect(() => {
     enabled = readPref()
-    // Create the audio engine up front (it starts suspended), so the first
-    // click anywhere only has to resume it.
-    getContext()
+    // Only a visitor who turned sound on gets an audio engine at load (it
+    // starts suspended, so their first click only has to resume it). For
+    // everyone else it is created when they switch sound on.
+    if (enabled) getContext()
     notifyLock()
     const opts = { passive: true, capture: true }
     document.addEventListener('pointerover', onPointerOver, opts)

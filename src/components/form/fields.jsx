@@ -16,7 +16,7 @@ export const FieldError = ({ id, message }) =>
   ) : null
 
 const inputClasses = (invalid) =>
-  `w-full rounded-lg border bg-ink-900 px-4 py-3 text-sm text-silver-100 placeholder:text-silver-600 transition-colors outline-none focus:border-accent-600 focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 ${
+  `w-full rounded-lg border bg-ink-900 px-4 py-3 text-base text-silver-100 sm:text-sm placeholder:text-silver-600 transition-colors outline-none focus:border-accent-600 focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 ${
     invalid ? 'border-accent-600' : 'border-ink-700 hover:border-ink-600'
   }`
 

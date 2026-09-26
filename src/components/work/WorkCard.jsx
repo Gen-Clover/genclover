@@ -45,7 +45,7 @@ const WorkCard = ({ project, priority = false, className = '' }) => {
             <span>{industry?.label}</span>
           </div>
 
-          <h3 className="mt-3 flex items-start justify-between gap-3 text-lg font-semibold text-silver-100 transition-colors group-hover:text-white">
+          <h3 className="mt-3 flex items-start justify-between gap-3 text-lg font-semibold text-silver-100 transition-colors group-hover:text-accent-400">
             <span>{project.title}</span>
             <ArrowUpRight
               className="mt-0.5 h-4 w-4 shrink-0 text-silver-500 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-400"

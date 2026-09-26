@@ -235,10 +235,12 @@ export const ArchitectureFlow = ({ data }) => {
     <Section>
       <SectionHeader eyebrow="Architecture" title={data.headline} description={data.intro} />
 
+      {/* A group, not an image: the layers and nodes are real text that screen
+          readers should read, top to bottom, in the order data flows. */}
       <div
         className="relative"
-        role="img"
-        aria-label={data.alt ?? `Architecture diagram for this project: ${data.layers.map((l) => l.label).join(', then ')}.`}
+        role="group"
+        aria-label={data.alt ?? `Architecture, from ${data.layers.map((l) => l.label).join(' to ')}`}
       >
         {data.layers.map((layer, li) => (
           <div key={layer.label}>
@@ -300,7 +302,7 @@ export const ArchitectureFlow = ({ data }) => {
                   transition={{ duration: 0.35, ease: EASE, delay: 0.3 }}
                   className="relative grid h-6 w-6 place-items-center rounded-full border border-ink-700 bg-ink-950"
                 >
-                  <ArrowDown className="h-3 w-3 text-accent-500" />
+                  <ArrowDown className="h-3 w-3 text-accent-500" aria-hidden="true" />
                 </motion.span>
               </div>
             )}

@@ -1,6 +1,6 @@
-import { useEffect, useId, useState } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, Globe2, Layers, Briefcase } from 'lucide-react'
+import { useEffect, useId, useRef, useState } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { ArrowRight, Mail, MapPin, Globe2, Layers, Briefcase, Pause, Play } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { CloverMark, PETAL_PATH } from '../components/brand/Logo'
 import { brandPillars, getIndustry } from '../data/taxonomy'
@@ -25,24 +25,47 @@ const PETAL_FOR_PILLAR = [3, 0, 1, 2]
 const CloverStory = () => {
   const reduced = useReducedMotion()
   const [active, setActive] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  // Picking a leaf or pressing pause stops the rotation for good. A tap on iOS
+  // never focuses the button, so focus cannot be what pauses it.
+  const [stopped, setStopped] = useState(false)
+  const rootRef = useRef(null)
+  const tabsRef = useRef([])
+  const inView = useInView(rootRef, { amount: 0.4 })
   const uid = useId().replace(/:/g, '')
 
+  const playing = !reduced && !stopped && !hovered && inView
+
   useEffect(() => {
-    if (reduced || paused) return undefined
+    if (!playing) return undefined
     const id = setInterval(() => setActive((i) => (i + 1) % brandPillars.length), 2800)
     return () => clearInterval(id)
-  }, [reduced, paused])
+  }, [playing])
+
+  const choose = (i) => {
+    setStopped(true)
+    setActive(i)
+  }
+
+  const onKeyDown = (e) => {
+    const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
+    if (!(e.key in keys)) return
+    e.preventDefault()
+    const next = (active + keys[e.key] + brandPillars.length) % brandPillars.length
+    choose(next)
+    tabsRef.current[next]?.focus()
+  }
 
   const pillar = brandPillars[active]
 
   return (
     <div
+      ref={rootRef}
       className="grid items-center gap-8 sm:grid-cols-[13rem_1fr]"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <svg viewBox="-80 -80 160 160" className="w-full max-w-[13rem]" aria-hidden="true">
+      <svg viewBox="-80 -80 160 160" className="mx-auto w-full max-w-[10rem] sm:max-w-[13rem]" aria-hidden="true">
         <defs>
           <linearGradient id={`s-${uid}`} x1="0.1" y1="0" x2="0.75" y2="1">
             <stop offset="0%" stopColor="var(--clover-1)" />
@@ -72,16 +95,24 @@ const CloverStory = () => {
       </svg>
 
       <div>
-        <div role="tablist" aria-label="The four leaves" className="flex flex-wrap gap-2">
+        <div
+          role="tablist"
+          aria-label="The four leaves"
+          onKeyDown={onKeyDown}
+          className="flex flex-wrap gap-2"
+        >
           {brandPillars.map((p, i) => (
             <button
               key={p.label}
+              ref={(el) => (tabsRef.current[i] = el)}
               type="button"
               role="tab"
+              id={`${uid}-leaf-${i}`}
               aria-selected={i === active}
-              onClick={() => setActive(i)}
-              onFocus={() => setPaused(true)}
-              className={`rounded-md border px-3 py-1.5 font-display text-[11px] font-semibold uppercase tracking-brand transition-colors ${
+              aria-controls={`${uid}-leaf-panel`}
+              tabIndex={i === active ? 0 : -1}
+              onClick={() => choose(i)}
+              className={`min-h-[44px] rounded-md border px-3 font-display text-[11px] font-semibold uppercase tracking-brand transition-colors ${
                 i === active
                   ? 'border-accent-600 bg-accent-950/50 text-accent-300'
                   : 'border-ink-700 text-silver-500 hover:text-silver-200'
@@ -91,20 +122,43 @@ const CloverStory = () => {
             </button>
           ))}
         </div>
-        <div className="mt-5 min-h-[4.5rem]" role="tabpanel" aria-live="polite">
-          <AnimatePresence mode="wait">
+        <div
+          id={`${uid}-leaf-panel`}
+          role="tabpanel"
+          aria-labelledby={`${uid}-leaf-${active}`}
+          className="mt-5 grid"
+        >
+          {/* All descriptions share one cell, so the box keeps the height of the
+              longest and nothing below it moves as the leaves rotate. */}
+          {brandPillars.map((p, i) => (
             <motion.p
-              key={pillar.label}
-              initial={{ opacity: 0, y: reduced ? 0 : 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
+              key={p.label}
+              initial={false}
+              animate={{ opacity: i === active ? 1 : 0, y: i === active || reduced ? 0 : 6 }}
               transition={{ duration: 0.25 }}
-              className="text-base leading-relaxed text-silver-300"
+              aria-hidden={i !== active}
+              className={`[grid-area:1/1] text-base leading-relaxed text-silver-300 ${
+                i === active ? '' : 'invisible'
+              }`}
             >
-              {pillar.description}
+              {p.description}
             </motion.p>
-          </AnimatePresence>
+          ))}
         </div>
+        {!reduced && (
+          <button
+            type="button"
+            onClick={() => setStopped((s) => !s)}
+            className="mt-2 inline-flex min-h-[44px] items-center gap-2 rounded-md text-xs text-silver-500 transition-colors hover:text-silver-200"
+          >
+            {stopped ? (
+              <Play className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <Pause className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
+            {stopped ? 'Play' : 'Pause'}
+          </button>
+        )}
       </div>
     </div>
   )

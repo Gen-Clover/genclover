@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Fonts are loaded by a <link> in index.html, so the browser finds them first. */
 
 @tailwind base;
 @tailwind components;

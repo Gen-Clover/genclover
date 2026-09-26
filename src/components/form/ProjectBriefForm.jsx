@@ -109,17 +109,41 @@ const ProjectBriefForm = () => {
 
   const goBack = () => setStepIndex((i) => Math.max(0, i - 1))
 
+  /** Show these errors and go back to the first step that has one. */
+  const showErrors = (found) => {
+    setErrors(found)
+    const firstBad = STEPS.findIndex((s) => fieldsForStep(s).some((name) => found[name]))
+    if (firstBad >= 0) setStepIndex(firstBad)
+  }
+
+  /**
+   * Enter in a single-line field means "Continue" on every step but the last.
+   * Browsers only submit on Enter when a form has a submit button or a lone
+   * text field, so without this Enter either did nothing or submitted the whole
+   * brief. Textareas keep Enter for new lines; the searchable selects use it to
+   * pick an option (they call preventDefault).
+   */
+  const handleEnter = (e) => {
+    if (e.key !== 'Enter' || e.defaultPrevented || isLast) return
+    const t = e.target
+    if (t.tagName !== 'INPUT' || t.type === 'checkbox' || t.getAttribute('role') === 'combobox') return
+    e.preventDefault()
+    goNext()
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // Only the last step has a submit button, but guard anyway: an early submit
+    // must never validate every step and jump ahead.
+    if (!isLast) {
+      goNext()
+      return
+    }
+
     const allErrors = validateAll(values)
     if (Object.keys(allErrors).length > 0) {
-      setErrors(allErrors)
-      // Jump back to the first step that still has a problem.
-      const firstBad = STEPS.findIndex((s) =>
-        fieldsForStep(s).some((name) => allErrors[name])
-      )
-      if (firstBad >= 0) setStepIndex(firstBad)
+      showErrors(allErrors)
       return
     }
 
@@ -144,6 +168,19 @@ const ProjectBriefForm = () => {
       })
 
       const payload = await response.json().catch(() => ({}))
+
+      // The server re-validates everything; highlight whatever it rejected.
+      if (response.status === 400 && payload.errors && typeof payload.errors === 'object') {
+        const fieldErrors = Object.fromEntries(
+          Object.entries(payload.errors).filter(([name]) => name in initialLeadState)
+        )
+        if (Object.keys(fieldErrors).length > 0) {
+          trackEvent(events.FORM_ERROR, { step: step.id })
+          setStatus('idle')
+          showErrors(fieldErrors)
+          return
+        }
+      }
 
       if (!response.ok) {
         throw new Error(payload.message || 'We could not send your inquiry just now.')
@@ -188,7 +225,12 @@ const ProjectBriefForm = () => {
 
   /* ---------------------------------------------------------------- form */
   return (
-    <form onSubmit={handleSubmit} noValidate className="surface surface-static overflow-hidden">
+    <form
+      onSubmit={handleSubmit}
+      onKeyDown={handleEnter}
+      noValidate
+      className="surface surface-static overflow-hidden"
+    >
       {/* Progress */}
       <div className="border-b border-ink-800 px-6 py-5 md:px-8">
         <div className="flex items-center justify-between text-xs">

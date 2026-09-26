@@ -24,19 +24,23 @@ const FooterColumn = ({ title, children }) => {
   return (
     <nav aria-labelledby={`${id}-h`} className="border-b border-ink-800 sm:border-0">
       <h2 id={`${id}-h`} className="font-display text-xs font-semibold uppercase tracking-brand text-silver-100">
+        {/* Phones: a toggle. From sm up the column is always open, so the
+            heading is plain text rather than a focusable button that says
+            "collapsed" beside visible links. */}
         <button
           type="button"
           aria-expanded={open}
           aria-controls={id}
           onClick={() => setOpen((o) => !o)}
-          className="flex min-h-[48px] w-full items-center justify-between uppercase tracking-brand sm:pointer-events-none sm:min-h-0"
+          className="flex min-h-[48px] w-full items-center justify-between uppercase tracking-brand sm:hidden"
         >
           {title}
           <ChevronDown
-            className={`h-4 w-4 text-silver-500 transition-transform sm:hidden ${open ? 'rotate-180' : ''}`}
+            className={`h-4 w-4 text-silver-500 transition-transform ${open ? 'rotate-180' : ''}`}
             aria-hidden="true"
           />
         </button>
+        <span className="hidden sm:block">{title}</span>
       </h2>
       <ul id={id} className={`${open ? 'block' : 'hidden'} pb-3 sm:mt-3 sm:block sm:pb-0`}>
         {children}

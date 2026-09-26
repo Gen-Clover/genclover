@@ -19,7 +19,7 @@ const Faq = ({ items, className = '' }) => {
                 aria-controls={`${uid}-a-${i}`}
                 id={`${uid}-q-${i}`}
                 onClick={() => setOpen(expanded ? -1 : i)}
-                className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left text-base font-medium text-silver-100 transition-colors hover:text-white"
+                className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left text-base font-medium text-silver-100 transition-colors hover:text-accent-400"
               >
                 {faq.question}
                 <Plus

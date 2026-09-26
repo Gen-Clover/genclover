@@ -8,6 +8,7 @@ import ThemeToggle from '../ui/ThemeToggle'
 import SoundToggle from '../ui/SoundToggle'
 import { primaryNav, routes } from '../../data/site'
 import { trackEvent, events } from '../../lib/analytics'
+import { canHover } from '../../lib/pointer'
 
 /**
  * Primary navigation. (Spec §3, §18)
@@ -133,12 +134,21 @@ const Header = () => {
                     className="relative"
                     onMouseEnter={() => !reduced && setOpenMenu(item.label)}
                     onMouseLeave={() => !reduced && setOpenMenu(null)}
+                    onBlur={(e) => {
+                      if (!e.currentTarget.contains(e.relatedTarget)) setOpenMenu(null)
+                    }}
                   >
                     <button
                       type="button"
                       aria-expanded={expanded}
                       aria-haspopup="true"
-                      onClick={() => setOpenMenu(expanded ? null : item.label)}
+                      onClick={(e) => {
+                        // With a mouse, hovering has already opened the menu, so a
+                        // click must not toggle it shut again. Keyboard (detail 0)
+                        // and touch keep the normal open/close toggle.
+                        if (e.detail > 0 && canHover() && !reduced) setOpenMenu(item.label)
+                        else setOpenMenu(expanded ? null : item.label)
+                      }}
                       className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-2 xl:px-3 text-sm font-medium transition-colors ${
                         active || expanded
                           ? 'text-silver-100'

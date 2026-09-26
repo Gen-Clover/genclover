@@ -1,5 +1,5 @@
 import { getStatus, getIndustry, getWorkCategory } from './taxonomy'
-import { caseStudies } from './caseStudies'
+import { caseStudyVisuals } from './caseStudyVisuals'
 
 /**
  * Single source of truth for the Work area. (Spec §8)
@@ -843,15 +843,16 @@ export const projects = [
 ]
 
 /**
- * Deep case-study content lives in caseStudies.js and is merged on here by
- * slug, so a project record stays readable while a fully documented engagement
- * can still carry a long-form page.
+ * Each project carries the parts of its case study that cards draw (the
+ * delivery flow and architecture layers, from caseStudyVisuals.js). The
+ * long-form case study in caseStudies.js is merged on by the project page
+ * itself, so it is only downloaded when someone opens a project.
  *
  * PROJECTS ARRAY ORDER IS THE PUBLIC ORDER.
  */
 const withCaseStudy = (project) => ({
   ...project,
-  caseStudy: caseStudies[project.slug] ?? null,
+  caseStudy: caseStudyVisuals[project.slug] ?? null,
 })
 
 /* ---------------------------------------------------------------- selectors */

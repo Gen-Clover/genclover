@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowUpRight, AlertCircle, Check } from 'lucide-react'
 import { Section, SectionHeader } from '../components/ui/Section'
+import { SplitScreen, GlassPanel, panelSwap } from '../components/ui/SplitScreen'
 import Button from '../components/ui/Button'
 import FinalCTA from '../components/home/FinalCTA'
 import { services, PRICING_STATEMENT } from '../data/services'
@@ -31,14 +32,7 @@ const ServicePreview = ({ service }) => {
   const Icon = service.icon
 
   return (
-    <motion.div
-      key={service.slug}
-      initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
-      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-      className="flex h-full flex-col"
-    >
+    <motion.div key={service.slug} {...panelSwap} className="flex h-full flex-col">
       <div className="flex items-center gap-3.5">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent-700/70 bg-accent-950/50">
           <Icon className="h-5 w-5 text-accent-400" aria-hidden="true" />
@@ -125,16 +119,11 @@ const Services = () => {
   return (
     <>
       {/* ------------------------------------------ screen 1: tiles + preview */}
-      <section className="relative isolate overflow-hidden border-b border-ink-800 bg-ink-950">
-        <div className="grid-lines pointer-events-none absolute inset-0" aria-hidden="true" />
-        <div
-          className="pointer-events-none absolute -right-40 top-0 h-[40rem] w-[40rem] rounded-full bg-accent-900/25 blur-[150px]"
-          aria-hidden="true"
-        />
-
-        <div className="container relative grid gap-10 pb-12 pt-28 lg:h-[100svh] lg:max-h-[62rem] lg:min-h-[36rem] lg:grid-cols-[0.85fr_1.15fr] lg:gap-10 lg:pb-6 lg:pt-[5.5rem]">
-          {/* part a */}
-          <div className="flex flex-col justify-center">
+      <SplitScreen
+        label="Services"
+        cols="lg:grid-cols-[0.85fr_1.15fr]"
+        left={
+          <>
             <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
               <motion.p variants={v.fadeUp} className="eyebrow">
                 Services
@@ -149,8 +138,10 @@ const Services = () => {
                 variants={v.fadeUp}
                 className="mt-3 max-w-xl text-base leading-relaxed text-silver-400"
               >
-                From websites to AI, data and the infrastructure that runs them. Hover or tap a
-                service to preview it, and open it for the full picture.
+                From websites to AI, data and the infrastructure that runs them.
+                <span className="hidden lg:inline">
+                  {' '}Hover or tap a service to preview it, and open it for the full picture.
+                </span>
               </motion.p>
             </motion.div>
 
@@ -177,25 +168,31 @@ const Services = () => {
                             location: 'services_hub',
                           })
                       }}
-                      className={`group relative flex items-center gap-3.5 rounded-xl border px-4 py-2.5 transition-colors ${
+                      className={`group relative flex h-full items-start gap-3.5 rounded-xl border px-4 py-3 transition-colors lg:items-center lg:py-2.5 ${
                         selected
-                          ? 'border-accent-700/70 bg-accent-950/35'
+                          ? // The selected state only means something beside the desktop preview.
+                            'border-ink-700 bg-ink-900/60 lg:border-accent-700/70 lg:bg-accent-950/35'
                           : 'border-ink-700 bg-ink-900/60 hover:border-ink-600'
                       }`}
                     >
                       <span
                         className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition-colors ${
-                          selected ? 'border-accent-700 bg-accent-950/60' : 'border-ink-700 bg-ink-900'
+                          selected ? 'border-ink-700 bg-ink-900 lg:border-accent-700 lg:bg-accent-950/60' : 'border-ink-700 bg-ink-900'
                         }`}
                       >
                         <Icon className="h-4 w-4 text-accent-500" aria-hidden="true" />
                       </span>
-                      <span className="min-w-0 flex-1 text-sm font-semibold leading-snug text-silver-100">
-                        {service.title}
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold leading-snug text-silver-100">
+                          {service.title}
+                        </span>
+                        <span className="mt-1 block text-[13px] leading-snug text-silver-400 lg:hidden">
+                          {service.shortDescription}
+                        </span>
                       </span>
                       <ArrowUpRight
-                        className={`h-4 w-4 shrink-0 transition-all ${
-                          selected ? 'text-accent-400' : 'text-silver-600'
+                        className={`mt-0.5 h-4 w-4 shrink-0 transition-all lg:mt-0 ${
+                          selected ? 'text-silver-600 lg:text-accent-400' : 'text-silver-600'
                         } group-hover:-translate-y-0.5 group-hover:translate-x-0.5`}
                         aria-hidden="true"
                       />
@@ -214,21 +211,16 @@ const Services = () => {
                 View Our Work
               </Button>
             </div>
-          </div>
-
-          {/* part b — preview of the hovered service (large screens only) */}
-          <div className="hidden min-h-0 lg:flex lg:items-center">
-            <div
-              className="relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl"
-              aria-live="polite"
-            >
-              <AnimatePresence mode="wait">
-                <ServicePreview key={activeService.slug} service={activeService} />
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+        right={
+          <GlassPanel>
+            <AnimatePresence mode="wait">
+              <ServicePreview key={activeService.slug} service={activeService} />
+            </AnimatePresence>
+          </GlassPanel>
+        }
+      />
 
       {/* Delivery process, shared across every service */}
       <Section muted>

@@ -14,6 +14,8 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 
 const STORAGE_KEY = 'gc-theme'
 const THEMES = ['dark', 'light']
+/** Browser-bar colour per theme: the page background, so the bar blends in. */
+const BAR_COLOR = { dark: '#050506', light: '#ffffff' }
 
 const ThemeContext = createContext(null)
 
@@ -33,6 +35,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', BAR_COLOR[theme])
     try {
       localStorage.setItem(STORAGE_KEY, theme)
     } catch {
