@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { ArrowRight, Check, FileText, Flag, Plus, Users, Wrench } from 'lucide-react'
+import { ArrowRight, Check, FileText, Flag, Users, Wrench } from 'lucide-react'
 import { PageHero, Section, SectionHeader } from '../components/ui/Section'
 import Button from '../components/ui/Button'
 import FinalCTA from '../components/home/FinalCTA'
+import Faq from '../components/ui/Faq'
 import {
   processSteps,
   carePlans,
@@ -190,48 +191,6 @@ const StageExplorer = () => {
   )
 }
 
-/* ------------------------------------------------------------------ FAQ */
-
-const Faq = () => {
-  const [open, setOpen] = useState(0)
-  return (
-    <ul className="divide-y divide-ink-800 rounded-xl border border-ink-800 bg-ink-950">
-      {processFaqs.map((faq, i) => {
-        const expanded = open === i
-        return (
-          <li key={faq.question}>
-            <h3>
-              <button
-                type="button"
-                aria-expanded={expanded}
-                aria-controls={`faq-${i}`}
-                id={`faq-q-${i}`}
-                onClick={() => setOpen(expanded ? -1 : i)}
-                className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left text-base font-medium text-silver-100 transition-colors hover:text-white"
-              >
-                {faq.question}
-                <Plus
-                  className={`h-4 w-4 shrink-0 text-accent-500 transition-transform ${expanded ? 'rotate-45' : ''}`}
-                  aria-hidden="true"
-                />
-              </button>
-            </h3>
-            <div
-              id={`faq-${i}`}
-              role="region"
-              aria-labelledby={`faq-q-${i}`}
-              hidden={!expanded}
-              className="px-6 pb-6 text-sm leading-relaxed text-silver-400"
-            >
-              {faq.answer}
-            </div>
-          </li>
-        )
-      })}
-    </ul>
-  )
-}
-
 /* ----------------------------------------------------------------- page */
 
 const HowWeWork = () => {
@@ -385,7 +344,7 @@ const HowWeWork = () => {
             className="!mb-0"
           />
           <motion.div variants={v.fadeUp} {...revealOnce}>
-            <Faq />
+            <Faq items={processFaqs} />
           </motion.div>
         </div>
       </Section>

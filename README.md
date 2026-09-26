@@ -38,14 +38,14 @@ Adding a service, project or industry should never require touching a layout fil
 
 ### Add a service
 
-1. Append an entry to `services` in **`src/data/services.js`**. Copy the shape of an
+1. Append an entry to `services` in **`src/data/services.js`**, and its long-form page content (intro, signals, approach, outcomes, stack, FAQs) to **`src/data/serviceDetails.js`**. Copy the shape of an
    existing one — `slug`, `title`, `shortDescription`, `heroHeadline`, `heroDescription`,
    `capabilities[]`, `deliverables[]`, `relatedIndustries[]`, `seo`.
 2. Add the slug to `SERVICE_SLUGS` in **`src/data/taxonomy.js`**.
 3. Add the slug to the `ALLOWED.service` array in **`api/lead.js`** so the enquiry form
    will accept it.
 
-That's it. The service now appears in the header dropdown, the services hub, the footer,
+That is it. The service now appears in the services hub, the footer,
 the Start a Project form and its own page at `/services/<slug>` — all derived.
 
 If you **rename** a service, keep the old slug alive by adding it to that service's

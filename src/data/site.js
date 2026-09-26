@@ -70,16 +70,7 @@ export const routes = {
  */
 export const primaryNav = [
   { label: 'Home', to: routes.home },
-  {
-    label: 'Services',
-    to: routes.services,
-    children: services.map((s) => ({
-      label: s.title,
-      to: `${routes.services}/${s.slug}`,
-      description: s.shortDescription,
-      icon: s.icon,
-    })),
-  },
+  { label: 'Services', to: routes.services },
   { label: 'Work', to: routes.work },
   { label: 'Industries', to: routes.industries },
   { label: 'How We Work', to: routes.howWeWork },
