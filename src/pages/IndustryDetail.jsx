@@ -166,6 +166,7 @@ const IndustryDetail = () => {
 
       <FinalCTA
         title={`Building something in ${industry.label.toLowerCase()}?`}
+        description="Share the constraints your team works under and what you want to change. We will show you how we would design around them."
         location={`industry_${industry.id}`}
       />
     </>

@@ -81,8 +81,8 @@ const Work = () => {
       </section>
 
       <FinalCTA
-        title="Want to see how this would work for you?"
-        description="Tell us about the project and we will show you the closest thing we have built, and what we would do differently for your situation."
+        title="Seen something close to what you need?"
+        description="Point us to the project nearest to yours and tell us what is different. We will come back with how we would build it for you."
         location="work_hub"
       />
     </>

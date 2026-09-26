@@ -129,7 +129,6 @@ const Industries = () => {
               className="mt-5 grid min-h-0 gap-1.5 overflow-y-auto sm:grid-cols-2"
             >
               {industryPages.map((industry) => {
-                const count = getProjectsByIndustry(industry.id).length
                 const selected = industry.id === activeIndustry.id
                 return (
                   <motion.li key={industry.id} variants={v.fadeUp}>
@@ -144,16 +143,6 @@ const Industries = () => {
                       }`}
                     >
                       <span className="font-medium">{industry.label}</span>
-                      {count > 0 && (
-                        <span
-                          className={`grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[10px] font-semibold ${
-                            selected ? 'bg-accent-600 text-white' : 'bg-ink-800 text-silver-400'
-                          }`}
-                          title={`${count} delivered ${count === 1 ? 'project' : 'projects'}`}
-                        >
-                          {count}
-                        </span>
-                      )}
                     </Link>
                   </motion.li>
                 )
@@ -182,7 +171,6 @@ const Industries = () => {
       <Section className="lg:hidden">
         <motion.ul variants={v.stagger(0.05)} {...revealOnce} className="grid gap-5 lg:grid-cols-2">
           {industryPages.map((industry) => {
-            const count = getProjectsByIndustry(industry.id).length
             const services = industry.services.map(getService).filter(Boolean).slice(0, 3)
 
             return (
@@ -214,11 +202,6 @@ const Industries = () => {
                         {service.title}
                       </span>
                     ))}
-                    {count > 0 && (
-                      <span className="px-1 text-[11px] text-silver-600">
-                        · {count} {count === 1 ? 'project' : 'projects'}
-                      </span>
-                    )}
                   </div>
                 </Link>
               </motion.li>
@@ -228,7 +211,11 @@ const Industries = () => {
 
       </Section>
 
-      <FinalCTA location="industries_hub" />
+      <FinalCTA
+        title="Your sector has its own rules. We will learn them."
+        description="Tell us the constraints you work under, from regulation to seasonality to legacy systems, and we will show you how we would design around them."
+        location="industries_hub"
+      />
     </>
   )
 }

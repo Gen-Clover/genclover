@@ -377,7 +377,12 @@ const HowWeWork = () => {
         </div>
       </Section>
 
-      <FinalCTA location="how_we_work" />
+      <FinalCTA
+        title="Ready for stage one?"
+        description="Every engagement starts with Discover: a conversation about what you are trying to change. Start there, and we will map out what the next stages would look like for you."
+        primaryLabel="Start with Discover"
+        location="how_we_work"
+      />
     </>
   )
 }

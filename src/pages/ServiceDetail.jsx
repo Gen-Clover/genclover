@@ -376,6 +376,7 @@ const ServiceDetail = () => {
 
       <FinalCTA
         title={service.closingTitle}
+        description="Describe where things stand today and what you want to change. We will reply with a considered first view, not a sales deck."
         primaryLabel={service.ctaLabel}
         location={`service_${service.slug}`}
       />
