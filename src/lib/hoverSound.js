@@ -52,26 +52,59 @@ const getContext = () => {
   return ctx
 }
 
+/** Overall loudness of the tick (0–1). Raise or lower to taste. */
+const VOLUME = 1
+
+let master = null
+
+/** One shared output chain: gain → limiter → speakers, so ticks never clip. */
+const getOutput = () => {
+  if (master) return master
+  const limiter = ctx.createDynamicsCompressor()
+  limiter.threshold.value = -6
+  limiter.knee.value = 0
+  limiter.ratio.value = 12
+  limiter.attack.value = 0.001
+  limiter.release.value = 0.05
+  master = ctx.createGain()
+  master.gain.value = VOLUME
+  master.connect(limiter).connect(ctx.destination)
+  return master
+}
+
 const tak = () => {
   if (!ctx || ctx.state !== 'running') return
   const now = ctx.currentTime
+  const out = getOutput()
+
+  // 1. The click: a burst of noise, lightly band-passed so it reads as "tak".
   const src = ctx.createBufferSource()
   src.buffer = noise
-
-  // A band-passed click with a slight random pitch reads as "tak" rather than hiss.
   const band = ctx.createBiquadFilter()
   band.type = 'bandpass'
-  band.frequency.value = 1900 + Math.random() * 500
-  band.Q.value = 6
-
-  const gain = ctx.createGain()
-  gain.gain.setValueAtTime(0.0001, now)
-  gain.gain.exponentialRampToValueAtTime(0.35, now + 0.002)
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028)
-
-  src.connect(band).connect(gain).connect(ctx.destination)
+  band.frequency.value = 2200 + Math.random() * 400
+  band.Q.value = 1.4
+  const clickGain = ctx.createGain()
+  clickGain.gain.setValueAtTime(0.0001, now)
+  clickGain.gain.exponentialRampToValueAtTime(3.2, now + 0.001)
+  clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03)
+  src.connect(band).connect(clickGain).connect(out)
   src.start(now)
-  src.stop(now + 0.03)
+  src.stop(now + 0.035)
+
+  // 2. The body: a very short falling tone that gives the tick weight.
+  const osc = ctx.createOscillator()
+  osc.type = 'triangle'
+  const pitch = 1100 + Math.random() * 150
+  osc.frequency.setValueAtTime(pitch, now)
+  osc.frequency.exponentialRampToValueAtTime(pitch * 0.55, now + 0.03)
+  const toneGain = ctx.createGain()
+  toneGain.gain.setValueAtTime(0.0001, now)
+  toneGain.gain.exponentialRampToValueAtTime(1.5, now + 0.002)
+  toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04)
+  osc.connect(toneGain).connect(out)
+  osc.start(now)
+  osc.stop(now + 0.045)
 }
 
 const onPointerOver = (e) => {
