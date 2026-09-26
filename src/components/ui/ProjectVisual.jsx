@@ -132,54 +132,82 @@ const seedFrom = (slug = '') =>
 
 const stripIndex = (text = '') => text.replace(/^\d+\s*·\s*/, '')
 
-/** Shorten to fit a box, at a word boundary where possible. */
-const fit = (text, max) => {
-  if (text.length <= max) return text
-  const cut = text.slice(0, max - 1)
-  const space = cut.lastIndexOf(' ')
-  return `${(space > max * 0.5 ? cut.slice(0, space) : cut).replace(/[,\s]+$/, '')}…`
+/**
+ * Wrap text onto at most `maxLines` lines of `maxChars`, breaking at spaces.
+ * Only a word longer than a whole line is shortened, so labels stay readable.
+ */
+const wrap = (text, maxChars, maxLines = 2) => {
+  // Break at spaces, and after hyphens so "Search-grounded" can wrap.
+  const words = text.split(/\s+/).flatMap((w) => w.split(/(?<=-)/))
+  const lines = []
+  let line = ''
+  for (const word of words) {
+    const joiner = line.endsWith('-') ? '' : ' '
+    const next = line ? `${line}${joiner}${word}` : word
+    if (next.length <= maxChars) {
+      line = next
+    } else {
+      if (line) lines.push(line)
+      line = word
+    }
+  }
+  if (line) lines.push(line)
+  const out = lines.slice(0, maxLines)
+  if (lines.length > maxLines) {
+    // Fold the remainder into the last line; the box shows as much as fits.
+    out[maxLines - 1] = lines.slice(maxLines - 1).join(' ')
+  }
+  return out.map((l) => (l.length > maxChars ? `${l.slice(0, maxChars - 1)}…` : l))
 }
-
-const MAX_NODES = 3
 
 /**
  * Architecture layers as panels, left to right (a two-row snake past four
  * layers), with pulses travelling along the connectors to show data moving
- * through the system. Pulses are omitted for visitors who prefer reduced motion.
+ * through the system. Labels wrap onto two lines rather than being cut.
+ * Pulses are omitted for visitors who prefer reduced motion.
  */
 const ArchitectureMap = ({ layers, title, id }) => {
   const reduced = useReducedMotion()
   const list = layers.slice(0, 6)
   const rows = list.length > 4 ? 2 : 1
   const perRow = Math.ceil(list.length / rows)
-  const padX = 12
-  const padY = 12
-  const gapX = 16
-  const gapY = 18
+  const padX = 10
+  const gapX = rows === 2 ? 18 : 14
+  const gapY = 16
   const panelW = (VB_W - padX * 2 - gapX * (perRow - 1)) / perRow
-  const nodeH = rows === 2 ? 20 : 30
-  const nodeGap = rows === 2 ? 4 : 8
-  const headerH = rows === 2 ? 22 : 32
-  // Panels are only as tall as their content, so there is no empty band
-  // inside them; the whole map is then centered in the frame.
-  const maxNodes = Math.min(MAX_NODES, Math.max(1, ...list.map((l) => l.nodes.length)))
-  const contentH = headerH + maxNodes * nodeH + (maxNodes - 1) * nodeGap + 10
-  const panelH = Math.min((VB_H - padY * 2 - gapY * (rows - 1)) / rows, contentH)
-  const offsetY = (VB_H - (rows * panelH + gapY * (rows - 1))) / 2
-  const fontSize = rows === 2 ? 8.5 : 9.5
-  const maxChars = Math.max(8, Math.floor((panelW - 20) / (fontSize * 0.62)))
 
-  const panels = list.map((layer, i) => {
+  const fontSize = rows === 2 ? 8 : 8.5
+  const lineH = fontSize + 2.5
+  const maxNodes = rows === 2 ? 2 : 3
+  const labelChars = Math.floor((panelW - 12) / ((fontSize - 0.5) * 0.55))
+  const nodeChars = Math.floor((panelW - 18) / (fontSize * 0.56))
+
+  // Lay out every panel's text first, so panel height fits the tallest one.
+  const laidOut = list.map((layer) => {
+    const label = wrap(stripIndex(layer.label), labelChars, 3)
+    const nodes = layer.nodes.slice(0, maxNodes).map((n) => {
+      const text = stripIndex(n.title)
+      // A single word longer than the box gets a slightly smaller font.
+      const longest = Math.max(...text.split(/[\s-]+/).map((w) => w.length))
+      const scale = Math.min(1, nodeChars / longest)
+      return { lines: wrap(text, Math.floor(nodeChars / scale), 3), size: fontSize * scale }
+    })
+    const extra = layer.nodes.length - nodes.length
+    const headerH = 8 + label.length * lineH + 4
+    const nodeHeights = nodes.map((n) => n.lines.length * lineH + 7)
+    const bodyH = nodeHeights.reduce((sum, h) => sum + h, 0) + Math.max(0, nodes.length - 1) * 5
+    return { layer, label, nodes, nodeHeights, extra, headerH, contentH: headerH + bodyH + 8 + (extra > 0 ? 10 : 0) }
+  })
+  const panelH = Math.max(...laidOut.map((p) => p.contentH))
+  const totalH = rows * panelH + (rows - 1) * gapY
+  const offsetY = Math.max(6, (VB_H - totalH) / 2)
+
+  const panels = laidOut.map((p, i) => {
     const row = Math.floor(i / perRow)
     const col = i % perRow
     // Second row runs right to left so the chain reads as one path.
     const visualCol = row === 1 ? perRow - 1 - col : col
-    return {
-      layer,
-      x: padX + visualCol * (panelW + gapX),
-      y: offsetY + row * (panelH + gapY),
-      row,
-    }
+    return { ...p, x: padX + visualCol * (panelW + gapX), y: offsetY + row * (panelH + gapY), row }
   })
 
   const connectors = panels.slice(0, -1).map((a, i) => {
@@ -221,10 +249,8 @@ const ArchitectureMap = ({ layers, title, id }) => {
         </g>
       ))}
 
-      {panels.map(({ layer, x, y }, i) => {
-        const nodes = layer.nodes.slice(0, MAX_NODES)
-        const extra = layer.nodes.length - nodes.length
-        const top = y + headerH
+      {panels.map(({ layer, label, nodes, nodeHeights, extra, headerH, x, y }, i) => {
+        let cursor = y + headerH
         return (
           <g key={`${id}-p${i}`}>
             <rect
@@ -241,45 +267,52 @@ const ArchitectureMap = ({ layers, title, id }) => {
               )}
             </rect>
             <text
-              x={x + 8}
-              y={y + (rows === 2 ? 14 : 20)}
+              x={x + 7}
+              y={y + 8 + fontSize - 1}
               className={`font-display ${layer.emphasis ? 'fill-accent-400' : 'fill-silver-500'}`}
               fontSize={fontSize - 0.5}
-              fontWeight="600"
-              letterSpacing="0.06em"
+              fontWeight="700"
             >
-              {fit(stripIndex(layer.label).toUpperCase(), maxChars - (extra > 0 ? 5 : 2))}
+              {label.map((l, li) => (
+                <tspan key={li} x={x + 7} dy={li === 0 ? 0 : lineH}>
+                  {l}
+                </tspan>
+              ))}
             </text>
-            {nodes.map((node, n) => (
-              <g key={n}>
-                <rect
-                  x={x + 6}
-                  y={top + n * (nodeH + nodeGap)}
-                  width={panelW - 12}
-                  height={nodeH}
-                  rx="4"
-                  className="fill-ink-850 stroke-ink-600"
-                  strokeWidth="0.75"
-                />
-                <text
-                  x={x + 11}
-                  y={top + n * (nodeH + nodeGap) + nodeH / 2 + fontSize * 0.36}
-                  className="fill-silver-200"
-                  fontSize={fontSize}
-                >
-                  {fit(stripIndex(node.title), maxChars)}
-                </text>
-              </g>
-            ))}
+            {nodes.map(({ lines, size }, n) => {
+              const top = cursor
+              const h = nodeHeights[n]
+              cursor += h + 5
+              return (
+                <g key={n}>
+                  <rect
+                    x={x + 5}
+                    y={top}
+                    width={panelW - 10}
+                    height={h}
+                    rx="4"
+                    className="fill-ink-850 stroke-ink-600"
+                    strokeWidth="0.75"
+                  />
+                  <text x={x + 9} y={top + 3.5 + fontSize} className="fill-silver-200" fontSize={size}>
+                    {lines.map((l, li) => (
+                      <tspan key={li} x={x + 9} dy={li === 0 ? 0 : lineH}>
+                        {l}
+                      </tspan>
+                    ))}
+                  </text>
+                </g>
+              )
+            })}
             {extra > 0 && (
               <text
-                x={x + panelW - 8}
-                y={y + (rows === 2 ? 14 : 20)}
+                x={x + panelW - 6}
+                y={y + panelH - 4}
                 textAnchor="end"
                 className="fill-silver-600"
-                fontSize={fontSize - 0.5}
+                fontSize={fontSize - 1}
               >
-                +{extra}
+                +{extra} more
               </text>
             )}
           </g>

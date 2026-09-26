@@ -15,7 +15,7 @@ export const SplitScreen = ({ left, right, cols = 'lg:grid-cols-[1fr_1.05fr]', l
       aria-hidden="true"
     />
     <div
-      className={`container relative grid gap-10 pb-12 pt-28 lg:h-[100svh] lg:max-h-[62rem] lg:min-h-[36rem] lg:gap-12 lg:pb-8 lg:pt-24 ${cols}`}
+      className={`container relative grid gap-10 pb-12 pt-28 lg:h-[100svh] lg:max-h-[62rem] lg:min-h-[36rem] lg:gap-12 lg:pb-6 lg:pt-[5.5rem] ${cols}`}
     >
       <div className="flex min-h-0 flex-col justify-center">{left}</div>
       <div className="hidden min-h-0 lg:flex lg:items-center">{right}</div>
@@ -26,7 +26,7 @@ export const SplitScreen = ({ left, right, cols = 'lg:grid-cols-[1fr_1.05fr]', l
 /** The frosted panel on the right of a SplitScreen. */
 export const GlassPanel = ({ children, className = '' }) => (
   <div
-    className={`relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl xl:p-7 ${className}`}
+    className={`relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl ${className}`}
     aria-live="polite"
   >
     {children}

@@ -70,7 +70,7 @@ const StageTabs = ({ active, setActive, compact = false }) => {
             onClick={() => setActive(i)}
             onMouseEnter={compact ? () => setActive(i) : undefined}
             className={`group relative flex shrink-0 items-center gap-4 rounded-lg border px-4 text-left transition-colors ${
-              compact ? 'w-full py-2' : 'py-3'
+              compact ? 'w-full py-1.5' : 'py-3'
             } ${
               selected
                 ? 'border-accent-700/70 bg-accent-950/40'
@@ -133,17 +133,13 @@ const StagePanel = ({ active, setActive }) => {
               <p className="eyebrow">
                 Stage {step.number} · {step.title}
               </p>
-              <h3 className="mt-1.5 text-xl font-semibold leading-snug text-silver-100 xl:text-2xl">
+              <h3 className="mt-1.5 text-xl font-semibold leading-snug text-silver-100">
                 {step.question}
               </h3>
             </div>
           </div>
 
-          <p className="mt-4 text-sm leading-relaxed text-silver-400">
-            {step.detail}
-          </p>
-
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
             {columns.map((col) => {
               const ColIcon = col.icon
               return (

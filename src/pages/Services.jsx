@@ -44,23 +44,23 @@ const ServicePreview = ({ service }) => {
         </span>
         <div className="min-w-0">
           <p className="eyebrow">{service.title}</p>
-          <h2 className="mt-1 text-xl font-semibold leading-snug text-silver-100 xl:text-2xl">
+          <h2 className="mt-1 text-xl font-semibold leading-snug text-silver-100">
             {service.heroHeadline}
           </h2>
         </div>
       </div>
 
       {detail?.intro && (
-        <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-silver-300">{detail.intro[0]}</p>
+        <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-silver-300">{detail.intro[0]}</p>
       )}
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-2">
+      <div className="mt-4 grid gap-5 xl:grid-cols-2">
         {detail?.signals && (
           <div>
             <p className="font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
               Sound familiar?
             </p>
-            <ul className="mt-2.5 space-y-2">
+            <ul className="mt-2 space-y-1.5">
               {detail.signals.map((sig) => (
                 <li key={sig} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
                   <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
@@ -75,13 +75,12 @@ const ServicePreview = ({ service }) => {
             <p className="font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
               What changes
             </p>
-            <ul className="mt-2.5 space-y-2">
+            <ul className="mt-2 space-y-1.5">
               {detail.outcomes.map((o) => (
                 <li key={o.title} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
                   <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
                   <span>
                     <span className="font-medium text-silver-100">{o.title}</span>
-                    <span className="text-silver-400">. {o.text}</span>
                   </span>
                 </li>
               ))}
@@ -91,7 +90,7 @@ const ServicePreview = ({ service }) => {
       </div>
 
       {detail?.approach && (
-        <ol className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-4">
+        <ol className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-4">
           {detail.approach.map((step, i) => (
             <li key={step.title} className="border-t border-accent-800/70 pt-2.5">
               <span className="font-display text-[10px] font-semibold tracking-brand text-accent-500">
@@ -103,7 +102,7 @@ const ServicePreview = ({ service }) => {
         </ol>
       )}
 
-      <div className="mt-auto flex items-center gap-3 pt-5">
+      <div className="mt-auto flex items-center gap-3 pt-4">
         <Button to={`${routes.services}/${service.slug}`} size="sm">
           See full details
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -132,7 +131,7 @@ const Services = () => {
           aria-hidden="true"
         />
 
-        <div className="container relative grid gap-10 pb-12 pt-28 lg:h-[100svh] lg:max-h-[62rem] lg:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:pb-8 lg:pt-24">
+        <div className="container relative grid gap-10 pb-12 pt-28 lg:h-[100svh] lg:max-h-[62rem] lg:min-h-[36rem] lg:grid-cols-[0.85fr_1.15fr] lg:gap-10 lg:pb-6 lg:pt-[5.5rem]">
           {/* part a */}
           <div className="flex flex-col justify-center">
             <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
@@ -217,7 +216,7 @@ const Services = () => {
           {/* part b — preview of the hovered service (large screens only) */}
           <div className="hidden min-h-0 lg:flex lg:items-center">
             <div
-              className="relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl xl:p-7"
+              className="relative max-h-full w-full overflow-y-auto rounded-2xl border border-ink-700 bg-ink-900/60 p-6 shadow-lift backdrop-blur-xl"
               aria-live="polite"
             >
               <AnimatePresence mode="wait">

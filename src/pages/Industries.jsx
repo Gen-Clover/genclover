@@ -27,15 +27,15 @@ const IndustryPreview = ({ industry }) => {
   return (
     <motion.div {...panelSwap}>
       <p className="eyebrow">{industry.label}</p>
-      <h2 className="mt-2 text-2xl font-semibold leading-snug text-silver-100">{industry.headline}</h2>
-      <p className="mt-3 text-sm leading-relaxed text-silver-300">
+      <h2 className="mt-2 text-xl font-semibold leading-snug text-silver-100">{industry.headline}</h2>
+      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-silver-300">
         {industry.description}
       </p>
 
-      <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
+      <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
         What usually matters here
       </p>
-      <ul className="mt-2.5 grid gap-2 xl:grid-cols-2">
+      <ul className="mt-2 grid gap-x-4 gap-y-1.5 xl:grid-cols-2">
         {industry.focusAreas.map((f) => (
           <li key={f} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
             <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
@@ -44,7 +44,7 @@ const IndustryPreview = ({ industry }) => {
         ))}
       </ul>
 
-      <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
+      <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
         What we bring
       </p>
       <ul className="mt-2.5 flex flex-wrap gap-1.5">
@@ -60,12 +60,12 @@ const IndustryPreview = ({ industry }) => {
         ))}
       </ul>
 
-      <p className="mt-5 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
+      <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
         Delivered in this sector
       </p>
       {work.length > 0 ? (
-        <ul className="mt-2.5 space-y-1.5">
-          {work.slice(0, 4).map((p) => (
+        <ul className="mt-2 space-y-1">
+          {work.slice(0, 3).map((p) => (
             <li key={p.slug}>
               <Link
                 to={`${routes.work}/${p.slug}`}
@@ -76,6 +76,14 @@ const IndustryPreview = ({ industry }) => {
               </Link>
             </li>
           ))}
+          {work.length > 3 && (
+            <li className="text-xs text-silver-500">
+              and {work.length - 3} more on the{' '}
+              <Link to={`${routes.industries}/${industry.id}`} className="text-accent-400 hover:text-accent-300">
+                sector page
+              </Link>
+            </li>
+          )}
         </ul>
       ) : (
         <p className="mt-2.5 text-sm text-silver-500">
@@ -83,7 +91,7 @@ const IndustryPreview = ({ industry }) => {
         </p>
       )}
 
-      <div className="mt-6">
+      <div className="mt-5">
         <Button to={`${routes.industries}/${industry.id}`} size="sm">
           Open {industry.label}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -103,7 +111,7 @@ const Industries = () => {
     <>
       <SplitScreen
         label="Industries"
-        cols="lg:grid-cols-[0.9fr_1.1fr]"
+        cols="lg:grid-cols-[0.8fr_1.2fr]"
         left={
           <>
             <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
