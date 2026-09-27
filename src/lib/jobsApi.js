@@ -14,7 +14,17 @@ const getJson = async (url) => {
   return body
 }
 
-let listCache = null
+/**
+ * Roles known before the first fetch. Pre-rendered pages (scripts/prerender.mjs)
+ * are built with the live roles and embed them as window.__GC_JOBS__, so the
+ * browser's first render matches the HTML it takes over, then refreshes from
+ * the API. During the build itself, setPrerenderJobs() supplies them.
+ */
+let listCache = typeof window !== 'undefined' && Array.isArray(window.__GC_JOBS__) ? window.__GC_JOBS__ : null
+
+export const setPrerenderJobs = (jobs) => {
+  listCache = jobs
+}
 
 export const usePublicJobs = () => {
   const [state, setState] = useState(() =>

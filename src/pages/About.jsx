@@ -185,7 +185,7 @@ const About = () => {
 
             <div className="mt-7 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
               <motion.h1
-                variants={v.fadeUp}
+                variants={v.riseIn}
                 className="text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.5rem]"
               >
                 We build the systems businesses

@@ -91,7 +91,7 @@ export const PageHero = ({ eyebrow, title, description, children, className = ''
             </motion.div>
           )}
           <motion.h1
-            variants={v.fadeUp}
+            variants={v.riseIn}
             className="mt-4 text-4xl leading-[1.08] md:text-5xl"
           >
             {title}

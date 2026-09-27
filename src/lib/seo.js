@@ -9,11 +9,13 @@ import { site } from '../data/site'
  * directly rather than pulling in a helmet library — the site is a small SPA and
  * this keeps the bundle honest.
  *
- * Note: this runs client-side. If search-engine rendering of these tags becomes
- * a requirement, the next step is prerendering or SSR, not a bigger hook.
+ * This keeps the tags right while someone navigates inside the app. The same
+ * tags are also written into each page's static HTML at build time
+ * (scripts/prerender.mjs), which is what crawlers and link previews read.
  */
 
-const DEFAULT_IMAGE = '/brand/gen-clover-banner.png'
+/** 1200 × 630 share image in the brand style; generated into public/og/. */
+export const DEFAULT_IMAGE = '/og/default.jpg'
 
 const upsertMeta = (selector, attrs) => {
   let el = document.head.querySelector(selector)
@@ -95,7 +97,7 @@ export const pageMeta = {
   industries: {
     title: 'Industries We Serve | Gen Clover',
     description:
-      'Gen Clover works across healthcare, media and publishing, professional services, technology and SaaS, financial services, retail, manufacturing, logistics and more.',
+      'Gen Clover works across healthcare, publishing, professional services, SaaS, financial services, retail, manufacturing, logistics and more.',
     path: '/industries',
   },
   howWeWork: {
@@ -111,13 +113,13 @@ export const pageMeta = {
     path: '/about',
   },
   careers: {
-    title: 'Careers | Gen Clover',
+    title: 'Careers: Remote Tech & Data Jobs in India | Gen Clover',
     description:
       'Careers at Gen Clover. Search open and recent roles by location, experience, job type and remote, hybrid or on-site, or send a general application.',
     path: '/careers',
   },
   startProject: {
-    title: 'Start a Project | Gen Clover',
+    title: 'Start a Project: Websites, Apps, AI & Data | Gen Clover',
     description:
       'Tell us about your project in eight short questions, so our first reply is about your goals rather than a generic capability deck.',
     path: '/start-a-project',

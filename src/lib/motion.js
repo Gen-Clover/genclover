@@ -15,6 +15,17 @@ export const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 }
 
+/**
+ * For each page's main headline: the same rise as fadeUp, but visible from the
+ * first paint. The headline is usually the page's largest element, and pages
+ * are pre-rendered, so starting it at opacity 0 would hide it until JavaScript
+ * loads and delay Largest Contentful Paint.
+ */
+export const riseIn = {
+  hidden: { opacity: 1, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+}
+
 export const fadeIn = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.5, ease: EASE } },
@@ -44,6 +55,7 @@ export const useMotionVariants = () => {
     return {
       reduced: true,
       fadeUp: still,
+      riseIn: still,
       fadeIn: still,
       stagger: () => ({ hidden: {}, visible: {} }),
       hoverLift: {},
@@ -54,6 +66,7 @@ export const useMotionVariants = () => {
   return {
     reduced: false,
     fadeUp,
+    riseIn,
     fadeIn,
     stagger,
     hoverLift: { y: -4, transition: { duration: 0.25, ease: EASE } },

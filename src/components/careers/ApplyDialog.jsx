@@ -15,6 +15,7 @@ import {
 } from '../../lib/application'
 import { getDialCodeOptions } from '../../lib/intlOptions'
 import { contact, routes } from '../../data/site'
+import { trackEvent, events } from '../../lib/analytics'
 
 const selectClasses = (invalid) =>
   `h-[46px] w-full rounded-lg border bg-ink-900 px-3.5 text-base text-silver-100 outline-none transition-colors focus:border-accent-600 sm:h-11 sm:text-sm ${
@@ -149,6 +150,7 @@ const ApplyDialog = ({ job, onClose }) => {
         return
       }
       if (!response.ok) throw new Error(payload.message || 'We could not send your application just now.')
+      trackEvent(events.JOB_APPLY, { job: job?.id ?? 'general' })
       setConfirmed(payload.confirmation === true)
       setStatus('sent')
     } catch (error) {

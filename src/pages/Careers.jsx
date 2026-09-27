@@ -91,10 +91,13 @@ const writeFilters = (f, job) => {
 /** Matches Tailwind's lg breakpoint, where the list and detail sit side by side. */
 const useIsLarge = () => {
   const query = '(min-width: 1024px)'
-  const [large, setLarge] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches)
+  // Starts false, like the pre-rendered HTML, and switches after mount, so the
+  // first browser render matches the page it takes over.
+  const [large, setLarge] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia(query)
     const onChange = () => setLarge(mq.matches)
+    onChange()
     mq.addEventListener('change', onChange)
     return () => mq.removeEventListener('change', onChange)
   }, [])
@@ -162,7 +165,7 @@ const Careers = () => {
             <motion.p variants={v.fadeUp} className="eyebrow">
               Careers
             </motion.p>
-            <motion.h1 variants={v.fadeUp} className="mt-3 text-3xl leading-[1.08] tracking-tight md:text-4xl">
+            <motion.h1 variants={v.riseIn} className="mt-3 text-3xl leading-[1.08] tracking-tight md:text-4xl">
               Build things that are meant to last.
             </motion.h1>
             <motion.p variants={v.fadeUp} className="mt-2 max-w-2xl text-sm leading-relaxed text-silver-400 md:text-base">
