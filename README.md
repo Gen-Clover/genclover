@@ -200,7 +200,7 @@ the main font preloaded. In the browser, `src/main.jsx` hydrates that HTML in pl
   fall back to `dist/app-shell.html`, an empty noindex page the app renders into.
 - **Components must render without `window` or `document`.** Touch them in effects or event
   handlers, never during render. The build fails loudly if a page cannot be rendered.
-- **Share images** (1200 × 630): `public/og/default.jpg` and one per case study in
+- **Share images** (1200 × 630): `public/og/gen-clover.jpg` (logo centred, so chat apps that crop to a square still show it) and one per case study in
   `public/og/work/`. They are generated from the LinkedIn post templates; a new case study
   needs its image added there, and its search snippet (under 156 characters) in
   `src/data/projectSeo.js`.

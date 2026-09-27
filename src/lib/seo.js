@@ -15,7 +15,7 @@ import { site } from '../data/site'
  */
 
 /** 1200 × 630 share image in the brand style; generated into public/og/. */
-export const DEFAULT_IMAGE = '/og/default.jpg'
+export const DEFAULT_IMAGE = '/og/gen-clover.jpg'
 
 const upsertMeta = (selector, attrs) => {
   let el = document.head.querySelector(selector)
