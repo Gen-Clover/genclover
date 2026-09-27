@@ -184,6 +184,36 @@ src/
 
 ---
 
+## SEO, pre-rendering and analytics
+
+`npm run build` does four things: the browser bundle, a server bundle of the same app
+(`src/entry-server.jsx`), the sitemap, then `scripts/prerender.mjs`, which writes one complete
+HTML file per public route. Each file contains the page's real content, so crawlers, AI search
+engines and link previews that don't run JavaScript see the text and links. It also carries the
+page's title, description, canonical URL, share image and structured data (Organization,
+WebSite, Service, BreadcrumbList, and JobPosting for open roles). The stylesheet is inlined and
+the main font preloaded. In the browser, `src/main.jsx` hydrates that HTML in place.
+
+- **Canonical host:** `https://www.genclover.com` (`site.url` in `src/data/site.js`). Keep the
+  Vercel domain `genclover.com` as a permanent redirect to it.
+- **New routes** without a pre-rendered file (for example a role posted after the last deploy)
+  fall back to `dist/app-shell.html`, an empty noindex page the app renders into.
+- **Components must render without `window` or `document`.** Touch them in effects or event
+  handlers, never during render. The build fails loudly if a page cannot be rendered.
+- **Share images** (1200 × 630): `public/og/default.jpg` and one per case study in
+  `public/og/work/`. They are generated from the LinkedIn post templates; a new case study
+  needs its image added there, and its search snippet (under 156 characters) in
+  `src/data/projectSeo.js`.
+- **Fonts** are self-hosted from `@fontsource` packages; nothing loads from Google Fonts.
+
+**Google Analytics 4** loads only when `VITE_GA_MEASUREMENT_ID` is set in Vercel. Page views
+come from GA4's enhanced measurement. The site's own events are sent too: `lead_form_start`,
+`lead_form_step_complete`, `lead_form_submit` (plus GA4's `generate_lead` for Google Ads
+conversions), `lead_form_abandon`, `job_application_submit` and the CTA clicks. Names, emails,
+phone numbers and form text are never sent.
+
+---
+
 ## Careers and the admin portal
 
 The careers page is a job board: keyword and location search, filters for date posted,

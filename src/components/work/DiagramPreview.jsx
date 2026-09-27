@@ -96,6 +96,10 @@ const DiagramPreview = ({ project, mode, anchorRef, onClose }) => {
   const reduced = useReducedMotion()
   const closeRef = useRef(null)
   const [layout, setLayout] = useState(null)
+  // The portal targets document.body, which only exists in the browser; pages
+  // are also pre-rendered at build time, where it must render nothing.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const aspect = projectDiagramAspect(project)
 
   // Size (and for hover, place) the panel against the viewport.
@@ -158,6 +162,8 @@ const DiagramPreview = ({ project, mode, anchorRef, onClose }) => {
         animate: { opacity: 1, scale: 1, y: 0 },
         exit: { opacity: 0, scale: 0.97, y: 4 },
       }
+
+  if (!mounted) return null
 
   return createPortal(
     <AnimatePresence>

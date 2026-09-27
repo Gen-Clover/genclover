@@ -37,7 +37,7 @@ const StartProject = () => {
               Start a Project
             </motion.p>
             <motion.h1
-              variants={v.fadeUp}
+              variants={v.riseIn}
               className="mt-3 text-3xl leading-[1.1] md:text-4xl xl:text-[2.75rem] short:mt-2 xl:short:text-[2.25rem]"
             >
               Tell us what you are trying to build.

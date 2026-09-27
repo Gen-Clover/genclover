@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import ScrollRestoration from './components/ScrollRestoration'
@@ -59,11 +59,16 @@ const AttributionCapture = () => {
   return null
 }
 
+/**
+ * The whole site. The router is supplied from outside: BrowserRouter in the
+ * browser (main.jsx) and StaticRouter when pages are pre-rendered at build
+ * time (entry-server.jsx), so both render exactly the same tree.
+ */
 function App() {
   useHoverSound()
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <>
       <ScrollRestoration />
       <CursorLight />
       <AttributionCapture />
@@ -79,7 +84,7 @@ function App() {
         />
         <Route path="*" element={<SiteLayout />} />
       </Routes>
-    </Router>
+    </>
   )
 }
 

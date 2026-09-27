@@ -16,7 +16,9 @@ export const site = {
   philosophy: 'Intelligence → Innovation → Automation → Growth',
   positioning: 'We design and build digital products that move businesses forward.',
   domains: 'Digital Products • Technology • AI • Automation',
-  url: 'https://genclover.com',
+  // The canonical host. genclover.com redirects here, so every canonical URL,
+  // the sitemap and the structured data must use www too.
+  url: 'https://www.genclover.com',
 }
 
 /**

@@ -75,7 +75,7 @@ const Hero = () => {
 
           <motion.h1
             id="hero-heading"
-            variants={v.fadeUp}
+            variants={v.riseIn}
             className="mt-7 text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-[4rem]"
           >
             We design and build digital products that move businesses

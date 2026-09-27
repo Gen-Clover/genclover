@@ -40,7 +40,7 @@ const Work = () => {
               <motion.p variants={v.fadeUp} className="eyebrow">
                 Work
               </motion.p>
-              <motion.h1 variants={v.fadeUp} className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl">
+              <motion.h1 variants={v.riseIn} className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl">
                 Work we have delivered.
               </motion.h1>
               <motion.p variants={v.fadeUp} className="mt-3 text-base leading-relaxed text-silver-400">

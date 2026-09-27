@@ -63,7 +63,8 @@ const Privacy = () => {
     {
       title: 'Cookies and analytics',
       body: [
-        'This website does not set advertising cookies. We store campaign attribution for the length of your browser session so that an inquiry can be connected to how you arrived. Analytics, where enabled, is configured not to collect unnecessary personal information.',
+        'This website does not set advertising cookies. We store campaign attribution for the length of your browser session so that an inquiry can be connected to how you arrived.',
+        'We use Google Analytics to understand how the site is used: which pages are visited, how visitors arrive, and whether they start or complete the inquiry and application forms. Google Analytics sets its own first-party cookies for this and receives technical information such as your browser, device type and approximate location. We never send it your name, email address, phone number, CV or anything you type into a form. You can block these cookies in your browser settings or with the Google Analytics opt-out browser add-on.',
       ],
     },
     {

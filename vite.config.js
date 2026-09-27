@@ -59,8 +59,10 @@ const devApi = (env) => ({
   },
 })
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode, isSsrBuild }) => ({
   plugins: [react(), devApi(loadEnv(mode, process.cwd(), ''))],
+  // The server bundle (pre-rendering only) needs no copy of public/.
+  publicDir: isSsrBuild ? false : 'public',
   server: {
     // Pinned so the dev URL never drifts to 5174/5175 after a restart; a stray
     // server on this port now fails loudly instead of silently moving.

@@ -6,6 +6,7 @@ import Button from '../components/ui/Button'
 import WorkCard from '../components/work/WorkCard'
 import FinalCTA from '../components/home/FinalCTA'
 import { getProject, getRelatedProjects, projectMeta, REPO_POLICY_NOTE } from '../data/projects'
+import { projectDescription, projectShareImage } from '../data/projectSeo'
 import { getService } from '../data/services'
 import { caseStudies } from '../data/caseStudies'
 import { routes } from '../data/site'
@@ -41,9 +42,9 @@ const ProjectDetail = () => {
 
   usePageMeta({
     title: project ? `${project.title} | Gen Clover` : undefined,
-    description: project?.summary,
+    description: project ? projectDescription(project) : undefined,
     path: project ? `${routes.work}/${project.slug}` : undefined,
-    image: project?.heroImage ?? undefined,
+    image: project ? projectShareImage(project) : undefined,
   })
 
   const v = useMotionVariants()
@@ -98,7 +99,7 @@ const ProjectDetail = () => {
               {[category?.label, industry?.label].filter(Boolean).join(' · ')}
             </motion.p>
 
-            <motion.h1 variants={v.fadeUp} className="mt-5 max-w-4xl text-4xl leading-[1.08] md:text-5xl">
+            <motion.h1 variants={v.riseIn} className="mt-5 max-w-4xl text-4xl leading-[1.08] md:text-5xl">
               {project.title}
             </motion.h1>
 
