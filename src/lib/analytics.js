@@ -20,6 +20,7 @@ export const events = {
   FORM_ABANDON: 'lead_form_abandon',
   FORM_SUBMIT: 'lead_form_submit',
   FORM_ERROR: 'lead_form_error',
+  JOB_APPLY: 'job_application_submit',
 }
 
 /** Fields that must never leave the browser as analytics payload. */
@@ -27,6 +28,30 @@ const BLOCKED_KEYS = new Set(['name', 'email', 'phone', 'company', 'details', 'm
 
 const scrub = (payload = {}) =>
   Object.fromEntries(Object.entries(payload).filter(([key]) => !BLOCKED_KEYS.has(key)))
+
+/**
+ * Google Analytics 4. Loaded only when VITE_GA_MEASUREMENT_ID is set (Vercel →
+ * Settings → Environment Variables, e.g. G-XXXXXXXXXX), so local development and
+ * preview builds without it send nothing. Page views, including in-app
+ * navigation, come from GA4's enhanced measurement ("page changes based on
+ * browser history events", on by default), so nothing here tracks routes.
+ */
+const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
+
+export const initAnalytics = () => {
+  if (typeof window === 'undefined' || !GA_ID || window.gtag) return
+  window.dataLayer = window.dataLayer || []
+  window.gtag = function gtag() {
+    // gtag.js reads the arguments object itself, as in Google's snippet.
+    window.dataLayer.push(arguments) // eslint-disable-line prefer-rest-params
+  }
+  window.gtag('js', new Date())
+  window.gtag('config', GA_ID)
+  const script = document.createElement('script')
+  script.async = true
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`
+  document.head.appendChild(script)
+}
 
 export const trackEvent = (name, payload = {}) => {
   if (typeof window === 'undefined') return
@@ -43,6 +68,8 @@ export const trackEvent = (name, payload = {}) => {
     }
     if (typeof window.gtag === 'function') {
       window.gtag('event', name, data)
+      // GA4's recommended lead event: mark it as a key event in GA4 and import it into Google Ads.
+      if (name === events.FORM_SUBMIT) window.gtag('event', 'generate_lead', { ...data, lead_type: 'project' })
     }
   } catch {
     // Analytics must never break a user interaction.

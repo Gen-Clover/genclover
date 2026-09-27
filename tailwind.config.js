@@ -45,7 +45,7 @@ export default {
       },
       fontFamily: {
         display: ['"Chakra Petch"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Inter Variable"', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
       },
       letterSpacing: {
         brand: '0.18em',

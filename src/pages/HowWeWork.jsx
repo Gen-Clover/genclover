@@ -216,7 +216,7 @@ const HowWeWork = () => {
               How We Work
             </motion.p>
             <motion.h1
-              variants={v.fadeUp}
+              variants={v.riseIn}
               className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-[2.75rem]"
             >
               What working together actually looks like.

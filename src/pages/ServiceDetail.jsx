@@ -82,7 +82,7 @@ const ServiceDetail = () => {
               </span>
             </motion.div>
             <motion.h1
-              variants={v.fadeUp}
+              variants={v.riseIn}
               className="mt-7 text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.4rem]"
             >
               {service.heroHeadline}

@@ -59,7 +59,7 @@ const IndustryDetail = () => {
             <motion.p variants={v.fadeUp} className="eyebrow mt-7">
               {industry.label}
             </motion.p>
-            <motion.h1 variants={v.fadeUp} className="mt-5 text-4xl leading-[1.08] md:text-5xl">
+            <motion.h1 variants={v.riseIn} className="mt-5 text-4xl leading-[1.08] md:text-5xl">
               {industry.headline}
             </motion.h1>
             <motion.p
