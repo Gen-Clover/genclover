@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [
@@ -58,8 +58,21 @@
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/((?!jobs$).*)",
       "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/admin(/.*)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
         {
           "key": "Cache-Control",
           "value": "no-store"

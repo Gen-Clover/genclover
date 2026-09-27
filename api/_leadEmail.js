@@ -1,5 +1,7 @@
 /**
- * The notification email for a new project inquiry.
+ * The two emails a project inquiry sends:
+ *   buildLeadEmail          the internal notification to the team
+ *   buildConfirmationEmail  the thank-you to the person who submitted the brief
  *
  * Built for inboxes, not browsers: table layout and inline styles (Gmail and
  * Outlook strip <style> blocks and ignore flex/grid) and a light card that
@@ -244,6 +246,177 @@ export const buildLeadEmail = (record) => {
     `Campaign: ${campaign || 'None'}`,
     '',
     `Reply to this email to answer ${name} directly.`,
+  ].join('\n')
+
+  return { subject, html, text }
+}
+
+/* ------------------------------------------------------- confirmation */
+
+/**
+ * First name for the greeting, only if it looks like a name. The form is
+ * public, so whoever fills it in controls this text, and it is sent to the
+ * address they typed. Anything URL- or address-like falls back to "there", so
+ * the form can never be used to deliver someone else's link from our domain.
+ */
+const greetingName = (name) => {
+  const first = String(name ?? '').trim().split(/\s+/)[0] ?? ''
+  if (!first || first.length > 30) return 'there'
+  if (/[/:@<>]|www\.|https?|\.\w{2,}/i.test(first)) return 'there'
+  return first
+}
+
+/**
+ * The thank-you sent to the person who submitted the brief, from contact@.
+ *
+ * Deliberately repeats only what they chose from our own option lists, never
+ * their free-text message: anyone can type any email address into the form,
+ * and echoing that text back would let a spammer send their words to a
+ * stranger from our domain.
+ */
+export const buildConfirmationEmail = (record) => {
+  const first = greetingName(record.contact.name)
+  const service = serviceLabel(record.service)
+  const budget = formatBudget(record.budget)
+  const timeline = record.timeline ? timelineLabel(record.timeline) : null
+
+  const subject = 'We have received your project brief · Gen Clover'
+  const preview = `Thanks, ${first}. We read every brief properly and will get back to you within one or two working days.`
+
+  const steps = [
+    ['We read your brief', 'A person on our team reads it properly. It is never sorted by a template.'],
+    ['We reply', 'Usually within one or two working days, with our first thoughts and any questions.'],
+    ['We talk', 'If it looks like a fit, we suggest a short call to understand what you need.'],
+  ]
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>${escape(subject)}</title>
+</head>
+<body style="margin:0;padding:0;background:#F2F4F7;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escape(preview)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F7;">
+  <tr>
+    <td align="center" style="padding:28px 12px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#FFFFFF;border:1px solid ${LINE};border-radius:14px;overflow:hidden;">
+
+        <!-- header -->
+        <tr>
+          <td style="background:${INK};padding:20px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="font:700 15px/1 ${FONT};letter-spacing:.2em;color:#FFFFFF;">GEN&nbsp;CLOV<span style="color:#E01F26;">E</span>R</td>
+                <td align="right" style="font:600 11px/1 ${FONT};letter-spacing:.14em;text-transform:uppercase;color:#9AA0A9;">Brief received</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr><td style="height:3px;background:${RED};line-height:3px;font-size:0;">&nbsp;</td></tr>
+
+        <!-- thank you -->
+        <tr>
+          <td style="padding:30px 32px 6px;">
+            <p style="margin:0 0 8px;font:700 11px/1.4 ${FONT};letter-spacing:.14em;text-transform:uppercase;color:${RED};">Thank you, ${escape(first)}</p>
+            <h1 style="margin:0;font:700 24px/1.3 ${FONT};color:${INK};">We have received your project brief.</h1>
+            <p style="margin:14px 0 0;font:15px/1.65 ${FONT};color:#2E333A;">
+              Thanks for telling us about your project. We read every brief properly, and someone from
+              our team will get back to you within one or two working days.
+            </p>
+          </td>
+        </tr>
+
+        <!-- what happens next -->
+        <tr>
+          <td style="padding:24px 32px 0;">
+            <p style="margin:0 0 10px;font:700 11px/1.4 ${FONT};letter-spacing:.14em;text-transform:uppercase;color:${RED};">What happens next</p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              ${steps
+                .map(
+                  ([title, text], i) => `
+              <tr>
+                <td style="width:36px;padding:8px 0;vertical-align:top;">
+                  <span style="display:inline-block;width:26px;height:26px;border-radius:13px;background:${i === 0 ? RED : '#FDECEC'};color:${i === 0 ? '#FFFFFF' : RED};font:700 12px/26px ${FONT};text-align:center;">${i + 1}</span>
+                </td>
+                <td style="padding:8px 0;vertical-align:top;">
+                  <p style="margin:0;font:600 14px/1.5 ${FONT};color:${INK};">${escape(title)}</p>
+                  <p style="margin:2px 0 0;font:14px/1.55 ${FONT};color:${MUTED};">${escape(text)}</p>
+                </td>
+              </tr>`
+                )
+                .join('')}
+            </table>
+          </td>
+        </tr>
+
+        ${section('What you told us', [
+          row('Service', escape(service)),
+          row('Business type', escape(businessLabel(record.clientSegment))),
+          row('Location', escape(regionLabel(record.country))),
+          row('Timeline', timeline ? escape(timeline) : muted('Not given')),
+          row('Budget', budget ? escape(budget) : muted('Not given')),
+        ])}
+
+        <!-- reply prompt -->
+        <tr>
+          <td style="padding:24px 32px 0;">
+            <div style="background:#FAFBFC;border:1px solid ${LINE};border-radius:10px;padding:16px 18px;font:14px/1.6 ${FONT};color:#2E333A;">
+              <strong style="color:${INK};">Want to add something?</strong> Just reply to this email.
+              It reaches our team at ${link('mailto:contact@genclover.com', 'contact@genclover.com')}.
+            </div>
+          </td>
+        </tr>
+
+        <!-- sign-off -->
+        <tr>
+          <td style="padding:24px 32px 0;font:15px/1.6 ${FONT};color:#2E333A;">
+            Speak soon,<br>
+            <strong style="color:${INK};">The Gen Clover team</strong>
+          </td>
+        </tr>
+
+        <!-- footer -->
+        <tr>
+          <td style="padding:24px 32px 28px;">
+            <p style="margin:0;padding-top:18px;border-top:1px solid ${LINE};font:12px/1.6 ${FONT};color:${MUTED};">
+              Gen Clover · Chandigarh, India · <a href="${SITE}" style="color:${MUTED};">genclover.com</a><br>
+              You are receiving this because this address was used to send a project brief on our website.
+              We will not add you to any mailing list. If this was not you, you can ignore this email.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`
+
+  const text = [
+    `Thank you, ${first}.`,
+    'We have received your project brief.',
+    '',
+    'Thanks for telling us about your project. We read every brief properly, and someone from our team will get back to you within one or two working days.',
+    '',
+    'WHAT HAPPENS NEXT',
+    ...steps.map(([title, body], i) => `${i + 1}. ${title}: ${body}`),
+    '',
+    'WHAT YOU TOLD US',
+    `Service: ${service}`,
+    `Business type: ${businessLabel(record.clientSegment)}`,
+    `Location: ${regionLabel(record.country)}`,
+    `Timeline: ${timeline ?? 'Not given'}`,
+    `Budget: ${budget ?? 'Not given'}`,
+    '',
+    'Want to add something? Just reply to this email. It reaches our team at contact@genclover.com.',
+    '',
+    'Speak soon,',
+    'The Gen Clover team',
+    SITE,
   ].join('\n')
 
   return { subject, html, text }

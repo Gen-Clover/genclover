@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { createServer } from 'vite'
+import { loadPublicJobs } from './_jobs.mjs'
 
 const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
 
@@ -24,7 +25,7 @@ try {
   const { services } = await load('/src/data/services.js')
   const { publishedProjects } = await load('/src/data/projects.js')
   const { industryPages } = await load('/src/data/industries.js')
-  const { jobs } = await load('/src/data/jobs.js')
+  const jobs = await loadPublicJobs()
 
   const pages = [
     ...Object.values(pageMeta).map((m) => ({ path: m.path, title: m.title, description: m.description })),
@@ -49,6 +50,14 @@ try {
       description: j.metaDescription,
       noIndex: j.status === 'closed',
     })),
+    // Its own file, so /admin never depends on the SPA fallback. Deeper admin
+    // paths (/admin/jobs/…) are reached from inside the app or via the fallback.
+    {
+      path: '/admin',
+      title: 'Admin | Gen Clover',
+      description: 'Gen Clover admin portal.',
+      noIndex: true,
+    },
   ]
 
   const template = readFileSync(resolve('dist/index.html'), 'utf8')

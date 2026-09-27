@@ -149,6 +149,9 @@ Notes for anyone extending it:
 
 ```
 api/lead.js              Serverless enquiry endpoint (validation, spam, rate limit)
+api/jobs.js              Public careers feed (open and closed roles, never drafts)
+api/admin/               Admin sign-in and job management behind /admin
+api/_lib/                Job store (Postgres or local file), session auth, HTTP helpers
 src/
   data/                  ← all content lives here
     taxonomy.js          Services / Work categories / Industries / statuses  (source of truth)
@@ -158,13 +161,14 @@ src/
     process.js           How We Work stages, care plans, differentiators
     proof.js             Testimonials + verified stats (both intentionally empty)
     site.js              Contact details, routes, navigation model
-    jobs.js              Careers listings
+    jobs.js              Seed roles (seeds the database; also the offline fallback)
   lib/
     seo.js               usePageMeta hook + per-page titles (§15)
     analytics.js         trackEvent seam + attribution capture (§16)
     motion.js            Shared variants, all reduced-motion aware (§4.1)
     theme.jsx            Dark/light state — defaults to dark, ignores the OS setting
     leadSchema.js        The 8-step brief: steps + validation (§9)
+    jobs.js              Job model: options, validation, search and filters (shared with the API)
     intlOptions.js       Currency list (Intl) and phone country codes (libphonenumber-js)
   components/
     brand/               CloverMark + three-bar-E Wordmark
@@ -174,8 +178,35 @@ src/
     process/             ProcessRail + ProcessTimeline — the animated Discover→Grow flow
     work/                WorkCard, CaseStudySections
     form/                ProjectBriefForm + field primitives
-  pages/                 One file per route
+    careers/             JobCard, JobDetailContent, FilterMenu
+  pages/                 One file per route (admin/ is the /admin portal)
 ```
+
+---
+
+## Careers and the admin portal
+
+The careers page is a job board: keyword and location search, filters for date posted,
+experience, workplace (remote / hybrid / on-site), job type and department, and a results list
+with a detail pane. Filters live in the URL, so a filtered view can be shared.
+
+Roles are managed at **`/admin`**. Nothing on the site links to it and it is noindex. Sign in,
+then post, edit, close, reopen or delete roles; a saved role is live on the careers page within
+a minute.
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Neon Postgres, added by Vercel → Storage → Neon. The table is created and seeded on first use |
+| `ADMIN_EMAIL` | The admin sign-in email |
+| `ADMIN_PASSWORD_HASH` | From `npm run admin:hash-password` (salted scrypt; the password itself is never stored) |
+| `ADMIN_SESSION_SECRET` | 32+ random characters, also printed by that command. Changing it signs everyone out |
+| `VERCEL_DEPLOY_HOOK_URL` | *Optional:* rebuild after each change so the sitemap and link previews include new roles |
+
+Without `DATABASE_URL` the careers page shows the seed roles in `src/data/jobs.js` and the
+admin portal cannot save. Locally, `npm run dev` runs the `/api` functions inside Vite and keeps
+roles in `.data/jobs.json` (gitignored), so the portal works without a database; put the admin
+variables in `.env.local`. Step-by-step setup:
+[`docs/CAREERS-ADMIN-SETUP.md`](docs/CAREERS-ADMIN-SETUP.md).
 
 ---
 
@@ -192,6 +223,8 @@ instead — it never silently drops a lead.
 | `MS_MAIL_CLIENT_SECRET` | Client secret of that app registration |
 | `LEAD_NOTIFY_FROM` | Mailbox internal notifications are sent from (default `no-reply@genclover.com`) |
 | `LEAD_NOTIFY_TO` | Destination address, or several separated by commas (default `contact@genclover.com`) |
+| `LEAD_CONFIRM_FROM` | Sender of the thank-you to the inquirer (default `contact@genclover.com`; `off` disables it) |
+| `LEAD_CONFIRM_CC` | Copy of that thank-you, comma-separated (default `contact@genclover.com`; `none` for no copy) |
 | `LEAD_WEBHOOK_URL` | *Alternative:* POST the lead record to a CRM/webhook |
 | `LEAD_WEBHOOK_TOKEN` | Optional bearer token for that webhook |
 

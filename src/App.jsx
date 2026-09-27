@@ -31,6 +31,8 @@ const StartProject = lazy(() => import('./pages/StartProject'))
 const Privacy = lazy(() => import('./pages/Privacy'))
 const Terms = lazy(() => import('./pages/Terms'))
 const NotFound = lazy(() => import('./pages/NotFound'))
+// The admin portal has no link anywhere on the site; it is reached at /admin.
+const AdminApp = lazy(() => import('./pages/admin/AdminApp'))
 
 /**
  * Routes from the previous site, kept alive as redirects.
@@ -66,50 +68,67 @@ function App() {
       <CursorLight />
       <AttributionCapture />
 
-      <div className="flex min-h-screen flex-col">
-        <Header />
-
-        <main id="main" className="flex-grow">
-          <Suspense fallback={<RouteFallback />}>
-            <Routes>
-              <Route path={routes.home} element={<Home />} />
-
-              <Route path={routes.services} element={<Services />} />
-              <Route path={`${routes.services}/:slug`} element={<ServiceDetail />} />
-
-              <Route path={routes.work} element={<Work />} />
-              <Route path={`${routes.work}/:slug`} element={<ProjectDetail />} />
-
-              <Route path={routes.industries} element={<Industries />} />
-              <Route path={`${routes.industries}/:slug`} element={<IndustryDetail />} />
-
-              <Route path={routes.howWeWork} element={<HowWeWork />} />
-              <Route path={routes.about} element={<About />} />
-
-              <Route path={routes.careers} element={<Careers />} />
-              <Route path={`${routes.careers}/:id`} element={<JobDetail />} />
-
-              <Route path={routes.startProject} element={<StartProject />} />
-              <Route path={routes.privacy} element={<Privacy />} />
-              <Route path={routes.terms} element={<Terms />} />
-
-              {/* Compatibility redirects for the previous information architecture */}
-              {LEGACY_REDIRECTS.map(({ from, to }) => (
-                <Route key={from} path={from} element={<Navigate to={to} replace />} />
-              ))}
-              {/* /portfolio/:slug and /work/:slug share a slug space */}
-              <Route path="/portfolio/:slug" element={<LegacyProjectRedirect />} />
-              {/* The old career route nested job ids one level deeper */}
-              <Route path="/career/job/:id" element={<LegacyJobRedirect />} />
-
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </main>
-
-        <Footer />
-      </div>
+      <Routes>
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <AdminApp />
+            </Suspense>
+          }
+        />
+        <Route path="*" element={<SiteLayout />} />
+      </Routes>
     </Router>
+  )
+}
+
+/** The public site: header, the page, footer. */
+function SiteLayout() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+
+      <main id="main" className="flex-grow">
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path={routes.home} element={<Home />} />
+
+            <Route path={routes.services} element={<Services />} />
+            <Route path={`${routes.services}/:slug`} element={<ServiceDetail />} />
+
+            <Route path={routes.work} element={<Work />} />
+            <Route path={`${routes.work}/:slug`} element={<ProjectDetail />} />
+
+            <Route path={routes.industries} element={<Industries />} />
+            <Route path={`${routes.industries}/:slug`} element={<IndustryDetail />} />
+
+            <Route path={routes.howWeWork} element={<HowWeWork />} />
+            <Route path={routes.about} element={<About />} />
+
+            <Route path={routes.careers} element={<Careers />} />
+            <Route path={`${routes.careers}/:id`} element={<JobDetail />} />
+
+            <Route path={routes.startProject} element={<StartProject />} />
+            <Route path={routes.privacy} element={<Privacy />} />
+            <Route path={routes.terms} element={<Terms />} />
+
+            {/* Compatibility redirects for the previous information architecture */}
+            {LEGACY_REDIRECTS.map(({ from, to }) => (
+              <Route key={from} path={from} element={<Navigate to={to} replace />} />
+            ))}
+            {/* /portfolio/:slug and /work/:slug share a slug space */}
+            <Route path="/portfolio/:slug" element={<LegacyProjectRedirect />} />
+            {/* The old career route nested job ids one level deeper */}
+            <Route path="/career/job/:id" element={<LegacyJobRedirect />} />
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </main>
+
+      <Footer />
+    </div>
   )
 }
 

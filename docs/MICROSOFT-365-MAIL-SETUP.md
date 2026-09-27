@@ -34,14 +34,28 @@ Exchange Online sends from no-reply@genclover.com  (SPF passes: Microsoft is in 
         ▼
 contact@genclover.com  (and any other LEAD_NOTIFY_TO address)
         Reply goes to the person who submitted the brief (reply-to), never to no-reply@
+        │
+        │  3. then, the thank-you to the inquirer (never fatal: if it fails, the inquiry
+        │     is still captured and the visitor still sees success)
+        ▼
+Microsoft Graph  POST /users/contact@genclover.com/sendMail
+        ▼
+The inquirer's email address, CC contact@genclover.com
+        Reply goes to contact@. A copy is also in contact@'s Sent Items.
 ```
 
 ### Sender policy
 
-| Email | Sent from | Replies go to |
-|---|---|---|
-| Internal notifications (a new inquiry) | `no-reply@genclover.com` | The inquirer (reply-to) |
-| Anything sent to people outside the company (future) | `contact@genclover.com` | contact@ (monitored inbox) |
+| Email | Sent from | To | Replies go to |
+|---|---|---|---|
+| Internal notification (a new inquiry) | `no-reply@genclover.com` | `LEAD_NOTIFY_TO` | The inquirer (reply-to) |
+| Thank-you to the inquirer | `contact@genclover.com` | The inquirer, CC contact@ | contact@ (monitored inbox) |
+| Anything else sent to people outside the company | `contact@genclover.com` | | contact@ |
+
+The thank-you repeats only what the inquirer picked from our option lists (service, business
+type, location, timeline, budget) and their first name if it looks like a name. It never
+repeats their free-text message. Anyone can type any address into the public form, so
+echoing their text would let a spammer send it to a stranger from our domain.
 
 `no-reply@` rejects incoming mail with a message pointing to contact@ (section 4.3).
 
@@ -254,10 +268,13 @@ Each variable is set for **Production** and **Preview**.
 | `MS_MAIL_CLIENT_SECRET` | Client secret **Value** | Section 3.3. Marked **Sensitive** |
 | `LEAD_NOTIFY_FROM` | `no-reply@genclover.com` | Also the code's default |
 | `LEAD_NOTIFY_TO` | `contact@genclover.com,gencloverai@gmail.com` | One address, or several separated by commas |
+| `LEAD_CONFIRM_FROM` | *(not set)* | Default `contact@genclover.com`. Set to `off` to stop the thank-you email |
+| `LEAD_CONFIRM_CC` | *(not set)* | Default `contact@genclover.com`. Comma-separated, or `none` for no copy |
 
 Settings only apply to deployments made after they are saved, so redeploy after changing them.
-`RESEND_API_KEY` stays until the Microsoft route is live in production, then it is deleted
-(section 8).
+All three `MS_*` variables must exist in an environment, or that environment's form reports
+*"not reachable"*. This happened at setup, when `MS_MAIL_CLIENT_ID` had been missed.
+`RESEND_API_KEY` has been deleted.
 
 ---
 
@@ -295,17 +312,24 @@ emails stop and visitors see *"We could not send your inquiry just now."*
 Delete it immediately in **Certificates & secrets**, then follow the renewal steps. Because
 of the access policy, a leaked secret could only send as `no-reply@`.
 
-### Allowing another sending mailbox (e.g. contact@ for external email)
+### Allowing contact@ to send (needed for the thank-you email)
+The thank-you is sent from contact@, so contact@ must be in the access policy group.
+Until it is, the thank-you fails with `403 ErrorAccessDenied` in the logs, while the
+inquiry itself still goes through.
 ```powershell
 Connect-ExchangeOnline -UserPrincipalName <admin>
 Add-DistributionGroupMember gc-app-website-mail-senders -Member contact@genclover.com
-Test-ApplicationAccessPolicy -Identity contact@genclover.com -AppId <client ID> | Format-List AccessCheckResult   # expect Granted
+Test-ApplicationAccessPolicy -Identity contact@genclover.com -AppId "<client ID>" | Format-List AccessCheckResult   # expect Granted
+Disconnect-ExchangeOnline -Confirm:$false
 ```
+Allow up to an hour for the change to take effect. After this, a leaked secret could send as
+no-reply@ or contact@, but still no other mailbox.
 
 ### Auditing
 - The app's sign-ins: **entra.microsoft.com → Enterprise applications → gc-website-mail → Sign-in logs**
-- Sent notifications: `no-reply@genclover.com` → Sent Items
+- Sent notifications: `no-reply@genclover.com` → Sent Items. Thank-yous: `contact@genclover.com` → Sent Items
 - Delivery failures: **Vercel → Logs**, filter `/api/lead`, lines starting `[lead] Delivery failed:`
+  (the inquiry) or `[lead] Confirmation failed` (the thank-you only)
 - Quarantined mail: **security.microsoft.com → Quarantine**
 
 ---
@@ -318,12 +342,14 @@ Test-ApplicationAccessPolicy -Identity contact@genclover.com -AppId <client ID> 
 - [x] Shared mailbox `no-reply@`, display name "Gen Clover" (4.3)
 - [x] Bounce rule `gc-mailflow-reject-no-reply` enabled (4.3)
 - [x] Access policy restricting the app to `gc-app-website-mail-senders`, tested (4.4, 4.5)
-- [ ] Vercel variables for Production and Preview (5)
+- [x] Vercel variables for Production and Preview (5)
+- [x] Code pushed to `dev`; test brief on dev.genclover.com arrived from "Gen Clover
+      &lt;no-reply@genclover.com&gt;", and Reply addressed the inquirer
+- [x] Released to `main` (#17); `RESEND_API_KEY` removed from Vercel
+- [ ] Resend API key deleted in Resend
+- [ ] contact@ added to `gc-app-website-mail-senders`, tested Granted (section 7)
+- [ ] Thank-you email released; a test brief sends the inquirer a thank-you from contact@, CC contact@
 - [ ] DKIM enabled (6, recommended)
-- [ ] Code pushed to `dev`; test brief on dev.genclover.com arrives from "Gen Clover
-      &lt;no-reply@genclover.com&gt;", and Reply addresses the inquirer
-- [ ] Released to `main`; test brief on www.genclover.com
-- [ ] `RESEND_API_KEY` removed from Vercel; Resend API key deleted
 
 ---
 
@@ -331,7 +357,8 @@ Test-ApplicationAccessPolicy -Identity contact@genclover.com -AppId <client ID> 
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Form: *"inquiry system is not reachable"* (503) | A `MS_*` variable is missing in that environment | Add it for Preview/Production and redeploy |
+| Form: *"inquiry system is not reachable"* (503) | A `MS_*` variable is missing in that environment (at setup it was `MS_MAIL_CLIENT_ID`) | Add it for Preview/Production and redeploy |
+| Inquiry arrives, but no thank-you; log `[lead] Confirmation failed … 403` | contact@ is not in the access policy group | Section 7, "Allowing contact@ to send" |
 | Log: `AADSTS7000215` / invalid client secret | Secret ID used instead of Value, or the secret expired | New secret, paste its **Value** |
 | Log: `AADSTS700016` / application not found | Wrong client or tenant ID | Copy both again from the app's Overview page |
 | Log: `403 ErrorAccessDenied` | Consent missing, mailbox not in the group, or the policy is still taking effect (up to about an hour) | Check 3.2 and run the 4.5 tests |
