@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
+import Clovi from './components/clovi/Clovi'
 import ScrollRestoration from './components/ScrollRestoration'
 import CursorLight from './components/ui/CursorLight'
 import Home from './pages/Home'
@@ -133,6 +134,8 @@ function SiteLayout() {
       </main>
 
       <Footer />
+      {/* Chat assistant: public pages only, never in /admin. */}
+      <Clovi />
     </div>
   )
 }

@@ -117,7 +117,9 @@ export const buildLeadEmail = (record) => {
   const phoneHref = `tel:${record.contact.phone.replace(/[^\d+]/g, '')}`
   const preview = record.description.replace(/\s+/g, ' ').slice(0, 110)
 
-  const subject = `New inquiry: ${service} · ${who}`
+  // Inquiries also arrive through the Clovi chat assistant (record.channel).
+  const channel = record.channel === 'clovi' ? 'the Clovi chat assistant' : 'the Start a Project form'
+  const subject = `New inquiry${record.channel === 'clovi' ? ' (chat)' : ''}: ${service} · ${who}`
 
   const html = `<!doctype html>
 <html lang="en">
@@ -205,7 +207,7 @@ export const buildLeadEmail = (record) => {
         <tr>
           <td style="padding:26px 32px 28px;">
             <p style="margin:0;padding-top:18px;border-top:1px solid ${LINE};font:12px/1.6 ${FONT};color:${MUTED};">
-              Sent by the Start a Project form on <a href="${SITE}" style="color:${MUTED};">genclover.com</a>.
+              Sent by ${channel} on <a href="${SITE}" style="color:${MUTED};">genclover.com</a>.
               Replying to this email goes straight to ${escape(name)}.
             </p>
           </td>
