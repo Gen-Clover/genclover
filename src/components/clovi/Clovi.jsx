@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { X } from 'lucide-react'
-import { CloverMark } from '../brand/Logo'
+import CloviBot from './CloviBot'
 import { trackEvent } from '../../lib/analytics'
 
 /**
@@ -92,7 +92,7 @@ const Clovi = () => {
           open ? 'max-sm:hidden' : ''
         }`}
       >
-        {open ? <X className="h-6 w-6 text-white" aria-hidden="true" /> : <CloverMark className="h-8 w-8" />}
+        {open ? <X className="h-6 w-6 text-white" aria-hidden="true" /> : <CloviBot className="h-10 w-10" />}
       </button>
     </>
   )
