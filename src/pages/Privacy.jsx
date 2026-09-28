@@ -29,6 +29,13 @@ const Privacy = () => {
       ],
     },
     {
+      title: 'Chat assistant (Clovi)',
+      body: [
+        'Clovi, the chat assistant on this website, is automated: it runs in your browser from the content of this site and does not send your messages to any artificial intelligence service.',
+        'At the start of a chat it asks for your name, email address and mobile number, and why you are getting in touch. These are emailed to the Gen Clover team as soon as you share them, together with any project brief or job application you send through the chat, and a copy of the conversation when it ends, so the team can reply. The conversation is kept in your browser only for the current visit.',
+      ],
+    },
+    {
       title: 'Why we collect it',
       body: [
         'To respond to your inquiry and to understand what you need well enough to reply usefully. That is the only purpose.',

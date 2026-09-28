@@ -54,10 +54,20 @@ const text = (v, max) =>
         .slice(0, max)
     : ''
 
+/**
+ * A real public web address: http(s), a dotted domain with a proper ending,
+ * not an IP or localhost, and no "@" before the domain (that is an email).
+ */
 const isHttpUrl = (value) => {
   try {
     const url = new URL(value)
-    return url.protocol === 'https:' || url.protocol === 'http:'
+    const host = url.hostname.toLowerCase()
+    return (
+      (url.protocol === 'https:' || url.protocol === 'http:') &&
+      !url.username &&
+      /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(host) &&
+      host !== 'localhost'
+    )
   } catch {
     return false
   }

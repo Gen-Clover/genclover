@@ -69,7 +69,8 @@ export const trackEvent = (name, payload = {}) => {
     if (typeof window.gtag === 'function') {
       window.gtag('event', name, data)
       // GA4's recommended lead event: mark it as a key event in GA4 and import it into Google Ads.
-      if (name === events.FORM_SUBMIT) window.gtag('event', 'generate_lead', { ...data, lead_type: 'project' })
+      if (name === events.FORM_SUBMIT || name === 'clovi_lead_submit')
+        window.gtag('event', 'generate_lead', { ...data, lead_type: 'project', lead_source: name === 'clovi_lead_submit' ? 'chat' : 'form' })
     }
   } catch {
     // Analytics must never break a user interaction.
