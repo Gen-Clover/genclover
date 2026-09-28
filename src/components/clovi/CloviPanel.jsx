@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, Paperclip, RotateCcw, Send, ArrowUpRight } from 'lucide-react'
-import { CloverMark } from '../brand/Logo'
+import CloviBot from './CloviBot'
 import { initialState, reply } from '../../lib/clovi/engine'
 import { cloviApi } from '../../lib/clovi/api'
 import { BOT_NAME } from '../../lib/clovi/schema'
@@ -41,7 +41,7 @@ const hasNewActivity = (s) =>
 
 const Avatar = () => (
   <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/10 bg-ink-900/80 shadow-[0_0_14px_rgba(224,31,38,.35)]">
-    <CloverMark className="h-4 w-4" />
+    <CloviBot className="h-5 w-5" />
   </span>
 )
 
@@ -205,7 +205,7 @@ const CloviPanel = ({ onClose }) => {
       {/* Header */}
       <div className="relative flex items-center gap-3 px-4 pb-3 pt-4">
         <span className="relative grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-ink-900/70 shadow-[0_0_22px_rgba(224,31,38,.45)]">
-          <CloverMark className="h-6 w-6" />
+          <CloviBot className="h-8 w-8" />
           <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-ink-900 bg-emerald-500" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
