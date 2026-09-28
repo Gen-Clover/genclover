@@ -1,4 +1,5 @@
 import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js/min'
+import { parseName } from './parse.js'
 
 /**
  * Clovi, the Gen Clover chat assistant: the data model shared by the chat UI
@@ -47,9 +48,9 @@ export const clean = (value, max) =>
         .slice(0, max)
     : ''
 
-export const validateName = (v) => (clean(v, 120).length >= 2 ? null : 'Please tell me your name.')
-export const validateEmail = (v) =>
-  EMAIL_RE.test(clean(v, 200)) ? null : 'That email does not look quite right. Could you check it?'
+/** Same rules as the chat (parse.js), so the server never accepts what Clovi would refuse. */
+export const validateName = (v) => parseName(clean(v, 120)).error ?? null
+export const validateEmail = (v) => (EMAIL_RE.test(clean(v, 200)) ? null : 'That email does not look quite right. Could you check it?')
 export const validatePhone = (phone, country) => {
   if (!country) return 'Please choose your country code.'
   return isValidPhoneNumber(clean(phone, 40), country)

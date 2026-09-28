@@ -73,7 +73,7 @@ export default async function handler(req, res) {
 
   try {
     if (body.action === 'contact') {
-      const { subject, html } = buildContactEmail({ timestamp, contact, sourcePage: page(body) })
+      const { subject, html } = buildContactEmail({ timestamp, contact, updated: body.updated === true, sourcePage: page(body) })
       await sendMail({ from: NOTIFY_FROM, to: contact.purpose === 'job' ? JOBS_TO : LEAD_TO, replyTo, subject, html })
       return send(res, 200, { ok: true })
     }
@@ -142,7 +142,7 @@ export default async function handler(req, res) {
         contact,
         messages,
         unanswered,
-        outcome: { lead: o.lead === true, application: o.application === true, handoff: o.handoff === true },
+        outcome: { lead: o.lead === true, application: o.application === true, handoff: o.handoff === true, jobHandoff: o.jobHandoff === true },
         sourcePage: page(body),
       })
       await sendMail({ from: NOTIFY_FROM, to: contact.purpose === 'job' ? JOBS_TO : LEAD_TO, replyTo, subject, html })

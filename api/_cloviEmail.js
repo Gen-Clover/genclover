@@ -43,12 +43,13 @@ const footer = (text) => `
 
 export const buildContactEmail = (record) => {
   const c = record.contact
-  const subject = `Chat: ${c.name} wants to ${purposeLabel(c.purpose).toLowerCase()}`
+  // Sent again, marked, when the visitor corrects their details mid-chat.
+  const subject = `${record.updated ? 'Updated contact · ' : ''}Chat: ${c.name} wants to ${purposeLabel(c.purpose).toLowerCase()}`
   const body = `
         <tr>
           <td style="padding:28px 32px 4px;">
             <p style="margin:0 0 8px;font:700 11px/1.4 ${FONT};letter-spacing:.14em;text-transform:uppercase;color:${RED};">Clovi chat · ${escape(purposeLabel(c.purpose))}</p>
-            <h1 style="margin:0;font:700 22px/1.3 ${FONT};color:${INK};">${escape(c.name)} started a conversation</h1>
+            <h1 style="margin:0;font:700 22px/1.3 ${FONT};color:${INK};">${escape(c.name)} ${record.updated ? 'corrected their contact details' : 'started a conversation'}</h1>
             <p style="margin:8px 0 0;font:14px/1.5 ${FONT};color:${MUTED};">Received ${escape(formatReceived(record.timestamp))} on ${escape(record.sourcePage)}</p>
           </td>
         </tr>
@@ -76,7 +77,8 @@ export const buildTranscriptEmail = (record) => {
   const outcomes = [
     record.outcome.lead && 'Project brief sent (separate email)',
     record.outcome.application && 'Job application sent (separate email)',
-    record.outcome.handoff && 'Asked to talk to a person',
+    record.outcome.jobHandoff && 'Candidate without a CV: follow up to collect it',
+    record.outcome.handoff && !record.outcome.jobHandoff && 'Asked to talk to a person',
   ].filter(Boolean)
   const subject = `Chat transcript: ${c.name} · ${purposeLabel(c.purpose)}`
   const body = `

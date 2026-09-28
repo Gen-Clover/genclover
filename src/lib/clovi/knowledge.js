@@ -43,7 +43,7 @@ const SYNONYMS = {
   support: ['maintenance', 'maintain', 'care', 'update', 'bug', 'after', 'launch', 'retainer'],
   location: ['located', 'locate', 'based', 'office', 'city', 'country', 'chandigarh', 'india', 'timezone', 'zone', 'address'],
   contact: ['email', 'phone', 'call', 'reach', 'talk', 'meet', 'meeting', 'number', 'whatsapp'],
-  process: ['work', 'approach', 'method', 'methodology', 'step', 'stage', 'discover', 'agile'],
+  process: ['approach', 'method', 'methodology', 'step', 'stage', 'discover', 'agile'],
   portfolio: ['case', 'study', 'studies', 'example', 'previous', 'past'],
 }
 const SYNONYM_OF = {}
@@ -198,7 +198,7 @@ const curated = [
   },
   {
     id: 'work',
-    title: 'portfolio case studies examples previous projects work',
+    title: 'portfolio case studies examples previous projects work show see',
     answer: `We have ${publishedProjects.length} published case studies of delivered client work, from AI agents to data platforms and websites. Here are a few:`,
     cards: publishedProjects.filter((p) => p.featured).slice(0, 3).map(projectCard),
     links: [{ label: 'All our work', to: routes.work }],
@@ -212,7 +212,7 @@ const curated = [
   },
   {
     id: 'tech',
-    title: 'technology tech stack tools languages frameworks',
+    title: `technology tech stack tools languages frameworks ${topTechnologies.join(' ')}`,
     answer: `The tools come from the problem, not the other way round. Across our delivered work that includes ${topTechnologies.join(', ')}.`,
     chips: ['See our work'],
   },
@@ -314,8 +314,18 @@ const docs = [
 const VOCABULARY = new Set(docs.flatMap((d) => [...d._title, ...d._body]))
 
 export const search = (question) => {
-  const qs = new Set(tokens(question).filter((t) => VOCABULARY.has(t)))
+  const all = tokens(question)
+  const qs = new Set(all.filter((t) => VOCABULARY.has(t)))
   if (qs.size === 0) return null
+  // A question mostly about things the site never mentions ("blockchain and
+  // web3") goes to the team rather than getting a confident answer about something else.
+  // Counted per typed word (a word counts as known if it or its synonym is), so
+  // synonyms do not inflate the known side.
+  const words = String(question).toLowerCase().replace(/[^a-z0-9+#.\s]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w))
+  const knownWord = (w) => tokens(w).some((t) => VOCABULARY.has(t))
+  const unknown = words.filter((w) => !knownWord(w) && w.length >= 4 && /[a-z]/.test(w)).length
+  const known = words.filter(knownWord).length
+  if (unknown >= known) return null
   let best = null
   for (const d of docs) {
     let score = 0
