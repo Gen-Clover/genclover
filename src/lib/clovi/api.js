@@ -12,7 +12,7 @@ const page = () => (typeof window === 'undefined' ? '/' : window.location.pathna
 const post = async (url, body) => {
   const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
   const data = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(data.message || 'Something went wrong.')
+  if (!response.ok) throw Object.assign(new Error(data.message || 'Something went wrong.'), { status: response.status, errors: data.errors })
   return data
 }
 

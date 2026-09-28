@@ -2,7 +2,7 @@ import { purposes, budgetRanges, budgetCurrencyFor, validateName, validateEmail,
 import { search, curatedById, projectsForService, projectCard, serviceByTitle } from './knowledge'
 import { serviceEnquiryOptions } from '../../data/services'
 import { businessTypeOptions, timelineOptions } from '../../data/leadOptions'
-import { experienceYearOptions, noticePeriodOptions } from '../application'
+import { experienceYearOptions, noticePeriodOptions, validateApplication } from '../application'
 import { formatExperience, locationText } from '../jobs'
 import { routes, contact as company } from '../../data/site'
 
@@ -221,6 +221,30 @@ const handoff = async (s, ctx) => {
   return { ...next, sent: { ...next.sent, transcriptAt: next.messages.length } }
 }
 
+/** The last question before an application is sent. */
+const askConfirm = (s) => ({
+  ...say(
+    { ...s, fixing: false },
+    bot('Shall I send your application to the hiring team?', {
+      chips: [chip('Yes, send my application', 'confirm:yes'), chip('Not yet', 'confirm:no')],
+      note: 'By sending it you agree to Gen Clover using these details and your CV for this and future roles, and keeping them on file until you ask for them to be deleted.',
+    })
+  ),
+  step: 'j_confirm',
+})
+
+/** After a correction, go straight back to sending instead of re-asking everything. */
+const continueJob = (s, next) => (s.fixing && s.job.cv ? askConfirm(s) : next(s))
+
+/** Which question to go back to when the server rejects an application field. */
+const FIELD_STEP = {
+  profileUrl: ['j_link', 'Do you have a LinkedIn or portfolio link? Paste the full link, or tap Skip.', [chip('Skip', 'skip')]],
+  city: ['j_city', 'Which city are you based in?'],
+  experienceYears: ['j_exp', 'How many years of experience do you have in total?', EXP_CHIPS],
+  noticePeriod: ['j_notice', 'When could you start?', noticePeriodOptions.map((o) => chip(o.label, `notice:${o.value}`))],
+  cv: ['j_cv', 'Please attach your CV again (PDF or Word, up to 3 MB).'],
+}
+
 /* ---------------------------------------------------------------- reply */
 
 /**
@@ -335,6 +359,7 @@ export const reply = async (state, input, ctx) => {
       const v = value.startsWith('exp:') ? value.slice(4) : (() => { const n = parseInt(text, 10); return Number.isFinite(n) ? String(Math.min(Math.max(n, 0), 21)) : null })()
       if (v == null) return say(s, bot('Tap the closest option, or type a number of years.', { chips: EXP_CHIPS }))
       s = { ...s, job: { ...s.job, experienceYears: v } }
+      if (s.fixing && s.job.cv) return askConfirm(s)
       const role = s.openJobs?.find((j) => j.id === s.job.jobId)
       const notes = []
       if (role && Number(v) < role.experienceMin) notes.push(bot(`This role asks for ${role.experienceMin}+ years, but I’ll still pass your profile on. Strong candidates are always considered.`))
@@ -343,18 +368,23 @@ export const reply = async (state, input, ctx) => {
     case 'j_notice': {
       const v = value.startsWith('notice:') ? value.slice(7) : matchOption(text, noticePeriodOptions)?.value
       if (!v) return say(s, bot('Pick the closest option.', { chips: noticePeriodOptions.map((o) => chip(o.label, `notice:${o.value}`)) }))
+      if (s.fixing && s.job.cv) return askConfirm({ ...s, job: { ...s.job, noticePeriod: v } })
       return { ...say({ ...s, job: { ...s.job, noticePeriod: v } }, bot('Which city are you based in?')), step: 'j_city' }
     }
     case 'j_city': {
-      if (text.length < 2) return say(s, bot('Which city are you based in?'))
-      return askSkillOrProfile({ ...s, job: { ...s.job, city: text.slice(0, 80) } })
+      if (!/\p{L}{2,}/u.test(text)) return say(s, bot('Please type the name of your city, for example Pune or Bengaluru.'))
+      return continueJob({ ...s, job: { ...s.job, city: text.slice(0, 80) } }, askSkillOrProfile)
     }
     case 'j_skill': {
       const level = value || matchOption(text, SKILL_LEVELS)?.value || text.slice(0, 40)
       return askSkillOrProfile({ ...s, job: { ...s.job, skills: { ...s.job.skills, [s.pendingSkill]: level } }, pendingSkill: null })
     }
     case 'j_link': {
-      const link = value === 'skip' ? '' : text
+      const link = value === 'skip' || /^(skip|no|none|na|n\/a|nil|-)$/i.test(text) ? '' : text
+      // Same rule as the server, so a bad link is caught here rather than at the end.
+      if (link && validateApplication({ profileUrl: link }).errors.profileUrl)
+        return say(s, bot('That doesn’t look like a link. Paste the full address, like https://linkedin.com/in/you, or tap Skip.', { chips: [chip('Skip', 'skip')] }))
+      if (s.fixing && s.job.cv) return askConfirm({ ...s, job: { ...s.job, profileUrl: link } })
       return {
         ...say({ ...s, job: { ...s.job, profileUrl: link } }, bot('Almost done. Please upload your CV (PDF or Word, up to 3 MB).', { input: 'file' })),
         step: 'j_cv',
@@ -362,14 +392,7 @@ export const reply = async (state, input, ctx) => {
     }
     case 'j_cv': {
       if (input.kind !== 'file') return say(s, bot('Use the 📎 button below to attach your CV.', { input: 'file' }))
-      s = { ...s, job: { ...s.job, cv: input.file } }
-      return {
-        ...say(s, bot('Shall I send your application to the hiring team?', {
-          chips: [chip('Yes, send my application', 'confirm:yes'), chip('Not yet', 'confirm:no')],
-          note: 'By sending it you agree to Gen Clover using these details and your CV for this and future roles, and keeping them on file until you ask for them to be deleted.',
-        })),
-        step: 'j_confirm',
-      }
+      return askConfirm({ ...s, job: { ...s.job, cv: input.file } })
     }
     case 'j_confirm': {
       if (value !== 'confirm:yes') return { ...say(s, bot('No problem. Your details are saved in this chat if you change your mind.', { chips: [chip('Send my application', 'confirm:yes'), ...CHAT_CHIPS(s)] })), step: 'j_confirm' }
@@ -378,6 +401,12 @@ export const reply = async (state, input, ctx) => {
         s = { ...s, sent: { ...s.sent, application: true }, step: 'chat', job: { ...s.job, cv: null } }
         return say(s, bot(`Application sent, ${first(s.contact.name)} 🎉 The team reads every one, together with your CV${result?.confirmation ? `, and a confirmation is on its way to ${s.contact.email}` : ''}. Good luck!`, { chips: CHAT_CHIPS(s) }))
       } catch (error) {
+        // A field the server rejected: say which, and go back to that one question.
+        const field = Object.keys(error.errors ?? {}).find((k) => FIELD_STEP[k])
+        if (field) {
+          const [step, question, chips] = FIELD_STEP[field]
+          return { ...say({ ...s, fixing: true, job: field === 'cv' ? { ...s.job, cv: null } : s.job }, bot(`${error.errors[field]} Let’s fix that one.`), bot(question, { chips, input: step === 'j_cv' ? 'file' : undefined })), step }
+        }
         return { ...say(s, bot(`${error.message || 'That didn’t go through.'} You can try again, or email your CV to ${company.email}.`, { chips: [chip('Try again', 'confirm:yes')] })), step: 'j_confirm' }
       }
     }
