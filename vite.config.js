@@ -68,6 +68,9 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
     // server on this port now fails loudly instead of silently moving.
     port: 5173,
     strictPort: true,
+    // The local job store and test emails (.data/) change while you use the
+    // site; they are not source files, so they must not trigger a page reload.
+    watch: { ignored: ['**/.data/**'] },
   },
   preview: {
     port: 4173,
