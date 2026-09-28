@@ -5,7 +5,7 @@ import CloviBot from './CloviBot'
 import { initialState, reply } from '../../lib/clovi/engine'
 import { cloviApi } from '../../lib/clovi/api'
 import { BOT_NAME } from '../../lib/clovi/schema'
-import { CV_ACCEPT, cvProblem } from '../../lib/application'
+import { CV_ACCEPT } from '../../lib/application'
 import { getDialCodeOptions } from '../../lib/intlOptions'
 import { trackEvent, events } from '../../lib/analytics'
 import { routes } from '../../data/site'
@@ -19,7 +19,7 @@ const STATE_KEY = 'gc_clovi_state'
 const load = () => {
   try {
     const saved = JSON.parse(sessionStorage.getItem(STATE_KEY))
-    return saved?.v === 1 ? saved : null
+    return saved?.v === 2 ? saved : null
   } catch {
     return null
   }
@@ -77,7 +77,6 @@ const CloviPanel = ({ onClose }) => {
   const [text, setText] = useState('')
   const [phone, setPhone] = useState('')
   const [country, setCountry] = useState(state.contact.phoneCountry || 'IN')
-  const [fileError, setFileError] = useState(null)
   const listRef = useRef(null)
   const inputRef = useRef(null)
   const fileRef = useRef(null)
@@ -98,8 +97,8 @@ const CloviPanel = ({ onClose }) => {
 
   const ctx = useMemo(
     () => ({
-      contact: async (s) => {
-        await cloviApi.contact(s)
+      contact: async (s, opts) => {
+        await cloviApi.contact(s, opts)
         trackEvent('clovi_contact', { purpose: s.purpose })
       },
       lead: async (s) => {
@@ -177,11 +176,9 @@ const CloviPanel = ({ onClose }) => {
     send({ kind: 'text', text: t })
   }
 
+  // Clovi checks the file itself (type, size) and says what is wrong in the chat.
   const onFile = (file) => {
-    if (!file) return
-    const problem = cvProblem(file)
-    setFileError(problem)
-    if (!problem) send({ kind: 'file', file })
+    if (file) send({ kind: 'file', file })
     if (fileRef.current) fileRef.current.value = ''
   }
 
@@ -287,8 +284,8 @@ const CloviPanel = ({ onClose }) => {
       </div>
 
       {/* Composer */}
-      <form onSubmit={onSubmit} className="px-3 pb-3 pt-2">
-        {fileError && <p className="mb-2 px-2 text-xs text-accent-400">{fileError}</p>}
+      {/* noValidate: Clovi's own messages explain a bad email, not the browser's pop-up. */}
+      <form onSubmit={onSubmit} noValidate className="px-3 pb-3 pt-2">
         <div className="clovi-composer flex items-center gap-1.5 rounded-full p-1.5">
           <button
             type="button"

@@ -19,7 +19,7 @@ const post = async (url, body) => {
 const contactOf = (s) => ({ ...s.contact, purpose: s.purpose ?? 'question' })
 
 export const cloviApi = {
-  contact: (s) => post('/api/clovi', { action: 'contact', contact: contactOf(s), sourcePage: page() }),
+  contact: (s, { updated = false } = {}) => post('/api/clovi', { action: 'contact', updated, contact: contactOf(s), sourcePage: page() }),
 
   lead: (s) =>
     post('/api/clovi', { action: 'lead', contact: contactOf(s), lead: s.lead, attribution: readAttribution(), sourcePage: page() }),
@@ -56,7 +56,7 @@ export const cloviApi = {
     contact: contactOf(s),
     messages: transcriptOf(s),
     unanswered: s.unanswered,
-    outcome: { lead: s.sent.lead, application: s.sent.application, handoff: s.handoff },
+    outcome: { lead: s.sent.lead, application: s.sent.application, handoff: s.handoff, jobHandoff: Boolean(s.jobHandoff) },
     sourcePage: page(),
   }),
 
