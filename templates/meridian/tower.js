@@ -136,11 +136,11 @@ const seeded = (seed) => () => {
 export const createTower = (canvas, { onHover, onSelect, reduced = false } = {}) => {
   let renderer
   try {
-    renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true })
+    renderer = new WebGLRenderer({ canvas, antialias: devicePixelRatio < 1.5, alpha: true, powerPreference: 'high-performance' })
   } catch {
     return null
   }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))
   renderer.toneMapping = ACESFilmicToneMapping
   renderer.outputColorSpace = SRGBColorSpace
   renderer.setClearColor(0x000000, 0)
@@ -154,7 +154,8 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
   scene.add(hemi, sun)
   // a soft studio light-box, so glass and metal have something to reflect
   const pmrem = new PMREMGenerator(renderer)
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  const envMap = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  pmrem.dispose()
   scene.fog = new Fog(MOODS.day.fog, 12, 38)
 
   const world = new Group()
@@ -237,8 +238,8 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
   world.add(tower)
 
   const slabMat = new MeshStandardMaterial({ color: '#ece8e1', roughness: 0.6 })
-  const glassMat = new MeshStandardMaterial({ color: '#46506e', roughness: 0.08, metalness: 0.65, transparent: true, opacity: 0.5 })
-  const mullionMat = new MeshStandardMaterial({ color: '#2a2d33', roughness: 0.4, metalness: 0.5 })
+  const glassMat = new MeshStandardMaterial({ envMap, color: '#46506e', roughness: 0.08, metalness: 0.65, transparent: true, opacity: 0.5 })
+  const mullionMat = new MeshStandardMaterial({ envMap, color: '#2a2d33', roughness: 0.4, metalness: 0.5 })
   const edgeMat = new LineBasicMaterial({ color: '#f2c36b', transparent: true, opacity: 0 })
 
   const floors = []
@@ -335,7 +336,22 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
     ground: new Color(target.ground),
     facade: new Color(target.facade),
   }
-  const setMood = (name) => Object.assign(target, MOODS[name])
+  const toColors = () => ({
+    hemiSky: new Color(target.hemiSky),
+    hemiGround: new Color(target.hemiGround),
+    sun: new Color(target.sun),
+    glass: new Color(target.glass),
+    pool: new Color(target.pool),
+    sunPos: new Vector3(...target.sunPos),
+    fog: new Color(target.fog),
+    ground: new Color(target.ground),
+    facade: new Color(target.facade),
+  })
+  let to = toColors()
+  const setMood = (name) => {
+    Object.assign(target, MOODS[name])
+    to = toColors()
+  }
 
   /* ---------------------------------------------------------- camera */
 
@@ -429,19 +445,22 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
   const ease = (a, b, k) => a + (b - a) * k
   let last = performance.now()
 
+  let onScreen = true
+  new IntersectionObserver(([entry]) => (onScreen = entry.isIntersecting)).observe(canvas)
+
   const frame = (t) => {
     const dt = Math.min(0.05, (t - last) / 1000)
     last = t
-    if (!document.hidden) {
+    if (!document.hidden && onScreen) {
       const k = reduced ? 1 : 1 - Math.pow(0.001, dt) // frame-rate independent easing
 
       // mood
-      now.hemiSky.lerp(new Color(target.hemiSky), k)
-      now.hemiGround.lerp(new Color(target.hemiGround), k)
-      now.sun.lerp(new Color(target.sun), k)
-      now.glass.lerp(new Color(target.glass), k)
-      now.pool.lerp(new Color(target.pool), k)
-      now.sunPos.lerp(new Vector3(...target.sunPos), k)
+      now.hemiSky.lerp(to.hemiSky, k)
+      now.hemiGround.lerp(to.hemiGround, k)
+      now.sun.lerp(to.sun, k)
+      now.glass.lerp(to.glass, k)
+      now.pool.lerp(to.pool, k)
+      now.sunPos.lerp(to.sunPos, k)
       for (const key of ['hemi', 'sunI', 'interior', 'glassO', 'spire', 'env', 'city']) now[key] = ease(now[key], target[key], k)
       hemi.color.copy(now.hemiSky)
       hemi.groundColor.copy(now.hemiGround)
@@ -453,13 +472,14 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
       glassMat.opacity = now.glassO
       poolMat.color.copy(now.pool)
       poolMat.emissive.copy(now.pool).multiplyScalar(now.city * 0.15)
-      now.fog.lerp(new Color(target.fog), k)
-      now.ground.lerp(new Color(target.ground), k)
+      now.fog.lerp(to.fog, k)
+      now.ground.lerp(to.ground, k)
       scene.fog.color.copy(now.fog)
       groundMat.color.copy(now.ground)
-      scene.environmentIntensity = now.env
+      glassMat.envMapIntensity = now.env
+      mullionMat.envMapIntensity = now.env
       cityMat.emissiveIntensity = now.city
-      now.facade.lerp(new Color(target.facade), k)
+      now.facade.lerp(to.facade, k)
       cityMat.color.copy(now.facade)
       lobbyMat.emissiveIntensity = 0.2 + now.interior * 0.5
       crownLight.intensity = now.spire * 1.5
