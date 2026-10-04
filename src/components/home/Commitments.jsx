@@ -110,6 +110,7 @@ const Commitments = () => {
                 key={item.key}
                 type="button"
                 role="listitem"
+                data-tick
                 onMouseEnter={() => pick(i)}
                 onFocus={() => pick(i)}
                 onClick={() => pick(i)}

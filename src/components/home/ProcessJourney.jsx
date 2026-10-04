@@ -103,6 +103,7 @@ const ProcessJourney = () => {
                 <button
                   key={processSteps[i].number}
                   type="button"
+                  data-tick
                   onClick={() => jump(i)}
                   className="group absolute -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${(point.x / 1200) * 100}%`, top: `${(point.y / 230) * 100}%` }}

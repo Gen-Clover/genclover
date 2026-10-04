@@ -119,6 +119,7 @@ const ComingSoonCard = ({ className = '' }) => {
   return (
     <motion.div
       variants={v.fadeUp}
+      data-tick
       className={`${className} flex min-h-[12rem] flex-col items-center justify-center rounded-xl border border-dashed border-ink-700 p-8 text-center`}
     >
       <Sparkles className="h-6 w-6 text-accent-500" aria-hidden="true" />
@@ -160,6 +161,7 @@ export const TemplateGrid = () => {
 /** Redesign: the other way into a demo, for people who already have a site. */
 export const RedesignCallout = ({ className = '' }) => (
   <div
+    data-tick
     className={`grid gap-5 rounded-2xl border border-accent-800/60 bg-gradient-to-br from-accent-950/60 to-ink-900 p-6 md:grid-cols-[auto_1fr_auto] md:items-center md:px-8 ${className}`}
   >
     <span className="grid h-11 w-11 place-items-center rounded-full border border-accent-700 bg-accent-950">

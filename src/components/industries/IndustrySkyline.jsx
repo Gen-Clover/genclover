@@ -290,6 +290,7 @@ export const Skyline = ({ active, labels, onEnter, onLeave, onActivate }) => (
           key={id}
           href={`/industries/${id}`}
           role="listitem"
+          data-tick
           aria-label={labels[id]}
           className={`city-bldg ${isActive ? 'is-active' : ''}`}
           style={{ animationDelay: `${0.15 + i * 0.08}s` }}

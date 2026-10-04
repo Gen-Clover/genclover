@@ -84,6 +84,7 @@ const CloverTree = ({ facts }) => {
             <button
               key={pillar.label}
               type="button"
+              data-tick
               onClick={() => choose(i)}
               aria-pressed={on}
               className={`${PILLAR_PLACE[i]} rounded-2xl border p-5 text-left transition-all duration-500 ${
@@ -135,7 +136,7 @@ const CloverTree = ({ facts }) => {
           {facts.map((fact) => {
             const Icon = fact.icon
             return (
-              <div key={fact.label} className="rounded-xl border border-ink-800 bg-ink-950/60 p-4">
+              <div key={fact.label} data-tick className="rounded-xl border border-ink-800 bg-ink-950/60 p-4">
                 <dt className="flex items-center gap-2 font-display text-[11px] uppercase tracking-brand text-silver-500">
                   <Icon className="h-4 w-4 text-accent-500" aria-hidden="true" />
                   {fact.label}

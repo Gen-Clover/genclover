@@ -101,6 +101,7 @@ const StageDial = () => {
               <motion.button
                 key={s.number}
                 type="button"
+                data-tick
                 onClick={() => goTo(i)}
                 className="absolute focus-visible:outline-none"
                 // centred through Framer: its rotate would overwrite a Tailwind translate
