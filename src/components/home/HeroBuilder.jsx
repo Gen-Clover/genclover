@@ -336,6 +336,17 @@ const HeroBuilder = () => {
       <div className="grid-lines pointer-events-none absolute inset-0" aria-hidden="true" />
       <div className="pointer-events-none absolute -right-40 -top-32 h-[42rem] w-[42rem] rounded-full bg-accent-900/25 blur-[150px]" aria-hidden="true" />
 
+      {/* The brand ring and clover against the right edge of the screen, half
+          of it off-screen, as on the brand cover. It sits behind the window. */}
+      <div className="pointer-events-none absolute right-[-18%] top-[-10%] hidden h-[46rem] w-[46rem] lg:block" aria-hidden="true">
+        <div className="absolute inset-0 rounded-full border border-accent-700/40" />
+        <div className="animate-ring-pulse absolute inset-0 rounded-full shadow-glow-ring" />
+        <div className="absolute inset-[14%] rounded-full bg-gradient-to-b from-accent-950/40 to-transparent blur-3xl" />
+        <div className="absolute inset-0 grid place-items-center">
+          <CloverMark className="h-40 w-40 opacity-[0.12]" />
+        </div>
+      </div>
+
       <div className="container relative grid items-center gap-12 pb-14 pt-28 lg:min-h-[100svh] lg:grid-cols-[1fr_1.05fr] lg:gap-14 lg:pb-10 lg:pt-24">
         <motion.div initial="hidden" animate="visible" variants={v.stagger(0.1, 0.05)}>
           <motion.div variants={v.fadeUp} className="flex items-center gap-3">
@@ -374,19 +385,6 @@ const HeroBuilder = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.8, ease: EASE }}
         >
-          {/* the brand ring and clover, centred on the window's right edge: half
-              behind the window, half beside it, as on the brand cover */}
-          <div
-            className="pointer-events-none absolute left-full top-[46%] -z-10 hidden h-[44rem] w-[44rem] -translate-x-1/2 -translate-y-1/2 lg:block"
-            aria-hidden="true"
-          >
-            <div className="absolute inset-0 rounded-full border border-accent-700/40" />
-            <div className="animate-ring-pulse absolute inset-0 rounded-full shadow-glow-ring" />
-            <div className="absolute inset-[14%] rounded-full bg-gradient-to-b from-accent-950/50 to-transparent blur-3xl" />
-            <div className="absolute inset-0 grid place-items-center">
-              <CloverMark className="h-56 w-56 opacity-25" />
-            </div>
-          </div>
           <Builder />
         </motion.div>
       </div>
