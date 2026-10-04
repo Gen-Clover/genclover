@@ -25,6 +25,7 @@ const ServiceCard = ({ service, hidden }) => {
     <Link
       to={`${routes.services}/${service.slug}`}
       draggable={false}
+      data-tick
       tabIndex={hidden ? -1 : undefined}
       aria-hidden={hidden || undefined}
       onClick={(e) => {

@@ -302,6 +302,7 @@ const Builder = () => {
           <button
             key={b.id}
             type="button"
+            data-tick
             onClick={() => {
               setPicked(true)
               setIndex(i)
