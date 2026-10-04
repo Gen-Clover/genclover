@@ -1,102 +1,57 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
-import { Section } from '../components/ui/Section'
-import { SplitScreen, GlassPanel, panelSwap } from '../components/ui/SplitScreen'
-import Button from '../components/ui/Button'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { ArrowRight, MousePointerClick } from 'lucide-react'
 import FinalCTA from '../components/home/FinalCTA'
+import { Skyline, SKYLINE } from '../components/industries/IndustrySkyline'
 import { industryPages } from '../data/industries'
-import { getProjectsByIndustry } from '../data/projects'
 import { getService } from '../data/services'
 import { routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
-import { useMotionVariants, revealOnce } from '../lib/motion'
-import { previewFirstTap, canHover, isKeyboardFocus } from '../lib/pointer'
+import { useMotionVariants } from '../lib/motion'
+import { canHover } from '../lib/pointer'
 
 /**
  * Industries hub. (Spec §13) No invented client claims.
  *
- * Screen 1: the sectors on the left; hovering one previews it on the right
- * (what matters there, the services we bring, and the delivered work in that
- * sector). On small screens the sectors are shown as cards instead.
+ * The sectors as a city: one illustrated building per industry on a shared
+ * street. Hover or focus a building (first tap on touch) and it lights up
+ * while a card shows how we approach that sector; click it to open the
+ * sector page. Until someone interacts, the city gives itself a slow tour.
  */
 
-const IndustryPreview = ({ industry }) => {
-  const services = industry.services.map(getService).filter(Boolean)
-  const work = getProjectsByIndustry(industry.id)
+const TOUR_MS = 3200
+
+const SectorCard = ({ industry }) => {
+  const services = industry.services.map(getService).filter(Boolean).slice(0, 4)
   return (
-    <motion.div {...panelSwap}>
+    <motion.div
+      key={industry.id}
+      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+    >
       <p className="eyebrow">{industry.label}</p>
-      <h2 className="mt-2 text-xl font-semibold leading-snug text-silver-100">{industry.headline}</h2>
-      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-silver-300">
-        {industry.description}
-      </p>
-
-      <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
-        What usually matters here
-      </p>
-      <ul className="mt-2 grid gap-x-4 gap-y-1.5 xl:grid-cols-2">
-        {industry.focusAreas.map((f) => (
-          <li key={f} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
-            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
-            {f}
-          </li>
-        ))}
-      </ul>
-
-      <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
-        What we bring
-      </p>
-      <ul className="mt-2.5 flex flex-wrap gap-1.5">
+      <h2 className="mt-2 text-xl font-semibold leading-snug text-silver-100 md:text-2xl">{industry.headline}</h2>
+      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-silver-400">{industry.description}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
         {services.map((service) => (
-          <li key={service.slug}>
-            <Link
-              to={`${routes.services}/${service.slug}`}
-              className="inline-block rounded border border-ink-700 bg-ink-950/70 px-2.5 py-1 text-xs text-silver-300 transition-colors hover:border-accent-700/60 hover:text-silver-100"
-            >
-              {service.title}
-            </Link>
-          </li>
+          <Link
+            key={service.slug}
+            to={`${routes.services}/${service.slug}`}
+            className="rounded border border-ink-700 bg-ink-950/70 px-2 py-0.5 text-[11px] text-silver-300 transition-colors hover:border-accent-700/60 hover:text-silver-100"
+          >
+            {service.title}
+          </Link>
         ))}
-      </ul>
-
-      <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
-        Delivered in this sector
-      </p>
-      {work.length > 0 ? (
-        <ul className="mt-2 space-y-1">
-          {work.slice(0, 3).map((p) => (
-            <li key={p.slug}>
-              <Link
-                to={`${routes.work}/${p.slug}`}
-                className="group inline-flex items-center gap-2 text-sm text-silver-200 transition-colors hover:text-accent-400"
-              >
-                <ArrowUpRight className="h-3.5 w-3.5 text-accent-500" aria-hidden="true" />
-                {p.title}
-              </Link>
-            </li>
-          ))}
-          {work.length > 3 && (
-            <li className="text-xs text-silver-500">
-              and {work.length - 3} more on the{' '}
-              <Link to={`${routes.industries}/${industry.id}`} className="text-accent-400 hover:text-accent-300">
-                sector page
-              </Link>
-            </li>
-          )}
-        </ul>
-      ) : (
-        <p className="mt-2.5 text-sm text-silver-500">
-          No published project here yet. The capabilities above are the ones we would bring.
-        </p>
-      )}
-
-      <div className="mt-5">
-        <Button to={`${routes.industries}/${industry.id}`} size="sm">
-          Open {industry.label}
+        <Link
+          to={`${routes.industries}/${industry.id}`}
+          className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-accent-400 hover:text-accent-300"
+        >
+          Explore
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Button>
+        </Link>
       </div>
     </motion.div>
   )
@@ -105,121 +60,135 @@ const IndustryPreview = ({ industry }) => {
 const Industries = () => {
   usePageMeta(pageMeta.industries)
   const v = useMotionVariants()
-  const [active, setActive] = useState(industryPages[0].id)
-  const activeIndustry = industryPages.find((i) => i.id === active) ?? industryPages[0]
+  const reduced = useReducedMotion()
+  const navigate = useNavigate()
+
+  const byId = useMemo(() => Object.fromEntries(industryPages.map((i) => [i.id, i])), [])
+  const labels = useMemo(() => Object.fromEntries(industryPages.map((i) => [i.id, i.label])), [])
+  const order = SKYLINE.map((b) => b.id).filter((id) => byId[id])
+
+  const [active, setActive] = useState(null) // lit building
+  const [shown, setShown] = useState(order[0]) // sector in the card
+  const [touched, setTouched] = useState(false) // stops the tour
+  const streetRef = useRef(null)
+
+  // On narrow screens the city scrolls sideways: bring the lit building into view.
+  useEffect(() => {
+    const street = streetRef.current
+    if (!active || !street || street.scrollWidth <= street.clientWidth) return
+    const building = street.querySelector(`[href="${routes.industries}/${active}"]`)
+    if (!building) return
+    const s = street.getBoundingClientRect()
+    const b = building.getBoundingClientRect()
+    street.scrollBy({ left: b.left + b.width / 2 - (s.left + s.width / 2), behavior: reduced ? 'auto' : 'smooth' })
+  }, [active, reduced])
+
+  const light = (id) => {
+    setActive(id)
+    if (id) setShown(id)
+  }
+
+  // The tour: until anyone interacts, light each building in turn.
+  useEffect(() => {
+    if (touched || reduced) return undefined
+    let i = 0
+    const start = setTimeout(() => light(order[0]), 1600)
+    const timer = setInterval(() => {
+      i = (i + 1) % order.length
+      light(order[i])
+    }, TOUR_MS)
+    return () => {
+      clearTimeout(start)
+      clearInterval(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [touched, reduced])
+
+  const enter = (id) => {
+    setTouched(true)
+    light(id)
+  }
+  const leave = () => setActive(null)
+
+  // First tap on touch lights a building; the next opens its page.
+  const activate = (event, id) => {
+    event.preventDefault()
+    if (!canHover() && active !== id) {
+      enter(id)
+      return
+    }
+    navigate(`${routes.industries}/${id}`)
+  }
 
   return (
     <>
-      <SplitScreen
-        label="Industries"
-        cols="lg:grid-cols-[0.8fr_1.2fr]"
-        left={
-          <>
+      <section className="relative isolate overflow-hidden border-b border-ink-800 bg-ink-950" aria-label="Industries">
+        <div className="grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+        <div
+          className="pointer-events-none absolute -left-40 bottom-0 h-[34rem] w-[34rem] rounded-full bg-accent-900/20 blur-[150px]"
+          aria-hidden="true"
+        />
+        <div className="container relative flex flex-col pb-8 pt-24 lg:min-h-[100svh] lg:pt-[5.75rem]">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-12">
             <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
               <motion.p variants={v.fadeUp} className="eyebrow">
                 Industries
               </motion.p>
-              <motion.h1
-                variants={v.riseIn}
-                className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl"
-              >
+              <motion.h1 variants={v.riseIn} className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl">
                 Who we build for.
               </motion.h1>
-              <motion.p variants={v.fadeUp} className="mt-3 max-w-xl text-base leading-relaxed text-silver-400">
-                Every sector has its own constraints and definition of done.
-                <span className="hidden lg:inline"> Hover or tap a sector to see how we approach it.</span>
+              <motion.p variants={v.fadeUp} className="mt-3 flex items-center gap-2 text-sm text-silver-500">
+                <MousePointerClick className="h-4 w-4 text-accent-500" aria-hidden="true" />
+                <span className="[@media(hover:none)]:hidden">Hover a building to visit a sector.</span>
+                <span className="[@media(hover:hover)]:hidden">Tap a building to visit a sector.</span>
               </motion.p>
             </motion.div>
 
-            <motion.ul
-              initial="hidden"
-              animate="visible"
-              variants={v.stagger(0.03, 0.2)}
-              className="mt-5 hidden min-h-0 gap-1.5 overflow-y-auto sm:grid-cols-2 lg:grid"
-            >
-              {industryPages.map((industry) => {
-                const selected = industry.id === activeIndustry.id
-                return (
-                  <motion.li key={industry.id} variants={v.fadeUp}>
-                    <Link
-                      to={`${routes.industries}/${industry.id}`}
-                      onMouseEnter={() => canHover() && setActive(industry.id)}
-                      onFocus={(e) => isKeyboardFocus(e) && setActive(industry.id)}
-                      onClick={previewFirstTap(selected, () => setActive(industry.id))}
-                      className={`flex items-center justify-between gap-3 rounded-lg border px-3.5 py-2.5 text-sm transition-colors ${
-                        selected
-                          ? 'border-accent-700/70 bg-accent-950/35 text-silver-100'
-                          : 'border-ink-800 bg-ink-900/50 text-silver-300 hover:border-ink-600'
-                      }`}
-                    >
-                      <span className="font-medium">{industry.label}</span>
-                    </Link>
-                  </motion.li>
-                )
-              })}
-            </motion.ul>
+            <div className="surface surface-static min-h-[10.5rem] p-5" aria-live="polite">
+              <AnimatePresence mode="wait">
+                {shown && byId[shown] && <SectorCard key={shown} industry={byId[shown]} />}
+              </AnimatePresence>
+            </div>
+          </div>
 
-            <p className="mt-4 text-xs leading-relaxed text-silver-500">
-              Not listed? The engineering discipline does not change.{' '}
-              <Link to={routes.startProject} className="text-accent-400 hover:text-accent-300">
-                Tell us about your sector
-              </Link>
-              .
-            </p>
-          </>
-        }
-        right={
-          <GlassPanel>
-            <AnimatePresence mode="wait">
-              <IndustryPreview key={activeIndustry.id} industry={activeIndustry} />
-            </AnimatePresence>
-          </GlassPanel>
-        }
-      />
+          {/* the city; on narrow screens it scrolls sideways */}
+          <div ref={streetRef} className="-mx-4 mt-6 flex-1 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0 lg:flex lg:items-end">
+            <div className="min-w-[900px] lg:min-w-0 lg:w-full">
+              <Skyline active={active} labels={labels} onEnter={enter} onLeave={leave} onActivate={activate} />
+            </div>
+          </div>
 
-      {/* Small screens: the sectors as cards (the preview panel is desktop-only) */}
-      <Section className="lg:hidden">
-        <motion.ul variants={v.stagger(0.05)} {...revealOnce} className="grid gap-5 md:grid-cols-2">
-          {industryPages.map((industry) => {
-            const services = industry.services.map(getService).filter(Boolean).slice(0, 3)
-
-            return (
-              <motion.li key={industry.id} variants={v.fadeUp}>
+          {/* the same sectors as plain controls, for keyboards and quick scanning */}
+          <ul className="mt-4 flex flex-wrap gap-2" aria-label="All sectors">
+            {order.map((id) => (
+              <li key={id}>
                 <Link
-                  to={`${routes.industries}/${industry.id}`}
-                  className="surface surface-hover group flex h-full flex-col p-7 md:p-8"
+                  to={`${routes.industries}/${id}`}
+                  onMouseEnter={() => enter(id)}
+                  onMouseLeave={leave}
+                  onFocus={() => enter(id)}
+                  onBlur={leave}
+                  className={`inline-flex min-h-[36px] items-center rounded-full border px-3.5 text-xs transition-colors ${
+                    active === id
+                      ? 'border-accent-600 bg-accent-600 text-white'
+                      : 'border-ink-700 bg-ink-900/60 text-silver-400 hover:text-silver-100'
+                  }`}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-lg font-semibold text-silver-100">{industry.label}</h2>
-                    <ArrowUpRight
-                      className="mt-0.5 h-4 w-4 shrink-0 text-silver-600 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-400"
-                      aria-hidden="true"
-                    />
-                  </div>
-
-                  <p className="mt-3 font-display text-sm text-accent-400">{industry.headline}</p>
-
-                  <p className="mt-4 flex-1 text-sm leading-relaxed text-silver-400">
-                    {industry.description}
-                  </p>
-
-                  <div className="mt-6 flex flex-wrap items-center gap-1.5">
-                    {services.map((service) => (
-                      <span
-                        key={service.slug}
-                        className="rounded border border-ink-700 bg-ink-900 px-2 py-0.5 text-[11px] text-silver-400"
-                      >
-                        {service.title}
-                      </span>
-                    ))}
-                  </div>
+                  {labels[id]}
                 </Link>
-              </motion.li>
-            )
-          })}
-        </motion.ul>
-
-      </Section>
+              </li>
+            ))}
+            <li>
+              <Link
+                to={routes.startProject}
+                className="inline-flex min-h-[36px] items-center rounded-full border border-dashed border-ink-600 px-3.5 text-xs text-silver-500 transition-colors hover:border-accent-700 hover:text-silver-200"
+              >
+                Not listed? Tell us about yours
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </section>
 
       <FinalCTA
         title="Your sector has its own rules. We will learn them."

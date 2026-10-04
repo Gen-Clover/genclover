@@ -1,268 +1,154 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, AlertCircle, Check } from 'lucide-react'
-import { Section, SectionHeader } from '../components/ui/Section'
-import { SplitScreen, GlassPanel, panelSwap } from '../components/ui/SplitScreen'
-import Button from '../components/ui/Button'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowUpRight } from 'lucide-react'
 import FinalCTA from '../components/home/FinalCTA'
-import { services, PRICING_STATEMENT } from '../data/services'
-import { getServiceDetail } from '../data/serviceDetails'
+import { serviceMotifs } from '../components/services/ServiceMotifs'
+import { services } from '../data/services'
 import { routes } from '../data/site'
-import { processSteps } from '../data/process'
 import { usePageMeta, pageMeta } from '../lib/seo'
-import { useMotionVariants, revealOnce } from '../lib/motion'
+import { useMotionVariants, EASE } from '../lib/motion'
 import { trackEvent, events } from '../lib/analytics'
-import { previewFirstTap, canHover, isKeyboardFocus } from '../lib/pointer'
 
 /**
  * Services hub. (Spec §6)
  *
- * First screen, sized to fit a laptop viewport at 80–100% zoom:
- *   left  — the heading and a compact grid of service tiles;
- *   right — a translucent preview panel that shows whichever tile is hovered
- *           or focused (overview, the problems it solves, what changes, the
- *           approach), in the same glass style as the header menus.
- * Clicking a tile opens the full service page. On small screens the panel is
- * hidden and the tiles are simple links.
+ * One screen of services and nothing else: eight large tiles in an
+ * asymmetric mosaic, each with its own small animated illustration and its
+ * name. The tiles arrive scattered across the screen and settle into place.
+ * A tile opens its service page, where the detail lives.
  */
 
-const ServicePreview = ({ service }) => {
-  const detail = getServiceDetail(service.slug)
+/**
+ * Where each tile sits in the 12-column mosaic on large screens, in the same
+ * order as services.js. Websites leads as the large tile.
+ */
+const LAYOUT = {
+  websites: 'lg:col-span-5 lg:row-span-2',
+  'web-applications': 'lg:col-span-4',
+  'ai-automation': 'lg:col-span-3 lg:row-span-2',
+  ecommerce: 'lg:col-span-4',
+  'data-analytics': 'lg:col-span-3',
+  'technology-solutions': 'lg:col-span-3',
+  'devops-mlops': 'lg:col-span-3',
+  'digital-marketing-seo': 'lg:col-span-3',
+}
+
+/** Mosaic order: the big tiles first, so grid auto-placement packs them. */
+const ORDER = ['websites', 'web-applications', 'ai-automation', 'ecommerce', 'data-analytics', 'technology-solutions', 'devops-mlops', 'digital-marketing-seo']
+
+/** Fixed scatter offsets, so the server render and the browser agree. */
+const SCATTER = [
+  { x: -120, y: 60, rotate: -7 },
+  { x: 80, y: -70, rotate: 5 },
+  { x: 140, y: 40, rotate: 8 },
+  { x: -40, y: 110, rotate: -4 },
+  { x: -90, y: 120, rotate: 6 },
+  { x: 30, y: 140, rotate: -8 },
+  { x: 110, y: 90, rotate: 4 },
+  { x: 160, y: 130, rotate: -6 },
+]
+
+/** Tall tiles stack the illustration over the title; one-row tiles sit them side by side. */
+const TALL = ['websites', 'ai-automation']
+
+const ServiceTile = ({ service, index, large }) => {
+  const tall = TALL.includes(service.slug)
+  const reduced = useReducedMotion()
+  const Motif = serviceMotifs[service.slug]
   const Icon = service.icon
+  const scatter = SCATTER[index % SCATTER.length]
 
   return (
-    <motion.div key={service.slug} {...panelSwap} className="flex h-full flex-col">
-      <div className="flex items-center gap-3.5">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent-700/70 bg-accent-950/50">
-          <Icon className="h-5 w-5 text-accent-400" aria-hidden="true" />
-        </span>
-        <div className="min-w-0">
-          <p className="eyebrow">{service.title}</p>
-          <h2 className="mt-1 text-xl font-semibold leading-snug text-silver-100">
-            {service.heroHeadline}
-          </h2>
+    <motion.li
+      className={`${LAYOUT[service.slug] ?? ''} ${large ? 'col-span-2' : ''}`}
+      variants={
+        reduced
+          ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
+          : {
+              hidden: { opacity: 0, x: scatter.x, y: scatter.y, rotate: scatter.rotate, scale: 0.92 },
+              visible: { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, transition: { duration: 0.9, ease: EASE } },
+            }
+      }
+    >
+      <Link
+        to={`${routes.services}/${service.slug}`}
+        onClick={() => trackEvent(events.SERVICE_CTA_CLICK, { service: service.slug, location: 'services_hub' })}
+        className="group relative flex h-full min-h-[11rem] flex-col overflow-hidden rounded-2xl border border-ink-700 bg-ink-900/70 p-5 transition-all duration-500 hover:-translate-y-1 hover:border-accent-700/70 hover:bg-ink-850 hover:shadow-[0_24px_60px_-24px_rgb(var(--glow-accent)/0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 lg:min-h-0 lg:p-6"
+      >
+        {/* soft accent bloom that wakes up on hover */}
+        <span
+          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-accent-700/0 blur-3xl transition-colors duration-500 group-hover:bg-accent-700/25"
+          aria-hidden="true"
+        />
+
+        <div className="flex items-start justify-between gap-3">
+          <span className="font-display text-xs font-semibold tracking-brand text-silver-600">
+            {String(services.indexOf(service) + 1).padStart(2, '0')}
+          </span>
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-ink-700 text-silver-500 transition-all duration-500 group-hover:rotate-45 group-hover:border-accent-600 group-hover:bg-accent-600 group-hover:text-white">
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </span>
         </div>
-      </div>
 
-      {detail?.intro && (
-        <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-silver-300">{detail.intro[0]}</p>
-      )}
+        <div
+          className={`relative mx-auto my-3 flex min-h-0 w-full flex-1 items-center justify-center ${large ? 'max-w-md' : 'max-w-[15rem]'} ${
+            tall ? '' : 'lg:absolute lg:bottom-5 lg:right-5 lg:top-16 lg:my-0 lg:w-[47%] lg:max-w-none'
+          }`}
+        >
+          {Motif ? <Motif /> : <Icon className="h-12 w-12 text-accent-500" aria-hidden="true" />}
+        </div>
 
-      <div className="mt-4 grid gap-5 xl:grid-cols-2">
-        {detail?.signals && (
-          <div>
-            <p className="font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
-              Sound familiar?
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {detail.signals.map((sig) => (
-                <li key={sig} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
-                  <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
-                  {sig}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {detail?.outcomes && (
-          <div>
-            <p className="font-display text-[11px] font-semibold uppercase tracking-brand text-silver-500">
-              What changes
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {detail.outcomes.map((o) => (
-                <li key={o.title} className="flex items-start gap-2.5 text-[13px] leading-snug text-silver-300">
-                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-500" aria-hidden="true" />
-                  <span>
-                    <span className="font-medium text-silver-100">{o.title}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {detail?.approach && (
-        <ol className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-4">
-          {detail.approach.map((step, i) => (
-            <li key={step.title} className="border-t border-accent-800/70 pt-2.5">
-              <span className="font-display text-[10px] font-semibold tracking-brand text-accent-400">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <p className="mt-1 text-xs font-medium leading-snug text-silver-200">{step.title}</p>
-            </li>
-          ))}
-        </ol>
-      )}
-
-      <div className="mt-auto flex items-center gap-3 pt-4">
-        <Button to={`${routes.services}/${service.slug}`} size="sm">
-          See full details
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Button>
-        <Button to={routes.startProject} size="sm" variant="ghost">
-          {service.ctaLabel}
-        </Button>
-      </div>
-    </motion.div>
+        <div className={tall ? '' : 'lg:mt-auto lg:max-w-[46%]'}>
+          <h2 className={`font-semibold leading-tight text-silver-100 ${large ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl'}`}>
+            {service.title}
+          </h2>
+          {/* one-row tiles have no room for it beside the illustration */}
+          <p className={`${tall ? '' : 'lg:hidden'} mt-1 max-h-0 overflow-hidden text-sm leading-snug text-silver-400 opacity-0 transition-all duration-500 group-hover:max-h-16 group-hover:opacity-100 group-focus-visible:max-h-16 group-focus-visible:opacity-100 [@media(hover:none)]:max-h-none [@media(hover:none)]:opacity-100`}>
+            {service.shortDescription}
+          </p>
+        </div>
+      </Link>
+    </motion.li>
   )
 }
 
 const Services = () => {
   usePageMeta(pageMeta.services)
   const v = useMotionVariants()
-  const [active, setActive] = useState(services[0].slug)
-  const activeService = services.find((s) => s.slug === active) ?? services[0]
+  const ordered = ORDER.map((slug) => services.find((s) => s.slug === slug)).filter(Boolean)
+  // Anything added to services.js later still shows, after the mosaic.
+  const rest = services.filter((s) => !ORDER.includes(s.slug))
 
   return (
     <>
-      {/* ------------------------------------------ screen 1: tiles + preview */}
-      <SplitScreen
-        label="Services"
-        cols="lg:grid-cols-[0.85fr_1.15fr]"
-        left={
-          <>
-            <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)}>
-              <motion.p variants={v.fadeUp} className="eyebrow">
-                Services
-              </motion.p>
-              <motion.h1
-                variants={v.riseIn}
-                className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl"
-              >
-                What we build.
-              </motion.h1>
-              <motion.p
-                variants={v.fadeUp}
-                className="mt-3 max-w-xl text-base leading-relaxed text-silver-400"
-              >
-                From websites to AI, data and the infrastructure that runs them.
-                <span className="hidden lg:inline">
-                  {' '}Hover or tap a service to preview it, and open it for the full picture.
-                </span>
-              </motion.p>
-            </motion.div>
-
-            <motion.ul
-              initial="hidden"
-              animate="visible"
-              variants={v.stagger(0.04, 0.2)}
-              className="mt-6 grid gap-2 sm:grid-cols-2"
-            >
-              {services.map((service) => {
-                const Icon = service.icon
-                const selected = service.slug === active
-                return (
-                  <motion.li key={service.slug} variants={v.fadeUp}>
-                    <Link
-                      to={`${routes.services}/${service.slug}`}
-                      onMouseEnter={() => canHover() && setActive(service.slug)}
-                      onFocus={(e) => isKeyboardFocus(e) && setActive(service.slug)}
-                      onClick={(e) => {
-                        previewFirstTap(selected, () => setActive(service.slug))(e)
-                        if (!e.defaultPrevented)
-                          trackEvent(events.SERVICE_CTA_CLICK, {
-                            service: service.slug,
-                            location: 'services_hub',
-                          })
-                      }}
-                      className={`group relative flex h-full items-start gap-3.5 rounded-xl border px-4 py-3 transition-colors lg:items-center lg:py-2.5 ${
-                        selected
-                          ? // The selected state only means something beside the desktop preview.
-                            'border-ink-700 bg-ink-900/60 lg:border-accent-700/70 lg:bg-accent-950/35'
-                          : 'border-ink-700 bg-ink-900/60 hover:border-ink-600'
-                      }`}
-                    >
-                      <span
-                        className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition-colors ${
-                          selected ? 'border-ink-700 bg-ink-900 lg:border-accent-700 lg:bg-accent-950/60' : 'border-ink-700 bg-ink-900'
-                        }`}
-                      >
-                        <Icon className="h-4 w-4 text-accent-500" aria-hidden="true" />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-semibold leading-snug text-silver-100">
-                          {service.title}
-                        </span>
-                        <span className="mt-1 block text-[13px] leading-snug text-silver-400 lg:hidden">
-                          {service.shortDescription}
-                        </span>
-                      </span>
-                      <ArrowUpRight
-                        className={`mt-0.5 h-4 w-4 shrink-0 transition-all lg:mt-0 ${
-                          selected ? 'text-silver-600 lg:text-accent-400' : 'text-silver-600'
-                        } group-hover:-translate-y-0.5 group-hover:translate-x-0.5`}
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </motion.li>
-                )
-              })}
-            </motion.ul>
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button to={routes.startProject} size="md">
-                Start a Project
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Button>
-              <Button to={routes.work} size="md" variant="secondary">
-                View Our Work
-              </Button>
-            </div>
-          </>
-        }
-        right={
-          <GlassPanel>
-            <AnimatePresence mode="wait">
-              <ServicePreview key={activeService.slug} service={activeService} />
-            </AnimatePresence>
-          </GlassPanel>
-        }
-      />
-
-      {/* Delivery process, shared across every service */}
-      <Section muted>
-        <SectionHeader
-          eyebrow="Delivery"
-          title="The same process behind every service."
-          description="Whichever service a project starts in, it runs through the same stages."
-          action={
-            <Button to={routes.howWeWork} variant="secondary" size="md">
-              How we work
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          }
+      <section className="relative isolate overflow-hidden border-b border-ink-800 bg-ink-950" aria-label="Services">
+        <div className="grid-lines pointer-events-none absolute inset-0" aria-hidden="true" />
+        <div
+          className="pointer-events-none absolute -right-40 top-0 h-[40rem] w-[40rem] rounded-full bg-accent-900/25 blur-[150px]"
+          aria-hidden="true"
         />
-        <motion.ol
-          variants={v.stagger(0.04)}
-          {...revealOnce}
-          className="flex flex-wrap items-center gap-x-3 gap-y-3"
-        >
-          {processSteps.map((step, i) => (
-            <motion.li key={step.number} variants={v.fadeUp} className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-2 rounded-lg border border-ink-700 bg-ink-850 px-3.5 py-2">
-                <span className="font-display text-[11px] font-semibold tracking-brand text-silver-600">
-                  {step.number}
-                </span>
-                <span className="text-sm font-medium text-silver-200">{step.title}</span>
-              </span>
-              {i < processSteps.length - 1 && (
-                <ArrowRight className="h-3.5 w-3.5 text-silver-600" aria-hidden="true" />
-              )}
-            </motion.li>
-          ))}
-        </motion.ol>
+        <div className="container relative flex flex-col pb-10 pt-24 lg:h-[100svh] lg:max-h-[64rem] lg:min-h-[44rem] lg:pb-8 lg:pt-[5.75rem]">
+          <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)} className="mb-5 flex items-baseline gap-4">
+            <motion.p variants={v.fadeUp} className="eyebrow">
+              Services
+            </motion.p>
+            <motion.h1 variants={v.riseIn} className="text-2xl leading-tight tracking-tight md:text-3xl">
+              What we build.
+            </motion.h1>
+          </motion.div>
 
-        <motion.p
-          variants={v.fadeUp}
-          {...revealOnce}
-          className="mt-10 max-w-prose rounded-xl border border-ink-800 bg-ink-950 p-6 text-sm leading-relaxed text-silver-400"
-        >
-          {PRICING_STATEMENT}
-        </motion.p>
-      </Section>
+          <motion.ul
+            initial="hidden"
+            animate="visible"
+            variants={v.stagger(0.07, 0.1)}
+            className="grid flex-1 grid-cols-2 gap-3 lg:min-h-0 lg:grid-cols-12 lg:grid-rows-3 lg:gap-4"
+          >
+            {[...ordered, ...rest].map((service, i) => (
+              <ServiceTile key={service.slug} service={service} index={i} large={service.slug === 'websites'} />
+            ))}
+          </motion.ul>
+        </div>
+      </section>
 
       <FinalCTA
         title="Not sure which service you need?"

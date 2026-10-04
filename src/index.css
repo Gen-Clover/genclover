@@ -122,6 +122,8 @@
   }
 
   html {
+    /* positioned, so scroll-linked animations can measure against the page */
+    position: relative;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
   }
@@ -205,37 +207,6 @@
   ol.gap-px > li:hover {
     background-color: rgb(var(--ink-900));
     box-shadow: inset 0 1px 0 rgb(var(--accent-500) / 0.7);
-  }
-
-  /*
-   * Phones: turn a stacked list of cards into a swipeable row, one card and a
-   * glimpse of the next on screen, so long card sections stop filling several
-   * screens. Tablets and up keep their normal grid.
-   */
-  @media (max-width: 767px) {
-    .mobile-carousel {
-      display: flex !important;
-      gap: 12px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      margin-inline: -1rem;
-      padding-inline: 1rem;
-      padding-bottom: 4px;
-      background: transparent !important;
-      border: 0 !important;
-      border-radius: 0 !important;
-      scrollbar-width: none;
-    }
-    .mobile-carousel::-webkit-scrollbar {
-      display: none;
-    }
-    .mobile-carousel > * {
-      margin-top: 0 !important;
-      flex: 0 0 84%;
-      scroll-snap-align: start;
-      border: 1px solid rgb(var(--ink-800));
-      border-radius: 0.75rem;
-    }
   }
 
   /*
@@ -432,4 +403,122 @@
 }
 @media (max-width: 639px) {
   .clovi-glass { border-radius: 0; border-width: 0; }
+}
+
+/* ---------------------------------------------------------------------------
+ * Service illustrations on /services (components/services/ServiceMotifs.jsx).
+ * They idle slowly and quicken when their tile is hovered or focused; the
+ * reduced-motion rule above stills them.
+ * ------------------------------------------------------------------------- */
+@layer components {
+  .motif { --motif-speed: 1; }
+  .group:hover .motif,
+  .group:focus-visible .motif { --motif-speed: 0.45; }
+
+  .motif .motif-line { stroke: rgb(var(--silver-600) / 0.55); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.4s; }
+  .motif .motif-thick { stroke-width: 6; stroke: rgb(var(--ink-600)); }
+  .motif .motif-fill { fill: rgb(var(--silver-400) / 0.8); }
+  .motif .motif-soft { fill: rgb(var(--silver-600) / 0.35); }
+  .motif .motif-soft-fill { fill: rgb(var(--ink-700) / 0.8); }
+  .motif .motif-node { fill: rgb(var(--ink-800)); stroke: rgb(var(--silver-500)); stroke-width: 1.5; }
+  .motif .motif-accent { stroke: rgb(var(--accent-500)); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .motif .motif-accent-fill { fill: rgb(var(--accent-500)); }
+  .motif .motif-accent-soft { fill: rgb(var(--accent-500) / 0.14); stroke: rgb(var(--accent-500) / 0.6); }
+  .motif .motif-accent-cube path { fill: rgb(var(--accent-500) / 0.25); stroke: rgb(var(--accent-500)); }
+  .motif .motif-label { fill: rgb(var(--silver-500)); font: 600 9px/1 'Chakra Petch', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+  .group:hover .motif .motif-line { stroke: rgb(var(--silver-500) / 0.8); }
+
+  .motif-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: motif-draw calc(4s * var(--motif-speed)) ease-in-out infinite; }
+  .motif-signal { stroke-dasharray: 0.18 1; stroke-dashoffset: 1.18; animation: motif-signal calc(2.4s * var(--motif-speed)) linear infinite; }
+  .motif-run { stroke-dasharray: 0.06 0.94; animation: motif-run calc(5s * var(--motif-speed)) linear infinite; }
+  .motif-grow { transform-box: fill-box; transform-origin: left; animation: motif-grow calc(3.6s * var(--motif-speed)) ease-in-out infinite; }
+  .motif-type { transform-box: fill-box; transform-origin: left; animation: motif-type calc(4.8s * var(--motif-speed)) steps(14) infinite; }
+  .motif-bar { transform-box: fill-box; transform-origin: bottom; animation: motif-bar calc(2.8s * var(--motif-speed)) ease-in-out infinite alternate; }
+  .motif-pulse { transform-box: fill-box; transform-origin: center; animation: motif-pulse calc(2s * var(--motif-speed)) ease-in-out infinite; }
+  .motif-bob { animation: motif-bob calc(3s * var(--motif-speed)) ease-in-out infinite; }
+  .motif-slide { animation: motif-slide calc(9s * var(--motif-speed)) linear infinite; }
+  .motif-cursor { animation: motif-cursor calc(5s * var(--motif-speed)) ease-in-out infinite; }
+  .motif-climb { animation: motif-climb calc(6s * var(--motif-speed)) cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+  .motif-sink { animation: motif-sink calc(6s * var(--motif-speed)) cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+
+  @keyframes motif-draw { 0% { stroke-dashoffset: 1; } 55%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }
+  @keyframes motif-signal { to { stroke-dashoffset: 0; } }
+  @keyframes motif-run { to { stroke-dashoffset: -1; } }
+  @keyframes motif-grow { 0%, 100% { transform: scaleX(0.55); } 50% { transform: scaleX(1); } }
+  @keyframes motif-type { 0% { transform: scaleX(0); } 70%, 100% { transform: scaleX(1); } }
+  @keyframes motif-bar { from { transform: scaleY(0.45); } to { transform: scaleY(1); } }
+  @keyframes motif-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+  @keyframes motif-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes motif-slide { to { transform: translateX(-186px); } }
+  @keyframes motif-cursor { 0%, 100% { transform: translate(0, 0); } 30% { transform: translate(-60px, -10px); } 60% { transform: translate(-34px, -46px); } }
+  @keyframes motif-climb { 0%, 15% { transform: translateY(0); } 45%, 85% { transform: translateY(-54px); } 100% { transform: translateY(0); } }
+  @keyframes motif-sink { 0%, 15% { transform: translateY(0); } 45%, 85% { transform: translateY(27px); } 100% { transform: translateY(0); } }
+}
+
+/* ---------------------------------------------------------------------------
+ * The industries city on /industries (components/industries/IndustrySkyline).
+ * Buildings rise on load; the active one lights up and the rest dim. The
+ * reduced-motion rule above stills everything.
+ * ------------------------------------------------------------------------- */
+@layer components {
+  .city { overflow: visible; }
+  .city .city-body { fill: rgb(var(--ink-850)); stroke: rgb(var(--silver-500) / 0.75); stroke-width: 1.5; stroke-linejoin: round; transition: stroke 0.4s, fill 0.4s; }
+  .city .city-shade { fill: rgb(var(--ink-900)); }
+  .city .city-glass { fill: rgb(var(--ink-800)); }
+  .city .city-sheen { fill: rgb(var(--silver-100) / 0.05); }
+  .city .city-line { fill: none; stroke: rgb(var(--silver-500) / 0.75); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.4s; }
+  .city .city-faint { opacity: 0.5; }
+  .city .city-thick { stroke-width: 3; }
+  .city .city-win { fill: rgb(var(--ink-600)); transition: fill 0.4s; }
+  .city .city-win-lit { fill: rgb(var(--silver-200) / 0.6); animation: city-flicker 7s ease-in-out infinite; }
+  .city .city-door { fill: rgb(var(--ink-900)); stroke: rgb(var(--silver-600) / 0.45); stroke-width: 1.2; }
+  .city .city-column { fill: rgb(var(--ink-800)); stroke: rgb(var(--silver-600) / 0.45); stroke-width: 1.2; }
+  .city .city-window-big { fill: rgb(var(--ink-800)); stroke: rgb(var(--silver-600) / 0.45); stroke-width: 1.2; }
+  .city .city-awning { fill: rgb(var(--ink-700)); stroke: rgb(var(--silver-600) / 0.45); stroke-width: 1; }
+  .city .city-sign { fill: rgb(var(--ink-900)); stroke: rgb(var(--silver-600) / 0.5); stroke-width: 1.2; }
+  .city .city-sign-text { fill: rgb(var(--silver-400)); font: 700 8px/1 'Chakra Petch', sans-serif; letter-spacing: 0.12em; text-anchor: middle; }
+  .city .city-neon { fill: rgb(var(--accent-400)); font-size: 12px; animation: city-neon 4s steps(1) infinite; }
+  .city .city-accent-fill { fill: rgb(var(--accent-500)); }
+  .city .city-accent-stroke { stroke: rgb(var(--accent-500)); }
+  .city .city-clock { fill: rgb(var(--ink-900)); stroke: rgb(var(--silver-500)); stroke-width: 1.5; }
+  .city .city-hand { stroke: rgb(var(--silver-300)); stroke-width: 2; stroke-linecap: round; }
+  .city .city-hand-long { animation: city-spin 12s linear infinite; }
+  .city .city-hand-short { animation: city-spin 60s linear infinite; }
+  .city .city-signal { fill: none; stroke-width: 2; stroke-linecap: round; animation: city-signal 2.4s ease-out infinite; }
+  .city .city-smoke { fill: rgb(var(--silver-500) / 0.22); transform-box: fill-box; transform-origin: center; animation: city-smoke 3.4s ease-out infinite; }
+  .city .city-blink { animation: city-blink 1.6s steps(1) infinite; }
+  .city .city-flag { transform-box: fill-box; transform-origin: left center; animation: city-flag 2.2s ease-in-out infinite; }
+  .city .city-moon { fill: rgb(var(--silver-300) / 0.08); stroke: rgb(var(--silver-500) / 0.4); stroke-width: 1.5; }
+  .city .city-cloud { fill: rgb(var(--silver-500) / 0.1); }
+  .city .city-cloud-a { animation: city-drift 40s ease-in-out infinite alternate; }
+  .city .city-cloud-b { animation: city-drift 55s ease-in-out infinite alternate-reverse; }
+  .city .city-ground { stroke: rgb(var(--silver-600) / 0.8); }
+  .city .city-road { fill: none; stroke: rgb(var(--silver-600) / 0.35); stroke-width: 2; stroke-dasharray: 18 14; animation: city-road 1.6s linear infinite; }
+  .city .city-truck { animation: city-truck 18s linear infinite; }
+  .city .city-wheel { fill: rgb(var(--ink-950)); stroke: rgb(var(--silver-500)); stroke-width: 2; }
+  .city .city-hit { fill: transparent; }
+
+  .city .city-bldg { cursor: pointer; outline: none; transform-box: fill-box; transform-origin: 50% 100%; animation: city-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; transition: opacity 0.45s; }
+  .city.has-active .city-bldg:not(.is-active) { opacity: 0.5; }
+  .city .city-bldg.is-active .city-body,
+  .city .city-bldg.is-active .city-line { stroke: rgb(var(--accent-500)); }
+  .city .city-bldg.is-active .city-win { fill: rgb(var(--accent-500) / 0.35); }
+  .city .city-bldg.is-active .city-win-lit { fill: rgb(var(--accent-400) / 0.8); }
+  .city .city-tag { opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .city .city-bldg.is-active .city-tag { opacity: 1; }
+  .city .city-tag-bg { fill: rgb(var(--accent-600)); }
+  .city .city-tag-text { fill: #fff; font: 600 13px/1 'Inter Variable', sans-serif; text-anchor: middle; }
+  .city.has-active .city-truck { opacity: 0.4; }
+
+  @keyframes city-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  @keyframes city-flicker { 0%, 100% { opacity: 1; } 45% { opacity: 0.35; } 50% { opacity: 1; } }
+  @keyframes city-neon { 0%, 92%, 96% { opacity: 1; } 94% { opacity: 0.2; } }
+  @keyframes city-spin { to { transform: rotate(360deg); } }
+  @keyframes city-signal { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes city-smoke { 0% { transform: translate(0, 0) scale(0.6); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(18px, -46px) scale(1.6); opacity: 0; } }
+  @keyframes city-blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.15; } }
+  @keyframes city-flag { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(-6deg) scaleX(0.9); } }
+  @keyframes city-drift { from { transform: translateX(-60px); } to { transform: translateX(60px); } }
+  @keyframes city-road { to { stroke-dashoffset: -32; } }
+  @keyframes city-truck { from { transform: translateX(-120px); } to { transform: translateX(1760px); } }
 }

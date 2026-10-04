@@ -88,6 +88,7 @@ export default {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
         'ring-pulse': 'ring-pulse 6s ease-in-out infinite',
         marquee: 'marquee 120s linear infinite',
+        ribbon: 'marquee 70s linear infinite',
         'node-pulse': 'node-pulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite',
       },
     },

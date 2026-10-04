@@ -59,6 +59,8 @@ const devApi = (env) => ({
   },
 })
 
+const TEMPLATE_SLUGS = ['verdant', 'folio', 'clarity']
+
 export default defineConfig(({ mode, isSsrBuild }) => ({
   plugins: [react(), devApi(loadEnv(mode, process.cwd(), ''))],
   // The server bundle (pre-rendering only) needs no copy of public/.
@@ -78,5 +80,16 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
   },
   build: {
     outDir: 'dist',
+    // Website templates (templates/<slug>/index.html) are standalone pages
+    // shown full screen at /services/websites/templates/<slug>. Each is built
+    // as its own entry so its code and assets load only on that page.
+    rollupOptions: isSsrBuild
+      ? undefined
+      : {
+          input: {
+            main: resolve('index.html'),
+            ...Object.fromEntries(TEMPLATE_SLUGS.map((slug) => [`template-${slug}`, resolve(`templates/${slug}/index.html`)])),
+          },
+        },
   },
 }))

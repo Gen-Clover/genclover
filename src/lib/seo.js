@@ -124,6 +124,12 @@ export const pageMeta = {
       'Tell us about your project in eight short questions, so our first reply is about your goals rather than a generic capability deck.',
     path: '/start-a-project',
   },
+  bookDemo: {
+    title: 'Book a Website Demo: Template or Redesign | Gen Clover',
+    description:
+      'See a demo built on one of our website templates, or a demo redesign of your current website using your own brand, before you commit to anything.',
+    path: '/book-a-demo',
+  },
   privacy: {
     title: 'Privacy Notice | Gen Clover',
     description: 'How Gen Clover handles the information you submit through this website.',

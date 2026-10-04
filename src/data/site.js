@@ -61,6 +61,7 @@ export const routes = {
   about: '/about',
   careers: '/careers',
   startProject: '/start-a-project',
+  bookDemo: '/book-a-demo',
   privacy: '/privacy',
   terms: '/terms',
 }
@@ -100,6 +101,7 @@ export const footerNav = [
       { label: 'Industries', to: routes.industries },
       { label: 'Careers', to: routes.careers },
       { label: 'Start a Project', to: routes.startProject },
+      { label: 'Book a Website Demo', to: routes.bookDemo },
     ],
   },
 ]

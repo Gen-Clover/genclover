@@ -19,6 +19,8 @@ import {
  * Shape — Service {
  *   slug, title, shortDescription, heroHeadline, heroDescription,
  *   capabilities[], deliverables[], relatedIndustries[], ctaLabel, closingTitle
+ *   templates      true for the template-led layout (WebsitesLanding), which
+ *                  opens on the website templates in data/templates.js
  * }
  * relatedProjects is derived at read time from projects.js rather than stored
  * twice, so a new project only has to be declared in one place.
@@ -47,7 +49,8 @@ export const services = [
       'From professional corporate websites to high-conversion digital experiences, Gen Clover designs and engineers websites that look exceptional, communicate clearly and perform reliably.',
     closingTitle: 'Planning a new website?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Our Work', to: '/work' },
+    secondaryCta: { label: 'Explore Templates', to: '/services/websites#templates' },
+    templates: true,
     workCategory: 'websites',
     capabilities: [
       { label: 'Corporate Websites', description: 'A credible digital presence for established businesses.' },
