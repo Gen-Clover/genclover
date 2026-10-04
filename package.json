@@ -22,7 +22,7 @@
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.30.6",
+    "react-router-dom": "^7.18.4",
     "three": "^0.186.1"
   },
   "devDependencies": {
