@@ -61,6 +61,16 @@ export const websiteTemplates = [
     thumbnail: '/templates/meridian.jpg',
     chrome: 'dark',
   },
+  {
+    slug: 'orchard',
+    name: 'Orchard',
+    style: 'Fresh food and drink brand',
+    summary:
+      'A crisp brand site for a juice or food label: 3D bottles you can spin, a story that fills in as you scroll, and a flavour carousel.',
+    bestFor: ['Juice and beverage brands', 'Organic and health food', 'Cafes and bakeries', 'D2C products'],
+    thumbnail: '/templates/orchard.jpg',
+    chrome: 'light',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null

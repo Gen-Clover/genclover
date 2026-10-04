@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>sipsy · Cold-pressed juice</title>
+    <meta name="description" content="sipsy: cold-pressed juice from whole fruit and greens, bottled the same morning." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23243d16'/%3E%3Ccircle cx='22' cy='9' r='3' fill='%23c8e86a'/%3E%3Cpath d='M9 22c3 3 10 3 12-1' fill='none' stroke='%23f4f6ea' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <!-- -------------------------------------------------------------- frame -->
+    <div class="frame" id="top">
+      <!-- the hero panel; the dark tab cuts a notch for the menu -->
+      <section class="panel panel--hero">
+        <header class="tab tab--nav">
+          <nav aria-label="Main">
+            <a href="#top" class="is-current">Home</a>
+            <a href="#ingredients">Ingredients</a>
+            <a href="#lineup">Juices</a>
+            <a href="#words">Reviews</a>
+          </nav>
+          <a class="pill pill--light" href="#lineup">Order now<span class="pill__dot"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" /></svg></span></a>
+        </header>
+
+        <a class="logo" href="#top" aria-label="sipsy home">sips<span>y</span></a>
+
+        <div class="hero">
+          <div class="hero__copy">
+            <h1 class="wide reveal-lines"><span>Pressed fresh.</span><span>Poured simple.</span></h1>
+            <p class="small muted">Cold-pressed juice from whole fruit and greens, bottled the same morning.</p>
+            <a class="pill pill--dark" href="#lineup">Find your flavour<span class="pill__dot"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" /></svg></span></a>
+            <div class="badge" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <defs><path id="ring" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1 -88 0" /></defs>
+                <text><textPath href="#ring">SIP · FEEL GOOD · REPEAT · SIP · FEEL GOOD · REPEAT ·</textPath></text>
+              </svg>
+              <span class="badge__leaf"></span>
+            </div>
+          </div>
+          <div class="hero__media">
+            <img src="./assets/hero-apples.jpg" alt="Fresh green apples" />
+            <canvas id="heroBottle" aria-label="A 3D sipsy bottle. Drag to turn it."></canvas>
+            <span class="hero__tag">Drag to turn</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- the ingredients panel, joined to the hero by a stepped notch -->
+      <section class="panel panel--ingredients" id="ingredients">
+        <div class="ingredients">
+          <div class="ingredients__copy">
+            <span class="chip">What goes in</span>
+            <h2 class="wide">Few ingredients.<br />All of them real.</h2>
+            <p class="small muted">Whole fruit and greens, pressed cold. Nothing from a powder, nothing from a lab.</p>
+            <a class="pill pill--outline" href="#lineup">See the juices<span class="pill__dot"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" /></svg></span></a>
+          </div>
+          <ul class="tiles" role="list">
+            <li class="tile"><img src="./assets/avocado.jpg" alt="" /><span>Avocado</span><p>Creamy body and good fats.</p></li>
+            <li class="tile"><img src="./assets/cucumber.jpg" alt="" /><span>Cucumber</span><p>Cool, crisp and mostly water.</p></li>
+            <li class="tile"><img src="./assets/green-apple.jpg" alt="" /><span>Green apple</span><p>A bright, tart lift in every sip.</p></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ------------------------------------------------------------- why -->
+    <section class="sheet" id="why">
+      <span class="chip">Why sipsy</span>
+      <h2 class="wide split"><span>Less in the bottle.</span><span>More in your day.</span></h2>
+      <div class="why">
+        <article class="why__card" data-speed="0.04">
+          <p class="why__head"><b>01</b>Whole fruit,<br /><span>nothing hidden</span></p>
+          <div class="why__img why__img--pink"><img src="./assets/blend-pink.jpg" alt="A strawberry milkshake" /></div>
+          <p class="small muted">Every ingredient is on the label, and every one of them grew somewhere.</p>
+        </article>
+        <article class="why__card why__card--low" data-speed="-0.05">
+          <p class="why__head"><b>02</b>Pressed cold,<br /><span>bottled fast</span></p>
+          <div class="why__img why__img--green"><img src="./assets/blend-green.jpg" alt="A green smoothie with apple and kiwi" /></div>
+          <p class="small muted">No heat, so the taste and the goodness stay where they belong.</p>
+        </article>
+        <article class="why__card why__card--mid" data-speed="0.03">
+          <p class="why__head"><b>03</b>Made to fit<br /><span>every day</span></p>
+          <div class="why__img why__img--rose"><img src="./assets/blend-berry.jpg" alt="A berry smoothie with strawberries" /></div>
+          <p class="small muted">One bottle, one moment of good, morning, desk or after a run.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------- story -->
+    <section class="story" id="story">
+      <span class="chip">Our story</span>
+      <p class="story__text" id="storyText">It began with a simple question: why should good juice be complicated? So we press whole fruit and greens, cold and slow, and leave out everything you would not put in yourself.</p>
+      <div class="story__scene">
+        <img src="./assets/moss.jpg" alt="" />
+        <canvas id="trio" aria-label="Three sipsy bottles on a mossy rock"></canvas>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------- line-up -->
+    <section class="sheet" id="lineup">
+      <span class="chip">The line-up</span>
+      <h2 class="wide split"><span>Three bottles,</span><span>one idea: real fruit.</span></h2>
+      <div class="product" id="product">
+        <div class="product__stage">
+          <canvas id="productBottle" aria-label="The selected juice in 3D. Drag to turn it."></canvas>
+        </div>
+        <div class="product__info" aria-live="polite">
+          <h3 class="wide" id="productName">Green Garden</h3>
+          <p class="small muted" id="productText"></p>
+          <div class="accordion" id="accordion"></div>
+          <div class="product__buy">
+            <a class="pill pill--dark" href="#lineup">Add to basket<span class="pill__dot"><svg viewBox="0 0 16 16"><path d="M3 5h10l-1 7H4zM6 5a2 2 0 0 1 4 0" /></svg></span></a>
+            <span class="price" id="productPrice">₹XXX</span>
+          </div>
+        </div>
+      </div>
+      <div class="product__nav">
+        <button type="button" class="round" id="prev" aria-label="Previous juice"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5" /></svg></button>
+        <div class="flavours" id="flavourDots" role="group" aria-label="Choose a juice"></div>
+        <button type="button" class="round round--dark" id="next" aria-label="Next juice"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5" /></svg></button>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------- ribbon -->
+    <section class="moments" aria-label="sipsy moments">
+      <img src="./assets/picnic.jpg" alt="A picnic blanket on the grass" />
+      <img src="./assets/track.jpg" alt="A running track" />
+      <svg class="ribbon" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
+        <path id="wave" d="M-40 240 C 180 330, 360 330, 560 230 S 960 90, 1240 170" />
+        <use href="#wave" class="ribbon__band" />
+        <text><textPath href="#wave" id="ribbonText" startOffset="0">PRESSED THIS MORNING · WHOLE FRUIT · NOTHING ADDED · SIP SLOWLY · PRESSED THIS MORNING · WHOLE FRUIT · NOTHING ADDED · SIP SLOWLY · PRESSED THIS MORNING · WHOLE FRUIT · NOTHING ADDED · SIP SLOWLY ·</textPath></text>
+      </svg>
+    </section>
+
+    <!-- ------------------------------------------------------------- words -->
+    <section class="words" id="words">
+      <span class="chip">Sipped and said</span>
+      <h2 class="wide split"><span>Good sips,</span><span>kind words.</span></h2>
+      <div class="reviews" id="reviews" tabindex="0" aria-label="Reviews. Use the arrow keys to move through them."></div>
+    </section>
+
+    <!-- ------------------------------------------------------------ footer -->
+    <footer class="footer">
+      <div class="footer__top">
+        <div>
+          <a class="logo logo--big" href="#top">sips<span>y</span></a>
+          <p class="wide footer__line">Take the good<br />with you.</p>
+        </div>
+        <div class="footer__cols">
+          <div><b>Shop</b><a href="#lineup">Best sellers</a><a href="#lineup">All juices</a><a href="#ingredients">Ingredients</a></div>
+          <div><b>Explore</b><a href="#story">Our story</a><a href="#why">Why sipsy</a><a href="mailto:hello@sipsy.example">Contact</a></div>
+          <div><b>Follow</b><a href="#">Instagram</a><a href="#">Pinterest</a><a href="#">YouTube</a></div>
+        </div>
+      </div>
+      <div class="footer__sky">
+        <img src="./assets/sky.jpg" alt="A blue sky with clouds" />
+        <canvas id="cheers" aria-hidden="true"></canvas>
+      </div>
+      <p class="footer__legal">© 2026 sipsy. A demo brand.</p>
+    </footer>
+  </body>
+</html>
