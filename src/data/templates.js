@@ -51,6 +51,26 @@ export const websiteTemplates = [
     thumbnail: '/templates/clarity.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'meridian',
+    name: 'Meridian',
+    style: 'Interactive 3D real estate',
+    summary:
+      'A tower you can explore in 3D: hover any floor for what is on it, open its plan, and relight the scene for day, dusk or night.',
+    bestFor: ['Real estate developers', 'Property consultants', 'Hotels and serviced apartments', 'Architects'],
+    thumbnail: '/templates/meridian.jpg',
+    chrome: 'light',
+  },
+  {
+    slug: 'orchard',
+    name: 'Orchard',
+    style: 'Fresh food and drink brand',
+    summary:
+      'A crisp brand site for a juice or food label: 3D bottles you can spin, a story that fills in as you scroll, and a flavour carousel.',
+    bestFor: ['Juice and beverage brands', 'Organic and health food', 'Cafes and bakeries', 'D2C products'],
+    thumbnail: '/templates/orchard.jpg',
+    chrome: 'light',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
