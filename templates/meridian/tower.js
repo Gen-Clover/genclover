@@ -1,14 +1,12 @@
 import {
   ACESFilmicToneMapping,
-  AdditiveBlending,
   BoxGeometry,
-  BufferAttribute,
-  BufferGeometry,
   CanvasTexture,
   Color,
   ConeGeometry,
   CylinderGeometry,
   DirectionalLight,
+  Fog,
   EdgesGeometry,
   ExtrudeGeometry,
   Group,
@@ -23,9 +21,8 @@ import {
   MeshStandardMaterial,
   PerspectiveCamera,
   PlaneGeometry,
+  PMREMGenerator,
   PointLight,
-  Points,
-  PointsMaterial,
   Quaternion,
   Raycaster,
   Scene,
@@ -35,6 +32,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 /**
  * The Meridian tower: a twisting residential tower on a landscaped podium,
@@ -49,9 +47,9 @@ const PODIUM_H = 0.5
 
 /** Lighting presets. Each value is eased toward on every frame. */
 export const MOODS = {
-  day: { hemiSky: '#d8ecff', hemiGround: '#b8a98c', hemi: 1.15, sun: '#fff3dd', sunI: 2.4, sunPos: [6, 9, 5], interior: 0.08, glass: '#7f9fbd', glassO: 0.55, spire: 0.2, stars: 0, pool: '#7fb6d6' },
-  dusk: { hemiSky: '#f6c2a0', hemiGround: '#2e2442', hemi: 0.8, sun: '#ffb27a', sunI: 1.15, sunPos: [8, 2.2, 3], interior: 0.95, glass: '#46506e', glassO: 0.5, spire: 1, stars: 0.25, pool: '#8a9cc4' },
-  night: { hemiSky: '#33406a', hemiGround: '#07080f', hemi: 0.38, sun: '#9fb4ff', sunI: 0.45, sunPos: [-5, 7, 4], interior: 1.7, glass: '#1c2436', glassO: 0.42, spire: 1.6, stars: 1, pool: '#2a3f6e' },
+  day: { hemiSky: '#d8ecff', hemiGround: '#b8a98c', hemi: 1.05, sun: '#fff3dd', sunI: 2.4, sunPos: [6, 9, 5], interior: 0.08, glass: '#9db8d2', glassO: 0.7, spire: 0.2, pool: '#7fb6d6', fog: '#cfe0ef', env: 0.9, city: 0, facade: '#ffffff', ground: '#8a8f96' },
+  dusk: { hemiSky: '#f6c2a0', hemiGround: '#2e2442', hemi: 0.8, sun: '#ffb27a', sunI: 1.15, sunPos: [8, 2.2, 3], interior: 0.95, glass: '#5a6280', glassO: 0.62, spire: 1, pool: '#8a9cc4', fog: '#d7a090', env: 0.55, city: 0.45, facade: '#a8949a', ground: '#4a4250' },
+  night: { hemiSky: '#33406a', hemiGround: '#07080f', hemi: 0.38, sun: '#9fb4ff', sunI: 0.45, sunPos: [-5, 7, 4], interior: 1.7, glass: '#1c2436', glassO: 0.5, spire: 1.6, pool: '#2a3f6e', fog: '#2c2550', env: 0.25, city: 1.1, facade: '#2e2c3c', ground: '#1b1a26' },
 }
 
 /** A rounded rectangle footprint. */
@@ -89,6 +87,47 @@ const softShadow = () => {
   return new CanvasTexture(c)
 }
 
+/** Opaque in the middle, clear at the rim, so the ground melts into the sky. */
+const radialFade = () => {
+  const c = document.createElement('canvas')
+  c.width = c.height = 256
+  const g = c.getContext('2d')
+  const grad = g.createRadialGradient(128, 128, 30, 128, 128, 128)
+  grad.addColorStop(0, '#fff')
+  grad.addColorStop(0.55, '#fff')
+  grad.addColorStop(1, '#000')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 256, 256)
+  return new CanvasTexture(c)
+}
+
+/** Fine facades: a colour map of glass bands and a glow map of the lit windows. */
+const facadeTextures = () => {
+  const draw = (lit) => {
+    const c = document.createElement('canvas')
+    c.width = c.height = 256
+    const g = c.getContext('2d')
+    g.fillStyle = lit ? '#000' : '#c9cdd2'
+    g.fillRect(0, 0, 256, 256)
+    let seed = 7
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+    for (let y = 4; y < 256; y += 8) {
+      for (let x = 3; x < 256; x += 6) {
+        const on = rnd() < 0.3
+        if (lit) {
+          if (!on) continue
+          g.fillStyle = '#ffd59a'
+        } else g.fillStyle = '#7d8691'
+        g.fillRect(x, y, 4, 5)
+      }
+    }
+    const t = new CanvasTexture(c)
+    t.colorSpace = SRGBColorSpace
+    return t
+  }
+  return { map: draw(false), glow: draw(true) }
+}
+
 const seeded = (seed) => () => {
   seed = (seed * 16807) % 2147483647
   return (seed - 1) / 2147483646
@@ -113,17 +152,49 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
   const hemi = new HemisphereLight('#ffffff', '#000000', 1)
   const sun = new DirectionalLight('#ffffff', 2)
   scene.add(hemi, sun)
+  // a soft studio light-box, so glass and metal have something to reflect
+  const pmrem = new PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.fog = new Fog('#d9a493', 12, 38)
 
   const world = new Group()
   scene.add(world)
 
   /* ground, shadow, pool, trees */
-  const ground = new Mesh(new CylinderGeometry(4.2, 4.4, 0.12, 64), new MeshStandardMaterial({ color: '#2b2e33', roughness: 0.95 }))
-  ground.position.y = -0.06
+  // streets fading into the haze, so the sky photograph shows beyond them
+  const groundMat = new MeshStandardMaterial({ color: '#4a4250', roughness: 0.95, transparent: true, alphaMap: radialFade(), depthWrite: false })
+  const ground = new Mesh(new PlaneGeometry(110, 110), groundMat)
+  ground.rotation.x = -Math.PI / 2
+  ground.position.y = -0.01
   world.add(ground)
-  const lawn = new Mesh(new CylinderGeometry(3.9, 3.9, 0.02, 64), new MeshStandardMaterial({ color: '#4d6e46', roughness: 1 }))
-  lawn.position.y = 0.01
+  const lawn = new Mesh(extrude(footprint(8.2, 8.2, 0.6), 0.04), new MeshStandardMaterial({ color: '#4d6e46', roughness: 1 }))
   world.add(lawn)
+  const curb = new Mesh(extrude(footprint(8.5, 8.5, 0.7), 0.025), new MeshStandardMaterial({ color: '#b9b4aa', roughness: 0.9 }))
+  world.add(curb)
+
+  /* the neighbourhood: blocks of lower buildings with lit windows */
+  const facade = facadeTextures()
+  const cityMat = new MeshStandardMaterial({ color: '#ffffff', roughness: 0.75, metalness: 0.1, map: facade.map, emissiveMap: facade.glow, emissive: '#ffcf8a', emissiveIntensity: 0.7 })
+  const BLOCKS = 180
+  const city = new InstancedMesh(new BoxGeometry(1, 1, 1), cityMat, BLOCKS)
+  const cm = new Matrix4()
+  let placed = 0
+  for (let gx = -9; gx <= 9 && placed < BLOCKS; gx++) {
+    for (let gz = -9; gz <= 9 && placed < BLOCKS; gz++) {
+      const x = gx * 2.6 + (random() - 0.5) * 0.6
+      const z = gz * 2.6 + (random() - 0.5) * 0.6
+      const d = Math.hypot(x, z)
+      if (d < 9 || d > 26 || random() < 0.3) continue
+      // a low skyline: the tower should be the only thing reaching up
+      const h = 0.4 + random() * random() * (d < 14 ? 2.6 : 1.6)
+      const w = 1.1 + random() * 0.9
+      const dd = 1.1 + random() * 0.9
+      cm.compose(new Vector3(x, h / 2, z), new Quaternion(), new Vector3(w, h, dd))
+      city.setMatrixAt(placed++, cm)
+    }
+  }
+  city.count = placed
+  world.add(city)
   const shadow = new Mesh(new PlaneGeometry(4.4, 4.4), new MeshBasicMaterial({ map: softShadow(), transparent: true, depthWrite: false }))
   shadow.rotation.x = -Math.PI / 2
   shadow.position.y = 0.025
@@ -242,20 +313,6 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
   crown.add(crownLight)
   world.add(crown)
 
-  /* stars, faded in at night */
-  const starGeo = new BufferGeometry()
-  const starPos = new Float32Array(600 * 3)
-  for (let i = 0; i < 600; i++) {
-    const a = random() * Math.PI * 2
-    const e = 0.15 + random() * 1.2
-    const r = 60
-    starPos[i * 3] = Math.cos(a) * Math.cos(e) * r
-    starPos[i * 3 + 1] = Math.sin(e) * r
-    starPos[i * 3 + 2] = Math.sin(a) * Math.cos(e) * r
-  }
-  starGeo.setAttribute('position', new BufferAttribute(starPos, 3))
-  const starMat = new PointsMaterial({ color: '#ffffff', size: 0.18, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending })
-  scene.add(new Points(starGeo, starMat))
 
   /* ------------------------------------------------------------ mood */
 
@@ -272,7 +329,11 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
     interior: target.interior,
     glassO: target.glassO,
     spire: target.spire,
-    stars: target.stars,
+    env: target.env,
+    city: target.city,
+    fog: new Color(target.fog),
+    ground: new Color(target.ground),
+    facade: new Color(target.facade),
   }
   const setMood = (name) => Object.assign(target, MOODS[name])
 
@@ -381,7 +442,7 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
       now.glass.lerp(new Color(target.glass), k)
       now.pool.lerp(new Color(target.pool), k)
       now.sunPos.lerp(new Vector3(...target.sunPos), k)
-      for (const key of ['hemi', 'sunI', 'interior', 'glassO', 'spire', 'stars']) now[key] = ease(now[key], target[key], k)
+      for (const key of ['hemi', 'sunI', 'interior', 'glassO', 'spire', 'env', 'city']) now[key] = ease(now[key], target[key], k)
       hemi.color.copy(now.hemiSky)
       hemi.groundColor.copy(now.hemiGround)
       hemi.intensity = now.hemi
@@ -391,11 +452,18 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
       glassMat.color.copy(now.glass)
       glassMat.opacity = now.glassO
       poolMat.color.copy(now.pool)
-      poolMat.emissive.copy(now.pool).multiplyScalar(now.stars * 0.25)
+      poolMat.emissive.copy(now.pool).multiplyScalar(now.city * 0.15)
+      now.fog.lerp(new Color(target.fog), k)
+      now.ground.lerp(new Color(target.ground), k)
+      scene.fog.color.copy(now.fog)
+      groundMat.color.copy(now.ground)
+      scene.environmentIntensity = now.env
+      cityMat.emissiveIntensity = now.city
+      now.facade.lerp(new Color(target.facade), k)
+      cityMat.color.copy(now.facade)
       lobbyMat.emissiveIntensity = 0.2 + now.interior * 0.5
       crownLight.intensity = now.spire * 1.5
       beaconMat.color.setRGB(1, 0.35, 0.3).multiplyScalar(0.4 + 0.6 * Math.max(0, Math.sin(t / 400)) * now.spire)
-      starMat.opacity = now.stars
 
       // floors: lit windows, hover and selection glow
       floors.forEach((f, i) => {
@@ -415,7 +483,7 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
       view.focusY = ease(view.focusY, view.targetFocusY, reduced ? 1 : 0.06)
       view.distance = ease(view.distance, view.targetDistance, reduced ? 1 : 0.06)
       world.rotation.y = view.rotation
-      camera.position.set(view.distance * 0.82, view.focusY + view.distance * 0.28, view.distance * 0.57)
+      camera.position.set(view.distance * 0.82, view.focusY + view.distance * 0.16, view.distance * 0.57)
       camera.lookAt(0, view.focusY, 0)
 
       renderer.render(scene, camera)

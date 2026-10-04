@@ -32,9 +32,13 @@ h2 { font-size: clamp(34px, 4vw, 54px); line-height: 1.05; margin-top: 10px; }
   z-index: -1;
   transition: background 1.2s ease;
 }
-body[data-mood='day'] .sky { background: linear-gradient(180deg, #6fa6d8 0%, #b9d6ee 55%, #e8eef2 100%); }
-body[data-mood='dusk'] .sky { background: linear-gradient(180deg, #1d1b3a 0%, #6b3a5c 45%, #e0855a 80%, #f2b277 100%); }
-body[data-mood='night'] .sky { background: linear-gradient(180deg, #05060d 0%, #0e1430 60%, #1a2246 100%); }
+/* three photographed skies, cross-faded by the light switch */
+.sky::before, .sky::after, .sky { background-size: cover; background-position: center; }
+.sky { background-image: url('./assets/sky-day.jpg'); }
+.sky::before, .sky::after { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+.sky::before { background-image: url('./assets/sky-dusk.jpg'); }
+.sky::after { background-image: url('./assets/sky-night.jpg'); }
+body[data-mood='dusk'] .sky::before, body[data-mood='night'] .sky::after { opacity: 1; }
 body[data-mood='day'] .hero .eyebrow, body[data-mood='day'] .hero h1 em { color: #8a5a12; }
 body[data-mood='day'] .hero { --ink: #18202b; --muted: rgba(24, 32, 43, 0.7); --faint: rgba(24, 32, 43, 0.45); --line: rgba(24, 32, 43, 0.16); }
 
@@ -89,6 +93,10 @@ body[data-mood='day'] .hero { --ink: #18202b; --muted: rgba(24, 32, 43, 0.7); --
 
 .hero { position: relative; height: 100vh; min-height: 640px; overflow: hidden; color: var(--ink); }
 .tower { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+/* a soft scrim behind the headline, so the city never fights the copy */
+.hero::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(14, 12, 24, 0.55) 0%, rgba(14, 12, 24, 0.25) 34%, transparent 55%); transition: background 1.2s; }
+body[data-mood='day'] .hero::after { background: linear-gradient(90deg, rgba(240, 246, 252, 0.8) 0%, rgba(240, 246, 252, 0.4) 34%, transparent 55%); }
+.hero__copy, .mood, .hint, .floor-panel { z-index: 2; }
 .tower:active { cursor: grabbing; }
 .hero__copy {
   position: absolute;
