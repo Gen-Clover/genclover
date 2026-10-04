@@ -72,6 +72,7 @@ const Privacy = () => {
       body: [
         'This website does not set advertising cookies. We store campaign attribution for the length of your browser session so that an inquiry can be connected to how you arrived.',
         'We use Google Analytics to understand how the site is used: which pages are visited, how visitors arrive, and whether they start or complete the inquiry and application forms. Google Analytics sets its own first-party cookies for this and receives technical information such as your browser, device type and approximate location. We never send it your name, email address, phone number, CV or anything you type into a form. You can block these cookies in your browser settings or with the Google Analytics opt-out browser add-on.',
+        'We also keep our own anonymous visit log, so we can see how the site is used. Your browser stores a random identifier that is not linked to your name or contact details, and we record the pages you open, how long each is on screen, how far you scroll and which buttons and links you click, together with your browser, device type and the approximate city and country of your connection. We do not store your IP address or anything you type. These records are deleted after 180 days. If your browser sends a Do Not Track or Global Privacy Control signal, nothing is recorded; you can also clear the identifier at any time by clearing the stored data for genclover.com in your browser.',
       ],
     },
     {

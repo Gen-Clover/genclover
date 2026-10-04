@@ -26,6 +26,8 @@ export const events = {
   DEMO_SUBMIT: 'demo_request_submit',
 }
 
+import { logVisitEvent } from './visitorLog'
+
 /** Fields that must never leave the browser as analytics payload. */
 const BLOCKED_KEYS = new Set(['name', 'email', 'phone', 'company', 'details', 'message'])
 
@@ -58,6 +60,8 @@ export const initAnalytics = () => {
 
 export const trackEvent = (name, payload = {}) => {
   if (typeof window === 'undefined') return
+
+  logVisitEvent(name, scrub(payload))
 
   const data = {
     ...scrub(payload),

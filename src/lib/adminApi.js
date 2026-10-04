@@ -36,5 +36,7 @@ export const adminApi = {
   listJobs: () => request('GET', '/api/admin/jobs').then((d) => d.jobs),
   createJob: (job) => request('POST', '/api/admin/jobs', { job }).then((d) => d.job),
   updateJob: (id, job) => request('PUT', `/api/admin/jobs?id=${encodeURIComponent(id)}`, { job }).then((d) => d.job),
+  visits: (days) => request('GET', `/api/admin/visits?days=${days}`),
+  visitor: (id) => request('GET', `/api/admin/visits?visitor=${encodeURIComponent(id)}`),
   deleteJob: (id) => request('DELETE', `/api/admin/jobs?id=${encodeURIComponent(id)}`),
 }
