@@ -131,7 +131,7 @@ const ServicesRibbon = () => {
       <motion.div variants={v.fadeUp} {...revealOnce} className="container mb-8 flex items-end justify-between gap-6">
         <div>
           <p className="eyebrow">What we build</p>
-          <h2 className="mt-3 text-3xl leading-tight md:text-4xl">Eight ways in. One team.</h2>
+          <h2 className="mt-3 text-3xl leading-tight md:text-4xl">Websites to AI. Under one roof.</h2>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <Link to={routes.services} className="mr-2 hidden items-center gap-2 text-sm font-medium text-accent-400 hover:text-accent-300 sm:inline-flex">
