@@ -59,7 +59,7 @@ export const websiteTemplates = [
       'A tower you can explore in 3D: hover any floor for what is on it, open its plan, and relight the scene for day, dusk or night.',
     bestFor: ['Real estate developers', 'Property consultants', 'Hotels and serviced apartments', 'Architects'],
     thumbnail: '/templates/meridian.jpg',
-    chrome: 'dark',
+    chrome: 'light',
   },
   {
     slug: 'orchard',

@@ -155,7 +155,7 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
   // a soft studio light-box, so glass and metal have something to reflect
   const pmrem = new PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-  scene.fog = new Fog('#d9a493', 12, 38)
+  scene.fog = new Fog(MOODS.day.fog, 12, 38)
 
   const world = new Group()
   scene.add(world)
@@ -316,7 +316,7 @@ export const createTower = (canvas, { onHover, onSelect, reduced = false } = {})
 
   /* ------------------------------------------------------------ mood */
 
-  const target = { ...MOODS.dusk }
+  const target = { ...MOODS.day }
   const now = {
     hemiSky: new Color(target.hemiSky),
     hemiGround: new Color(target.hemiGround),

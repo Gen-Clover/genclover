@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight } from 'lucide-react'
 import { CloverMark } from '../components/brand/Logo'
 import { demoLink } from '../components/templates/TemplateGallery'
-import { getTemplate, templateSource } from '../data/templates'
+import { getTemplate, templatePath, templateSource, websiteTemplates } from '../data/templates'
 import { routes } from '../data/site'
 import { usePageMeta } from '../lib/seo'
 import { trackEvent, events } from '../lib/analytics'
@@ -53,6 +53,9 @@ const TemplatePreview = () => {
   const [ready, setReady] = useState(false)
   const [tucked, setTucked] = useState(false)
 
+  // A new template loads into the same page: show it fresh.
+  useEffect(() => setReady(false), [slug])
+
   usePageMeta({
     title: template ? `${template.name} website template preview | Gen Clover` : undefined,
     description: template?.summary,
@@ -66,6 +69,7 @@ const TemplatePreview = () => {
 
   if (!template) return <Navigate to={BACK} replace />
   const c = CHROME[template.chrome] ?? CHROME.light
+  const next = websiteTemplates[(websiteTemplates.indexOf(template) + 1) % websiteTemplates.length]
 
   return (
     <div className="relative h-[100dvh] bg-ink-950">
@@ -125,6 +129,17 @@ const TemplatePreview = () => {
             >
               Book a demo
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+
+            <Link
+              to={templatePath(next.slug)}
+              onClick={() => trackEvent(events.TEMPLATE_OPEN, { template: next.slug, location: 'preview_next' })}
+              className={`flex h-10 items-center gap-1 whitespace-nowrap rounded-xl px-3 text-sm font-medium transition-colors ${c.ghost}`}
+              aria-label={`Next template: ${next.name}`}
+              title={`Next: ${next.name}`}
+            >
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
 
             <button
