@@ -334,7 +334,7 @@ const HeroBuilder = () => {
   return (
     <section className="relative isolate overflow-hidden bg-ink-950" aria-labelledby="hero-heading">
       <div className="grid-lines pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div className="pointer-events-none absolute -right-40 -top-32 h-[42rem] w-[42rem] rounded-full bg-accent-900/25 blur-[150px]" aria-hidden="true" />
+      <div className="diagonal-sheen pointer-events-none absolute inset-0" aria-hidden="true" />
 
       {/* The brand ring and clover against the right edge of the screen, half
           of it off-screen, as on the brand cover. It sits behind the window. */}
@@ -343,7 +343,7 @@ const HeroBuilder = () => {
         <div className="animate-ring-pulse absolute inset-0 rounded-full shadow-glow-ring" />
         <div className="absolute inset-[14%] rounded-full bg-gradient-to-b from-accent-950/40 to-transparent blur-3xl" />
         <div className="absolute inset-0 grid place-items-center">
-          <CloverMark className="h-40 w-40 opacity-[0.12]" />
+          <CloverMark className="h-40 w-40 opacity-[0.07]" />
         </div>
       </div>
 
