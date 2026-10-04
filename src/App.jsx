@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import { routes } from './data/site'
 import { templatePath } from './data/templates'
 import { captureAttribution } from './lib/analytics'
+import { startVisitorLog, logPageview } from './lib/visitorLog'
 import { useHoverSound } from './lib/hoverSound'
 
 /**
@@ -59,6 +60,9 @@ const AttributionCapture = () => {
   // Spec §16 — capture source/campaign once per session, on first view.
   useEffect(() => {
     captureAttribution()
+    // The admin's own visits are never logged.
+    if (!location.pathname.startsWith('/admin')) startVisitorLog()
+    logPageview(location.pathname)
   }, [location.pathname])
   return null
 }

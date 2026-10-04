@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
+import { Routes, Route, Link, NavLink, Navigate } from 'react-router-dom'
 import { Loader2, LogOut, ExternalLink, Lock, AlertTriangle } from 'lucide-react'
 import Button from '../../components/ui/Button'
 import { CloverMark } from '../../components/brand/Logo'
@@ -9,6 +9,7 @@ import { usePageMeta } from '../../lib/seo'
 import { routes } from '../../data/site'
 import AdminJobs from './AdminJobs'
 import AdminJobEditor from './AdminJobEditor'
+import AdminVisitors from './AdminVisitors'
 
 /**
  * The Gen Clover admin portal, at /admin. Nothing on the public site links
@@ -63,6 +64,23 @@ const AdminApp = () => {
                 Gen Clover <span className="text-accent-500">Admin</span>
               </span>
             </Link>
+            <nav className="flex items-center gap-1 text-sm" aria-label="Admin">
+              {[
+                { to: '/admin', label: 'Jobs', end: true },
+                { to: '/admin/visitors', label: 'Visitors' },
+              ].map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    `rounded-md px-3 py-1.5 font-medium transition-colors ${isActive ? 'bg-ink-800 text-silver-100' : 'text-silver-400 hover:text-silver-100'}`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
             <div className="flex items-center gap-2 text-sm">
               <Link
                 to={routes.careers}
@@ -86,6 +104,7 @@ const AdminApp = () => {
             <Route index element={<AdminJobs />} />
             <Route path="jobs/new" element={<AdminJobEditor />} />
             <Route path="jobs/:id" element={<AdminJobEditor />} />
+            <Route path="visitors" element={<AdminVisitors />} />
             <Route path="*" element={<Navigate to="/admin" replace />} />
           </Routes>
         </main>
