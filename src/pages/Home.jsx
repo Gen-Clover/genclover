@@ -1,33 +1,32 @@
-import Hero from '../components/home/Hero'
-import SelectedWork from '../components/home/SelectedWork'
-import WhatWeDo from '../components/home/WhatWeDo'
-import WhyGenClover from '../components/home/WhyGenClover'
-import HowWeWorkPreview from '../components/home/HowWeWorkPreview'
-import IndustriesStrip from '../components/home/IndustriesStrip'
-import ContinuousCare from '../components/home/ContinuousCare'
-import Proof from '../components/home/Proof'
+import HeroBuilder from '../components/home/HeroBuilder'
+import ServicesRibbon from '../components/home/ServicesRibbon'
+import ProcessJourney from '../components/home/ProcessJourney'
+import WorkPanels from '../components/home/WorkPanels'
+import CityTeaser from '../components/home/CityTeaser'
+import Commitments from '../components/home/Commitments'
+import CareGarden from '../components/home/CareGarden'
 import FinalCTA from '../components/home/FinalCTA'
 import { usePageMeta, pageMeta } from '../lib/seo'
 
 /**
- * Homepage. Section order (§5.2, revised in content QA so the brand pillars
- * sit in the hero and the process is the second screen):
- * 01 Hero + pillars · 02 How We Work · 03 Selected Work · 04 What We Do ·
- * 05 Why Gen Clover · 06 Industries · 07 Continuous Care · 08 Proof · 09 Final CTA
+ * Homepage. Every section shows rather than tells:
+ * a product assembling itself, the services as moving illustrations, the
+ * process as a road you travel by scrolling, the work as panels that open,
+ * the sectors as a city, the commitments as cards that turn over, and the
+ * care plans as a garden that grows. Then the closing call to action.
  */
 const Home = () => {
   usePageMeta(pageMeta.home)
 
   return (
     <>
-      <Hero />
-      <HowWeWorkPreview />
-      <SelectedWork />
-      <WhatWeDo />
-      <WhyGenClover />
-      <IndustriesStrip />
-      <ContinuousCare />
-      <Proof />
+      <HeroBuilder />
+      <ServicesRibbon />
+      <ProcessJourney />
+      <WorkPanels />
+      <CityTeaser />
+      <Commitments />
+      <CareGarden />
       <FinalCTA />
     </>
   )

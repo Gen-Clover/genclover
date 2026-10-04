@@ -1,82 +1,139 @@
-import { motion } from 'framer-motion'
+import { useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Button from '../components/ui/Button'
 import WorkCard from '../components/work/WorkCard'
 import FinalCTA from '../components/home/FinalCTA'
-import { publishedProjects, getProjectsByCategory } from '../data/projects'
+import { publishedProjects, homepageProjects } from '../data/projects'
 import { workCategories } from '../data/taxonomy'
 import { routes } from '../data/site'
 import { usePageMeta, pageMeta } from '../lib/seo'
-import { useMotionVariants } from '../lib/motion'
+import { useMotionVariants, EASE } from '../lib/motion'
+import { canHover } from '../lib/pointer'
 
 /**
  * Work hub. (Spec §7, §21)
  *
- * A compact heading, then every project as a card straight away. Each card
- * carries its category, industry and an animated architecture map drawn from
- * its case study.
+ * An exhibition wall. The wall assembles from scattered pieces on
+ * arrival; the category chips re-sort it, with cards flying to their new
+ * places. The flagship projects carry a badge, and every card leans
+ * toward the pointer. Each card still opens its full case study.
  */
+
+const FLAGSHIP = new Set(homepageProjects.map((p) => p.slug))
+const SCATTER = [
+  [-80, 60, -6], [90, -50, 5], [-40, 110, 4], [120, 80, -5], [-120, -40, 7], [60, 130, -4], [150, -20, 6], [-60, -90, -7],
+]
+
+
+/** Leans the card a few degrees toward the pointer. */
+const Tilt = ({ children }) => {
+  const ref = useRef(null)
+  const reduced = useReducedMotion()
+  const onMove = (e) => {
+    if (reduced || !canHover()) return
+    const r = ref.current.getBoundingClientRect()
+    const x = (e.clientX - r.left) / r.width - 0.5
+    const y = (e.clientY - r.top) / r.height - 0.5
+    ref.current.style.transform = `perspective(1100px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg)`
+  }
+  const onLeave = () => ref.current && (ref.current.style.transform = '')
+  return (
+    <div ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className="relative h-full transition-transform duration-300 ease-out will-change-transform">
+      {children}
+    </div>
+  )
+}
+
 const Work = () => {
   usePageMeta(pageMeta.work)
   const v = useMotionVariants()
-  const categories = workCategories.filter((c) => getProjectsByCategory(c.id).length > 0)
+  const reduced = useReducedMotion()
+  const [filter, setFilter] = useState('all')
+
+  const categories = useMemo(
+    () =>
+      workCategories
+        .filter((c) => publishedProjects.some((p) => p.category === c.id)),
+    []
+  )
+  const shown = filter === 'all' ? publishedProjects : publishedProjects.filter((p) => p.category === filter)
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-ink-950">
-        <div className="grid-lines pointer-events-none absolute inset-x-0 top-0 h-80" aria-hidden="true" />
-        <div
-          className="pointer-events-none absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full bg-accent-900/25 blur-[130px]"
-          aria-hidden="true"
-        />
-        <div className="container relative pb-14 pt-28 md:pt-32">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={v.stagger(0.06)}
-            className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
-          >
-            <div className="max-w-2xl">
+      <section className="relative isolate overflow-hidden bg-ink-950" aria-label="Work">
+        <div className="grid-lines pointer-events-none absolute inset-x-0 top-0 h-96" aria-hidden="true" />
+        <div className="pointer-events-none absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full bg-accent-900/25 blur-[130px]" aria-hidden="true" />
+
+        <div className="container relative pb-14 pt-24 md:pt-28">
+          <motion.div initial="hidden" animate="visible" variants={v.stagger(0.06)} className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div>
               <motion.p variants={v.fadeUp} className="eyebrow">
                 Work
               </motion.p>
               <motion.h1 variants={v.riseIn} className="mt-3 text-4xl leading-[1.05] tracking-tight xl:text-5xl">
-                Work we have delivered.
+                The wall of things we built.
               </motion.h1>
-              <motion.p variants={v.fadeUp} className="mt-3 text-base leading-relaxed text-silver-400">
-                Each project opens a full case study: the problem, the approach, the architecture and
-                the technology behind it.
-              </motion.p>
             </div>
-            <motion.div variants={v.fadeUp} className="flex flex-col gap-4 lg:items-end">
-              <ul className="flex flex-wrap gap-1.5 lg:justify-end" aria-label="Project categories">
-                {categories.map((c) => (
-                  <li
-                    key={c.id}
-                    className="rounded border border-ink-700 bg-ink-900 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-silver-500"
-                  >
-                    {c.label}
-                  </li>
-                ))}
-              </ul>
-              <Button to={routes.startProject} size="md">
-                Start a Project
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Button>
-            </motion.div>
           </motion.div>
 
-          <h2 className="sr-only">All projects</h2>
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={v.stagger(0.05, 0.2)}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {publishedProjects.map((project, i) => (
-              <WorkCard key={project.slug} project={project} priority={i < 6} />
-            ))}
+          {/* re-sort the wall */}
+          <div className="mt-8 flex flex-wrap items-center gap-2" role="group" aria-label="Filter by category">
+            {[{ id: 'all', label: 'Everything' }, ...categories].map((c) => {
+              const on = filter === c.id
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setFilter(c.id)}
+                  aria-pressed={on}
+                  className={`relative inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 text-sm transition-colors ${
+                    on ? 'border-accent-600 text-white' : 'border-ink-700 text-silver-400 hover:border-ink-600 hover:text-silver-100'
+                  }`}
+                >
+                  {on && <motion.span layoutId="work-filter" className="absolute inset-0 rounded-full bg-accent-600" transition={{ duration: reduced ? 0 : 0.35, ease: EASE }} />}
+                  <span className="relative">{c.label}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <h2 className="sr-only">Projects</h2>
+          <motion.div layout className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {shown.map((project, i) => {
+                const flagship = FLAGSHIP.has(project.slug)
+                const s = SCATTER[i % SCATTER.length]
+                return (
+                  <motion.div
+                    key={project.slug}
+                    layout={!reduced}
+                    className="relative"
+                    initial={reduced ? { opacity: 0 } : { opacity: 0, x: s[0], y: s[1], rotate: s[2], scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, transition: { duration: 0.7, delay: Math.min(i, 8) * 0.05, ease: EASE } }}
+                    exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.25 } }}
+                    transition={{ layout: { duration: 0.6, ease: EASE } }}
+                  >
+                    <Tilt>
+                      <WorkCard project={project} priority={i < 6} />
+                      {flagship && (
+                        <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-accent-600 px-2.5 py-1 font-display text-[10px] font-semibold uppercase tracking-brand text-white shadow-glow-sm">
+                          Flagship
+                        </span>
+                      )}
+                    </Tilt>
+                  </motion.div>
+                )
+              })}
+            </AnimatePresence>
           </motion.div>
+
+          <div className="mt-10 flex justify-center">
+            <Button to={routes.startProject} size="md">
+              Start a Project
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
         </div>
       </section>
 
