@@ -7,6 +7,7 @@ import ScrollRestoration from './components/ScrollRestoration'
 import CursorLight from './components/ui/CursorLight'
 import Home from './pages/Home'
 import { routes } from './data/site'
+import { templatePath } from './data/templates'
 import { captureAttribution } from './lib/analytics'
 import { useHoverSound } from './lib/hoverSound'
 
@@ -29,6 +30,8 @@ const About = lazy(() => import('./pages/About'))
 const Careers = lazy(() => import('./pages/Careers'))
 const JobDetail = lazy(() => import('./pages/JobDetail'))
 const StartProject = lazy(() => import('./pages/StartProject'))
+const BookDemo = lazy(() => import('./pages/BookDemo'))
+const TemplatePreview = lazy(() => import('./pages/TemplatePreview'))
 const Privacy = lazy(() => import('./pages/Privacy'))
 const Terms = lazy(() => import('./pages/Terms'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -83,6 +86,15 @@ function App() {
             </Suspense>
           }
         />
+        {/* Template previews fill the window, with their own slim bar. */}
+        <Route
+          path={templatePath(':slug')}
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <TemplatePreview />
+            </Suspense>
+          }
+        />
         <Route path="*" element={<SiteLayout />} />
       </Routes>
     </>
@@ -116,6 +128,7 @@ function SiteLayout() {
             <Route path={`${routes.careers}/:id`} element={<JobDetail />} />
 
             <Route path={routes.startProject} element={<StartProject />} />
+            <Route path={routes.bookDemo} element={<BookDemo />} />
             <Route path={routes.privacy} element={<Privacy />} />
             <Route path={routes.terms} element={<Terms />} />
 

@@ -168,17 +168,20 @@ try {
   ]
 
   /**
-   * Inline the one stylesheet (about 10 KB compressed) so the first paint needs
+   * Inline the stylesheets (about 10 KB compressed) so the first paint needs
    * no extra round trip, and preload the main text font so it is requested
    * straight away instead of after the CSS is parsed.
    */
+  // There can be more than one stylesheet: CSS shared with the website
+  // templates (the Inter font) is split into its own file. Inline them all.
   const inlineCritical = (html) => {
-    const link = html.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/)
-    if (!link) return html
-    const css = readFileSync(resolve(`dist${link[1]}`), 'utf8')
+    const links = [...html.matchAll(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/g)]
+    if (!links.length) return html
+    const css = links.map((link) => readFileSync(resolve(`dist${link[1]}`), 'utf8')).join('\n')
     const font = css.match(/\/assets\/inter-latin-wght-normal-[^)"']+\.woff2/)?.[0]
     const preload = font ? `<link rel="preload" href="${font}" as="font" type="font/woff2" crossorigin />\n    ` : ''
-    return html.replace(link[0], `${preload}<style>${css}</style>`)
+    for (const link of links.slice(1)) html = html.replace(link[0], '')
+    return html.replace(links[0][0], `${preload}<style>${css}</style>`)
   }
 
   const template = inlineCritical(readFileSync(resolve('dist/index.html'), 'utf8'))

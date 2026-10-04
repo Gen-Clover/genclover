@@ -21,6 +21,9 @@ export const events = {
   FORM_SUBMIT: 'lead_form_submit',
   FORM_ERROR: 'lead_form_error',
   JOB_APPLY: 'job_application_submit',
+  TEMPLATE_OPEN: 'website_template_open',
+  DEMO_CTA: 'demo_cta_click',
+  DEMO_SUBMIT: 'demo_request_submit',
 }
 
 /** Fields that must never leave the browser as analytics payload. */
@@ -71,6 +74,7 @@ export const trackEvent = (name, payload = {}) => {
       // GA4's recommended lead event: mark it as a key event in GA4 and import it into Google Ads.
       if (name === events.FORM_SUBMIT || name === 'clovi_lead_submit')
         window.gtag('event', 'generate_lead', { ...data, lead_type: 'project', lead_source: name === 'clovi_lead_submit' ? 'chat' : 'form' })
+      if (name === events.DEMO_SUBMIT) window.gtag('event', 'generate_lead', { ...data, lead_type: 'demo', lead_source: 'form' })
     }
   } catch {
     // Analytics must never break a user interaction.

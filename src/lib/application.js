@@ -58,7 +58,7 @@ const text = (v, max) =>
  * A real public web address: http(s), a dotted domain with a proper ending,
  * not an IP or localhost, and no "@" before the domain (that is an email).
  */
-const isHttpUrl = (value) => {
+export const isHttpUrl = (value) => {
   try {
     const url = new URL(value)
     const host = url.hostname.toLowerCase()

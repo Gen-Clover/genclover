@@ -57,7 +57,7 @@ export const TextField = ({ field, value, error, onChange, onBlur, autoFocus }) 
  * Radio cards. Rendered as a real radiogroup with roving tabindex so the whole
  * set is one Tab stop and arrow keys move between options.
  */
-export const OptionGrid = ({ name, options, value, error, onChange }) => {
+export const OptionGrid = ({ name, options, value, error, onChange, className = 'sm:grid-cols-2 lg:grid-cols-3' }) => {
   const errorId = `${name}-error`
 
   const handleKeyDown = (e) => {
@@ -77,7 +77,7 @@ export const OptionGrid = ({ name, options, value, error, onChange }) => {
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         onKeyDown={handleKeyDown}
-        className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
+        className={`grid gap-2 ${className}`}
       >
         {options.map((option, i) => {
           const selected = value === option.value
@@ -95,7 +95,12 @@ export const OptionGrid = ({ name, options, value, error, onChange }) => {
                   : 'border-ink-700 bg-ink-900 text-silver-300 hover:border-ink-600 hover:bg-ink-850'
               }`}
             >
-              <span>{option.label}</span>
+              <span>
+                {option.label}
+                {option.description && (
+                  <span className="mt-1 block text-xs leading-relaxed text-silver-500">{option.description}</span>
+                )}
+              </span>
               <span
                 className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors ${
                   selected ? 'border-accent-500 bg-accent-600' : 'border-ink-600'
@@ -113,26 +118,26 @@ export const OptionGrid = ({ name, options, value, error, onChange }) => {
   )
 }
 
-export const ConsentField = ({ checked, error, label, onChange, children }) => {
-  const errorId = 'consent-error'
+export const ConsentField = ({ name = 'consent', checked, error, label, onChange, children }) => {
+  const errorId = `${name}-error`
 
   return (
     <div>
       <label
-        htmlFor="consent"
+        htmlFor={name}
         className={`flex cursor-pointer items-start gap-3.5 rounded-lg border p-5 transition-colors ${
           error ? 'border-accent-600' : 'border-ink-700 bg-ink-900 hover:border-ink-600'
         }`}
       >
         <input
-          id="consent"
-          name="consent"
+          id={name}
+          name={name}
           type="checkbox"
           checked={checked}
           required
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
-          onChange={(e) => onChange('consent', e.target.checked)}
+          onChange={(e) => onChange(name, e.target.checked)}
           className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-ink-600 bg-ink-800 text-accent-600 accent-accent-600"
         />
         <span className="text-sm leading-relaxed text-silver-300">

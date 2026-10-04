@@ -38,6 +38,7 @@ try {
     // Closed roles are noindex, so they stay out of the sitemap too.
     ...jobs.filter((j) => j.status === 'open').map((j) => `${routes.careers}/${j.id}`),
     routes.startProject,
+    routes.bookDemo,
     routes.privacy,
     routes.terms,
   ]

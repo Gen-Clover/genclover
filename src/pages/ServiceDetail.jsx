@@ -6,6 +6,7 @@ import Button from '../components/ui/Button'
 import Faq from '../components/ui/Faq'
 import WorkCard from '../components/work/WorkCard'
 import FinalCTA from '../components/home/FinalCTA'
+import WebsitesLanding from '../components/services/WebsitesLanding'
 import { getService, PRICING_STATEMENT } from '../data/services'
 import { getServiceDetail } from '../data/serviceDetails'
 import { getProjectsByService } from '../data/projects'
@@ -21,7 +22,8 @@ import { trackEvent, events } from '../lib/analytics'
  * Short records (title, capabilities, deliverables, SEO) come from
  * services.js; the long-form content (intro, signals, approach, outcomes,
  * stack, FAQs) from serviceDetails.js. Related work is derived from
- * projects.js, so a project naming this service shows up automatically.
+ * projects.js, so a project naming this service shows up automatically. A
+ * service with `templates` (Websites) uses its own template-led layout.
  */
 const ServiceDetail = () => {
   const { slug } = useParams()
@@ -45,6 +47,8 @@ const ServiceDetail = () => {
   const Icon = service.icon
   const relatedWork = getProjectsByService(service.slug).slice(0, 3)
   const relatedIndustries = (service.relatedIndustries ?? []).map(getIndustryPage).filter(Boolean)
+  if (service.templates) return <WebsitesLanding service={service} detail={detail} relatedIndustries={relatedIndustries} />
+
   // Bento grid: the first capability is 2x2 on large screens. Stretch the last
   // one so the final row never ends with an empty cell.
   const LAST_SPAN = { 2: 'lg:col-span-2', 3: 'lg:col-span-3', 4: 'lg:col-span-4' }

@@ -72,6 +72,11 @@ export const serviceDetails = {
     ],
     faqs: [
       {
+        question: 'Can we see a demo before we commit?',
+        answer:
+          'Yes. Pick one of our templates, or send us your current website and your permission to use its name, logo, photos and content, and we build a private demo to walk you through on our first call. It is shared only with you.',
+      },
+      {
         question: 'Can we update the website ourselves after launch?',
         answer:
           'Yes. Content lives in a CMS with structured fields, so your team edits pages without touching code and without breaking the design.',
