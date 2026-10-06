@@ -81,6 +81,16 @@ export const websiteTemplates = [
     thumbnail: '/templates/poise.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'foundry',
+    name: 'Foundry',
+    style: 'Manufacturer portfolio',
+    summary:
+      'A bold site for a maker: a 3D product hero you can recolour, and an animated production line that builds the product station by station.',
+    bestFor: ['Equipment manufacturers', 'Industrial and engineering firms', 'Medical device makers', 'Exporters and OEMs'],
+    thumbnail: '/templates/foundry.jpg',
+    chrome: 'dark',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
