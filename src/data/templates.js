@@ -91,6 +91,16 @@ export const websiteTemplates = [
     thumbnail: '/templates/foundry.jpg',
     chrome: 'dark',
   },
+  {
+    slug: 'aurum',
+    name: 'Arden',
+    style: 'Premium product portfolio',
+    summary:
+      'A single-page showcase where each room takes its colours from the product, and a blueprint that draws the product stage by stage.',
+    bestFor: ['Medical and dental equipment', 'Luxury furniture', 'Product design studios', 'Premium manufacturers'],
+    thumbnail: '/templates/aurum.jpg',
+    chrome: 'light',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null

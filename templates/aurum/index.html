@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Arden · Dental chairs, crafted</title>
+    <meta name="description" content="Arden designs and builds dental chairs in three finishes: Aurum, Alba and Marine." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23e9eaec'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23b47d55' stroke-width='2'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body data-finish="aurum">
+    <header class="nav">
+      <a class="logo" href="#top">Arden</a>
+      <nav aria-label="Main"><a href="#finishes">Finishes</a><a href="#build">How it's built</a><a href="#contact">Contact</a></nav>
+    </header>
+
+    <!-- hero: the room changes with the finish -->
+    <section class="hero" id="top">
+      <div class="halo" aria-hidden="true"></div>
+      <div class="hero__copy">
+        <p class="eyebrow">Arden Dental · Collection 2026</p>
+        <h1>The quiet<br />centre of<br />the room.</h1>
+        <div class="finish-pick" role="group" aria-label="Finish">
+          <button type="button" data-finish="aurum" aria-pressed="true"><i></i>Aurum</button>
+          <button type="button" data-finish="alba" aria-pressed="false"><i></i>Alba</button>
+          <button type="button" data-finish="marine" aria-pressed="false"><i></i>Marine</button>
+        </div>
+      </div>
+      <div class="hero__chair" id="heroChair"></div>
+      <p class="hero__note" id="finishNote">Aurum · cognac upholstery on brushed titanium</p>
+    </section>
+
+    <!-- the three finishes, each in its own room -->
+    <section class="finishes" id="finishes">
+      <article class="room room--aurum">
+        <div class="room__chair" data-chair="aurum"></div>
+        <div class="room__text"><p class="eyebrow">01 · Aurum</p><h2>Warm leather,<br />cool metal.</h2><p>Cognac upholstery over a brushed titanium shell, for practices that feel like a private lounge.</p></div>
+      </article>
+      <article class="room room--alba">
+        <div class="room__text"><p class="eyebrow">02 · Alba</p><h2>All white.<br />All calm.</h2><p>Ivory upholstery on a pearl shell. A chair that almost disappears into a bright room.</p></div>
+        <div class="room__chair" data-chair="alba"></div>
+      </article>
+      <article class="room room--marine">
+        <div class="room__chair" data-chair="marine"></div>
+        <div class="room__text"><p class="eyebrow">03 · Marine</p><h2>Deep navy,<br />bright marble.</h2><p>Ocean-blue upholstery on a gloss-white body, made for light, modern surgeries.</p></div>
+      </article>
+    </section>
+
+    <!-- production: the chair draws itself, stage by stage -->
+    <section class="build" id="build">
+      <div class="build__head">
+        <p class="eyebrow">How it's built</p>
+        <h2>Six stages,<br />one chair.</h2>
+      </div>
+      <div class="build__body">
+        <ol class="steps" id="steps"></ol>
+        <div class="blueprint">
+          <div class="blueprint__grid" aria-hidden="true"></div>
+          <div id="blueprint"></div>
+          <p class="blueprint__tag" id="stageTag">Stage 01 · Base &amp; footprint</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <h2>See it in<br />your room.</h2>
+      <p>Book a showroom visit or ask for a finish sample. <a href="mailto:hello@arden.example">hello@arden.example</a></p>
+      <small>Arden Dental is a demo company. Specifications are placeholders.</small>
+    </section>
+  </body>
+</html>
