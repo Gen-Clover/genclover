@@ -81,6 +81,26 @@ export const websiteTemplates = [
     thumbnail: '/templates/poise.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'foundry',
+    name: 'Foundry',
+    style: 'Manufacturer portfolio',
+    summary:
+      'A premium site for a maker: a cinematic photo hero, the product range, and an animated production line from raw steel to dispatch.',
+    bestFor: ['Equipment manufacturers', 'Industrial and engineering firms', 'Medical device makers', 'Exporters and OEMs'],
+    thumbnail: '/templates/foundry.jpg',
+    chrome: 'dark',
+  },
+  {
+    slug: 'aurum',
+    name: 'Arden',
+    style: 'Premium product portfolio',
+    summary:
+      'A single-page showcase with real product photography, rooms coloured to match each finish, and a blueprint that draws the product.',
+    bestFor: ['Medical and dental equipment', 'Luxury furniture', 'Product design studios', 'Premium manufacturers'],
+    thumbnail: '/templates/aurum.jpg',
+    chrome: 'light',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
