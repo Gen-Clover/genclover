@@ -17,7 +17,6 @@
 
     <!-- hero: the room changes with the finish -->
     <section class="hero" id="top">
-      <div class="halo" aria-hidden="true"></div>
       <div class="hero__copy">
         <p class="eyebrow">Arden Dental · Collection 2026</p>
         <h1>The quiet<br />centre of<br />the room.</h1>
@@ -27,23 +26,27 @@
           <button type="button" data-finish="marine" aria-pressed="false"><i></i>Marine</button>
         </div>
       </div>
-      <div class="hero__chair" id="heroChair"></div>
-      <p class="hero__note" id="finishNote">Aurum · cognac upholstery on brushed titanium</p>
+      <div class="hero__photo" id="heroPhoto">
+        <img src="./assets/aurum.jpg" alt="An Arden chair in the Aurum finish" data-finish="aurum" class="is-on" />
+        <img src="./assets/alba.jpg" alt="An Arden chair in the Alba finish" data-finish="alba" />
+        <img src="./assets/marine.jpg" alt="An Arden chair in the Marine finish" data-finish="marine" />
+      </div>
+      <p class="hero__note" id="finishNote">Aurum · burnt orange on pearl white</p>
     </section>
 
     <!-- the three finishes, each in its own room -->
     <section class="finishes" id="finishes">
       <article class="room room--aurum">
-        <div class="room__chair" data-chair="aurum"></div>
-        <div class="room__text"><p class="eyebrow">01 · Aurum</p><h2>Warm leather,<br />cool metal.</h2><p>Cognac upholstery over a brushed titanium shell, for practices that feel like a private lounge.</p></div>
+        <div class="room__chair"><img src="./assets/aurum-room.jpg" alt="Aurum finish in a treatment room" /></div>
+        <div class="room__text"><p class="eyebrow">01 · Aurum</p><h2>Warm leather,<br />cool metal.</h2><p>Burnt-orange upholstery on a pearl-white frame, for practices with a little more warmth.</p></div>
       </article>
       <article class="room room--alba">
         <div class="room__text"><p class="eyebrow">02 · Alba</p><h2>All white.<br />All calm.</h2><p>Ivory upholstery on a pearl shell. A chair that almost disappears into a bright room.</p></div>
-        <div class="room__chair" data-chair="alba"></div>
+        <div class="room__chair"><img src="./assets/alba-room.jpg" alt="Alba finish in a bright surgery" /></div>
       </article>
       <article class="room room--marine">
-        <div class="room__chair" data-chair="marine"></div>
-        <div class="room__text"><p class="eyebrow">03 · Marine</p><h2>Deep navy,<br />bright marble.</h2><p>Ocean-blue upholstery on a gloss-white body, made for light, modern surgeries.</p></div>
+        <div class="room__chair"><img src="./assets/marine-room.jpg" alt="Marine finish in a modern clinic" /></div>
+        <div class="room__text"><p class="eyebrow">03 · Marine</p><h2>Sky blue,<br />warm wood.</h2><p>Soft blue upholstery on a gloss-white body, made for light, modern surgeries.</p></div>
       </article>
     </section>
 

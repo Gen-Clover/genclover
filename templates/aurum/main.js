@@ -1,23 +1,19 @@
 import '@fontsource/instrument-serif/400.css'
 import '@fontsource-variable/inter/wght.css'
 import './style.css'
-import { chairSVG, PALETTES, STAGES } from './chair.js'
+import { chairSVG, STAGES } from './chair.js'
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
 const $ = (id) => document.getElementById(id)
 const NOTES = {
-  aurum: 'Aurum · cognac upholstery on brushed titanium',
+  aurum: 'Aurum · burnt orange on pearl white',
   alba: 'Alba · ivory upholstery on a pearl shell',
-  marine: 'Marine · ocean navy on gloss white',
+  marine: 'Marine · sky blue on gloss white',
 }
 
 /* hero: the chair and its reflection; the room follows the finish */
 const drawHero = (finish) => {
-  const p = PALETTES[finish]
-  $('heroChair').innerHTML = chairSVG({ palette: p, id: 'h' }) + `<div class="reflect">${chairSVG({ palette: p, id: 'hr' })}</div>`
-  $('heroChair').classList.remove('swap')
-  void $('heroChair').offsetWidth
-  if (!reduced) $('heroChair').classList.add('swap')
+  $('heroPhoto').querySelectorAll('img').forEach((img) => img.classList.toggle('is-on', img.dataset.finish === finish))
   $('finishNote').textContent = NOTES[finish]
   document.body.dataset.finish = finish
   document.querySelectorAll('.finish-pick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.finish === finish)))
@@ -27,10 +23,6 @@ drawHero('aurum')
 
 addEventListener('scroll', () => document.querySelector('.nav').classList.toggle('is-solid', scrollY > 80), { passive: true })
 
-/* each room's own chair */
-document.querySelectorAll('[data-chair]').forEach((el) => {
-  el.innerHTML = chairSVG({ palette: PALETTES[el.dataset.chair], id: `r-${el.dataset.chair}` })
-})
 const rooms = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('is-in')), { threshold: 0.25 })
 document.querySelectorAll('.room').forEach((r) => rooms.observe(r))
 

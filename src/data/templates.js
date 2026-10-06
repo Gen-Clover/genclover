@@ -96,7 +96,7 @@ export const websiteTemplates = [
     name: 'Arden',
     style: 'Premium product portfolio',
     summary:
-      'A single-page showcase where each room takes its colours from the product, and a blueprint that draws the product stage by stage.',
+      'A single-page showcase with real product photography, rooms coloured to match each finish, and a blueprint that draws the product.',
     bestFor: ['Medical and dental equipment', 'Luxury furniture', 'Product design studios', 'Premium manufacturers'],
     thumbnail: '/templates/aurum.jpg',
     chrome: 'light',
