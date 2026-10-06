@@ -19,8 +19,9 @@ import {
  * Shape — Service {
  *   slug, title, shortDescription, heroHeadline, heroDescription,
  *   capabilities[], deliverables[], relatedIndustries[], ctaLabel, closingTitle
- *   templates      true for the template-led layout (WebsitesLanding), which
- *                  opens on the website templates in data/templates.js
+ *   templates      template-led layout (WebsitesLanding), opening on templates
+ *                  from data/templates.js: true for all of them, or a list of slugs
+ *   glanceTitle    heading of that layout's one-screen summary
  * }
  * relatedProjects is derived at read time from projects.js rather than stored
  * twice, so a new project only has to be declared in one place.
@@ -51,6 +52,7 @@ export const services = [
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'Explore Templates', to: '/services/websites#templates' },
     templates: true,
+    glanceTitle: 'How we build websites.',
     workCategory: 'websites',
     capabilities: [
       { label: 'Corporate Websites', description: 'A credible digital presence for established businesses.' },
@@ -122,7 +124,9 @@ export const services = [
       'Storefronts, catalogs, checkout and the systems behind them, designed so customers can find what they need and buy it without friction.',
     closingTitle: 'Building or rebuilding a store?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Our Work', to: '/work' },
+    secondaryCta: { label: 'Explore Templates', to: '/services/ecommerce#templates' },
+    templates: ['poise'],
+    glanceTitle: 'How we build stores.',
     workCategory: 'ecommerce',
     capabilities: [
       { label: 'E-Commerce Websites', description: 'Storefronts designed around discovery and purchase.' },

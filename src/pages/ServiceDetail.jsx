@@ -23,7 +23,7 @@ import { trackEvent, events } from '../lib/analytics'
  * services.js; the long-form content (intro, signals, approach, outcomes,
  * stack, FAQs) from serviceDetails.js. Related work is derived from
  * projects.js, so a project naming this service shows up automatically. A
- * service with `templates` (Websites) uses its own template-led layout.
+ * service with `templates` (Websites, E-Commerce) uses the template-led layout.
  */
 const ServiceDetail = () => {
   const { slug } = useParams()

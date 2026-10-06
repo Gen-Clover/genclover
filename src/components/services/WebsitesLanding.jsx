@@ -5,12 +5,14 @@ import Button from '../ui/Button'
 import FinalCTA from '../home/FinalCTA'
 import { TemplateGrid, RedesignCallout, demoLink, useTemplatesAnchor } from '../templates/TemplateGallery'
 import { PRICING_STATEMENT } from '../../data/services'
+import { websiteTemplates, getTemplate } from '../../data/templates'
 import { routes } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
 
 /**
- * /services/websites, led by the templates. (Templates)
+ * A service page led by its templates: /services/websites (all of them) and
+ * /services/ecommerce (the shop templates). (Templates)
  *
  * Screen one is the gallery, so the first thing a visitor sees is what we can
  * build. Screen two condenses the rest of the service (the problems we solve,
@@ -32,6 +34,7 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
   const v = useMotionVariants()
   useTemplatesAnchor()
   const Icon = service.icon
+  const templates = Array.isArray(service.templates) ? service.templates.map(getTemplate).filter(Boolean) : websiteTemplates
 
   return (
     <>
@@ -69,7 +72,7 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
               </motion.p>
             </div>
             <motion.div variants={v.fadeUp} className="flex shrink-0 flex-col gap-3 sm:flex-row">
-              <Button to={demoLink()} size="md" onClick={() => trackEvent(events.DEMO_CTA, { location: 'websites_hero' })}>
+              <Button to={demoLink()} size="md" onClick={() => trackEvent(events.DEMO_CTA, { location: `${service.slug}_hero` })}>
                 Book a demo
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
@@ -84,7 +87,7 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
             </motion.div>
           </motion.div>
 
-          <TemplateGrid />
+          <TemplateGrid templates={templates} />
           <RedesignCallout className="mt-6" />
         </div>
       </section>
@@ -95,7 +98,7 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
           <motion.div variants={v.fadeUp} {...revealOnce} className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
             <div className="shrink-0">
               <p className="eyebrow">At a glance</p>
-              <h2 className="mt-2 text-2xl leading-tight md:text-3xl">How we build websites.</h2>
+              <h2 className="mt-2 text-2xl leading-tight md:text-3xl">{service.glanceTitle ?? `How we build ${service.title.toLowerCase()}.`}</h2>
             </div>
             {detail?.intro && <p className="max-w-2xl text-sm leading-relaxed text-silver-400">{detail.intro[1]}</p>}
           </motion.div>

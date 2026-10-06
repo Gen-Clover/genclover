@@ -134,11 +134,12 @@ const ComingSoonCard = ({ className = '' }) => {
   )
 }
 
-export const TemplateGrid = () => {
+/** The gallery: every template, or just the ones passed in. */
+export const TemplateGrid = ({ templates = websiteTemplates }) => {
   const v = useMotionVariants()
   // Touch only: which tile has its details showing. One at a time.
   const [openSlug, setOpenSlug] = useState(null)
-  const fillers = (3 - (websiteTemplates.length % 3)) % 3
+  const fillers = (3 - (templates.length % 3)) % 3
 
   useEffect(() => {
     if (!openSlug) return undefined
@@ -150,7 +151,7 @@ export const TemplateGrid = () => {
   }, [openSlug])
   return (
     <motion.div initial="hidden" animate="visible" variants={v.stagger(0.08)} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {websiteTemplates.map((template) => (
+      {templates.map((template) => (
         <TemplateCard key={template.slug} template={template} open={openSlug === template.slug} onOpen={setOpenSlug} />
       ))}
       {fillers > 0 && <ComingSoonCard className={fillers === 2 ? 'lg:col-span-2' : ''} />}
