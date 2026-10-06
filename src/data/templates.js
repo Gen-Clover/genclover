@@ -86,7 +86,7 @@ export const websiteTemplates = [
     name: 'Foundry',
     style: 'Manufacturer portfolio',
     summary:
-      'A bold site for a maker: a 3D product hero you can recolour, and an animated production line that builds the product station by station.',
+      'A premium site for a maker: a cinematic photo hero, the product range, and an animated production line from raw steel to dispatch.',
     bestFor: ['Equipment manufacturers', 'Industrial and engineering firms', 'Medical device makers', 'Exporters and OEMs'],
     thumbnail: '/templates/foundry.jpg',
     chrome: 'dark',

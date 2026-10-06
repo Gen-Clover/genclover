@@ -6,64 +6,93 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Velmora Dental Systems · Dental chair manufacturer</title>
     <meta name="description" content="Velmora designs and manufactures dental chairs and units for clinics and dealers worldwide." />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b1220'/%3E%3Cpath d='M8 9l8 15 8-15' fill='none' stroke='%2350a7ff' stroke-width='2.6' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316171a'/%3E%3Cpath d='M9 9l7 14 7-14' fill='none' stroke='%23c9a96e' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E" />
     <script type="module" src="./main.js"></script>
   </head>
   <body>
-    <header class="nav">
-      <a class="logo" href="#top"><span class="logo__v">V</span>Velmora<small>Dental Systems</small></a>
-      <nav aria-label="Main"><a href="#range">Chairs</a><a href="#line">Manufacturing</a><a href="#range">Dealers</a></nav>
-      <a class="btn btn--small" href="#contact">Request a quote</a>
+    <header class="nav" id="nav">
+      <a class="logo" href="#top">Velmora<small>Dental Systems</small></a>
+      <nav aria-label="Main"><a href="#range">Chairs</a><a href="#line">Manufacturing</a><a href="#craft">Craft</a><a href="#contact">Dealers</a></nav>
+      <a class="btn btn--line" href="#contact">Request a quote</a>
     </header>
 
+    <!-- hero: the chair, full bleed -->
     <section class="hero" id="top">
-      <div class="hero__grid" aria-hidden="true"></div>
-      <canvas id="hero" aria-label="A Velmora dental unit, reclining and turning"></canvas>
+      <div class="hero__media"><img src="./assets/hero.jpg" alt="A Velmora dental chair in a treatment room" /></div>
+      <div class="hero__shade"></div>
       <div class="hero__copy">
-        <p class="eyebrow">Designed and built in-house since 2004</p>
-        <h1>The chair your<br />patients <span>forget</span><br />they're in.</h1>
-        <p class="lede">Dental chairs and units engineered, machined and assembled under one roof, then shipped to clinics and dealers in 40 countries.</p>
-        <div class="actions"><a class="btn" href="#range">Explore the range</a><a class="btn btn--ghost" href="#line">Watch it being built</a></div>
+        <p class="eyebrow reveal-up" style="--d:.2s">Dental chairs &amp; units · Est. 2004</p>
+        <h1 class="reveal-lines"><span><i style="--d:.35s">Engineered</i></span><span><i style="--d:.5s">for the hands</i></span><span><i style="--d:.65s">that heal.</i></span></h1>
+        <p class="lede reveal-up" style="--d:.9s">Designed, machined and assembled under one roof, then shipped to clinics and dealers in more than forty countries.</p>
+        <div class="actions reveal-up" style="--d:1.05s"><a class="btn" href="#range">Explore the range</a><a class="btn btn--line" href="#line">Inside the factory</a></div>
       </div>
-      <div class="hero__panel">
-        <p class="hero__model" id="modelName">VX-7 Signature</p>
-        <div class="swatches" id="swatches" role="group" aria-label="Upholstery"></div>
-        <dl class="specs">
-          <div><dt>Recline</dt><dd id="recline">0°</dd></div>
-          <div><dt>Lift</dt><dd>380–800 mm</dd></div>
-          <div><dt>Load</dt><dd>200 kg</dd></div>
-        </dl>
+      <dl class="hero__facts reveal-up" style="--d:1.2s">
+        <div><dt>Chairs a year</dt><dd>XX,XXX</dd></div>
+        <div><dt>Countries</dt><dd>40+</dd></div>
+        <div><dt>Warranty</dt><dd>5 years</dd></div>
+      </dl>
+      <a class="scroll" href="#range" aria-label="Scroll down"><span></span></a>
+    </section>
+
+    <!-- the range -->
+    <section class="range" id="range">
+      <div class="head reveal"><p class="eyebrow">The range</p><h2>Three chairs. One standard.</h2></div>
+      <div class="range__grid">
+        <article class="model reveal model--big">
+          <div class="model__img"><img src="./assets/chair-studio.jpg" alt="The VX-7 Signature dental unit" /></div>
+          <div class="model__info"><span>VX-7</span><h3>Signature</h3><p>Our flagship: memory positions, a seamless upholstery shell and a light arm that disappears into the ceiling line.</p></div>
+        </article>
+        <article class="model reveal">
+          <div class="model__img"><img src="./assets/chair-blue.jpg" alt="The VX-5 Practice dental unit" /></div>
+          <div class="model__info"><span>VX-5</span><h3>Practice</h3><p>The everyday workhorse. Quiet lift, easy-clean seams.</p></div>
+        </article>
+        <article class="model reveal">
+          <div class="model__img"><img src="./assets/chair-white.jpg" alt="The VX-3 Compact dental unit" /></div>
+          <div class="model__info"><span>VX-3</span><h3>Compact</h3><p>A smaller footprint for tight surgeries.</p></div>
+        </article>
       </div>
     </section>
 
+    <!-- the production line -->
     <section class="line" id="line">
-      <div class="line__head">
-        <p class="eyebrow">Manufacturing</p>
-        <h2>From steel frame to finished chair,<br />on one line.</h2>
+      <div class="head reveal"><p class="eyebrow">Manufacturing</p><h2>From raw steel to a finished chair,<br />on one line.</h2></div>
+      <div class="track" id="track">
+        <ol class="stations" id="stations">
+          <li data-img="line-steel.jpg"><b>01</b><h3>Steel &amp; casting</h3><p>Frames cut, bent and cast from medical-grade steel and aluminium.</p></li>
+          <li data-img="line-machining.jpg"><b>02</b><h3>Precision machining</h3><p>Lift joints and hinges machined to a hundredth of a millimetre.</p></li>
+          <li data-img="line-frame.jpg"><b>03</b><h3>Assembly</h3><p>Hydraulics, motors and the delivery arm fitted by hand.</p></li>
+          <li data-img="unit-detail.jpg"><b>04</b><h3>Upholstery &amp; finish</h3><p>Seamless shells and stitched upholstery in twenty colours.</p></li>
+          <li data-img="chair-clinic.jpg"><b>05</b><h3>Testing &amp; dispatch</h3><p>Every chair cycled, load-tested and signed off before it ships.</p></li>
+        </ol>
+        <figure class="track__view"><img id="lineImg" src="./assets/line-steel.jpg" alt="" /><figcaption id="lineCap">Steel &amp; casting</figcaption></figure>
       </div>
-      <ol class="stations" id="stations">
-        <li><b>01</b>Frame &amp; lift</li>
-        <li><b>02</b>Seat &amp; leg rest</li>
-        <li><b>03</b>Backrest</li>
-        <li><b>04</b>Delivery unit</li>
-        <li><b>05</b>Light &amp; QC</li>
-      </ol>
-      <div class="line__floor"><canvas id="lineCanvas" aria-label="An animated production line building dental chairs"></canvas></div>
-      <dl class="line__stats">
-        <div><dt>Built per day</dt><dd><span data-count="48">0</span></dd></div>
-        <div><dt>Checks per chair</dt><dd><span data-count="126">0</span></dd></div>
-        <div><dt>Line uptime</dt><dd><span data-count="98">0</span>%</dd></div>
+      <dl class="stats reveal">
+        <div><dt>Quality checks per chair</dt><dd data-count="126">0</dd></div>
+        <div><dt>Hours of load testing</dt><dd data-count="72">0</dd></div>
+        <div><dt>Parts made in-house</dt><dd><span data-count="90">0</span>%</dd></div>
       </dl>
     </section>
 
-    <section class="range" id="range">
-      <h2>The range</h2>
-      <div class="cards" id="cards"></div>
+    <!-- craft -->
+    <section class="craft" id="craft">
+      <div class="craft__img reveal"><img src="./assets/unit-detail.jpg" alt="A delivery unit with handpieces" /></div>
+      <div class="craft__copy reveal">
+        <p class="eyebrow">Craft</p>
+        <h2>Details you feel,<br />not just see.</h2>
+        <ul>
+          <li><b>Whisper lift</b>Hydraulics tuned to move a patient without a sound.</li>
+          <li><b>One-wipe surfaces</b>Seamless shells with no joints for dirt to hide.</li>
+          <li><b>Built to be serviced</b>Every panel opens with one tool, in minutes.</li>
+        </ul>
+      </div>
     </section>
 
     <footer class="footer" id="contact">
-      <p><b>Velmora Dental Systems</b> · A demo company · Factory address line, Example City</p>
-      <a class="btn" href="mailto:sales@velmora.example">sales@velmora.example</a>
+      <h2>Bring Velmora<br />into your practice.</h2>
+      <div class="footer__row">
+        <a class="btn" href="mailto:sales@velmora.example">sales@velmora.example</a>
+        <p>Velmora Dental Systems · A demo company · Factory address line, Example City</p>
+      </div>
     </footer>
   </body>
 </html>
