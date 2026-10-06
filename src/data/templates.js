@@ -71,6 +71,16 @@ export const websiteTemplates = [
     thumbnail: '/templates/orchard.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'poise',
+    name: 'Poise',
+    style: 'Animated product shop',
+    summary:
+      'A warm, minimal store for dental seating and accessories: an arch that opens into a 3D hero, a category explorer and a cart.',
+    bestFor: ['Equipment manufacturers', 'Furniture and decor', 'Medical and dental supply', 'Premium D2C brands'],
+    thumbnail: '/templates/poise.jpg',
+    chrome: 'light',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null

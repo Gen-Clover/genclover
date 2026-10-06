@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Poise · Dental seating and chair accessories</title>
+    <meta name="description" content="Poise designs and manufactures dental side chairs, stools and chair accessories." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ece4d8'/%3E%3Cpath d='M10 26V14a6 6 0 0 1 12 0v12' fill='none' stroke='%23c4562a' stroke-width='2.4'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header class="nav">
+      <a class="logo" href="#top"><span class="logo__arch"></span>Poise</a>
+      <nav aria-label="Main">
+        <a href="#shop">Side chairs</a>
+        <a href="#shop">Accessories</a>
+        <a href="#products">Shop all</a>
+        <a href="#products">Bulk orders</a>
+      </nav>
+      <div class="nav__icons">
+        <button type="button" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m20 20-4-4" /></svg></button>
+        <button type="button" class="cart" aria-label="Cart"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11h-11zM9 7a3 3 0 0 1 6 0" /></svg><span id="cartCount">0</span></button>
+      </div>
+    </header>
+
+    <!-- the hero opens out of an arched doorway -->
+    <section class="hero" id="top">
+      <div class="hero__room">
+        <canvas id="heroModel" aria-label="A Poise doctor's stool, turning"></canvas>
+        <div class="hero__copy">
+          <p class="eyebrow">Dental seating · Manufacturer direct</p>
+          <h1>Seated for<br /><em>precision.</em></h1>
+          <p class="lede">Doctor and assistant stools, saddle chairs and chair accessories, built for long days at the chair.</p>
+          <div class="actions">
+            <a class="btn" href="#products">Shop the range</a>
+            <a class="btn btn--ghost" href="#shop">Explore side chairs</a>
+          </div>
+        </div>
+        <ul class="trust">
+          <li>Manufacturer direct</li><li>Quality tested</li><li>Bulk orders</li><li>Warranty support</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- category list beside a round, turning product -->
+    <section class="shop" id="shop">
+      <div class="shop__head">
+        <h2>Find the right seat<br />for every hand at the chair.</h2>
+        <p class="muted">From the dentist's stool to the smallest tray, every piece is made to be adjusted in seconds and cleaned in one wipe.</p>
+      </div>
+      <div class="shop__body">
+        <ol class="cats" id="cats"></ol>
+        <div class="stage">
+          <div class="stage__disc"><canvas id="stageModel" aria-label="The selected product, turning"></canvas></div>
+          <div class="stage__swatches" id="swatches" role="group" aria-label="Upholstery colour"></div>
+          <span class="stage__num" id="stageNum">01</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- product grid -->
+    <section class="products" id="products">
+      <div class="products__head">
+        <h2>Featured pieces</h2>
+        <p class="muted">Prices are placeholders for this demo.</p>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <footer class="footer">
+      <a class="logo" href="#top"><span class="logo__arch"></span>Poise</a>
+      <p>© 2026 Poise. A demo brand. Bulk and dealer enquiries welcome.</p>
+    </footer>
+
+    <canvas id="snap" class="snap" aria-hidden="true"></canvas>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
