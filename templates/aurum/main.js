@@ -1,7 +1,7 @@
 import '@fontsource/instrument-serif/400.css'
 import '@fontsource-variable/inter/wght.css'
 import './style.css'
-import { chairSVG, STAGES } from './chair.js'
+import { chairSVG, PALETTES, STAGES } from './chair.js'
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
 const $ = (id) => document.getElementById(id)
@@ -19,7 +19,7 @@ const drawHero = (finish) => {
   document.querySelectorAll('.finish-pick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.finish === finish)))
 }
 document.querySelectorAll('.finish-pick button').forEach((b) => b.addEventListener('click', () => drawHero(b.dataset.finish)))
-drawHero('aurum')
+drawHero('marine')
 
 addEventListener('scroll', () => document.querySelector('.nav').classList.toggle('is-solid', scrollY > 80), { passive: true })
 
@@ -28,7 +28,10 @@ document.querySelectorAll('.room').forEach((r) => rooms.observe(r))
 
 /* production: the blueprint draws itself one stage at a time, then starts over */
 const STEP_MS = 2200
-$('blueprint').innerHTML = chairSVG({ mode: 'line', id: 'b' })
+$('blueprint').innerHTML = chairSVG({ mode: 'build', palette: PALETTES.marine, id: 'b' })
+// a real photo of the work behind each stage
+const PHOTOS = ['line-steel.jpg', 'line-machining.jpg', 'line-frame.jpg', 'line-frame.jpg', 'unit-detail.jpg', 'unit-detail.jpg']
+$('stagePhotos').innerHTML = [...new Set(PHOTOS)].map((p) => `<img src="${new URL(`./assets/${p}`, import.meta.url).href}" data-p="${p}" alt="" />`).join('')
 const parts = [...$('blueprint').querySelectorAll('.part')]
 $('steps').innerHTML = STAGES.map((s) => `<li style="--ms:${STEP_MS}ms">${s.label}</li>`).join('')
 const steps = [...$('steps').children]
@@ -40,18 +43,22 @@ const setStage = (i) => {
     p.classList.toggle('is-drawn', k <= i)
     p.classList.toggle('is-on', k === i)
   })
+  $('stagePhotos').querySelectorAll('img').forEach((img) => img.classList.toggle('is-on', i >= 0 && i < STAGES.length && img.dataset.p === PHOTOS[i]))
+  $('finalPhoto').classList.toggle('is-on', i >= STAGES.length)
+  // the drawing stays hidden while it resets, so it never overlaps the photo
+  document.querySelector('.blueprint').classList.toggle('is-done', i >= STAGES.length || i < 0)
   steps.forEach((s, k) => {
     s.classList.toggle('is-on', k === i)
     s.classList.toggle('is-done', k < i)
   })
-  $('stageTag').textContent = i < 0 ? 'Ready' : `Stage ${String(i + 1).padStart(2, '0')} · ${STAGES[i].label}`
+  $('stageTag').textContent = i < 0 ? 'Ready' : i >= STAGES.length ? 'Finished · VX Marine' : `Stage ${String(i + 1).padStart(2, '0')} · ${STAGES[i].label}`
 }
 const tick = () => {
   if (stage >= STAGES.length - 1) {
     // hold the finished drawing, then wipe and rebuild
     setStage(STAGES.length)
-    setTimeout(() => setStage(-1), 1600)
-    setTimeout(() => setStage(0), 2400)
+    setTimeout(() => setStage(-1), 3800)
+    setTimeout(() => setStage(0), 4600)
   } else setStage(stage + 1)
 }
 const play = () => {

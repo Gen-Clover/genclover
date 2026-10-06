@@ -63,7 +63,8 @@ const ATTRS = (a) =>
     .join(' ')
 
 export const chairSVG = ({ mode = 'paint', palette = PALETTES.aurum, id = 'c' } = {}) => {
-  const paint = mode === 'paint'
+  const build = mode === 'build'
+  const paint = mode === 'paint' || build
   const fill = (f) => {
     if (!paint || f === 'none') return 'none'
     if (f === 'glow') return `url(#${id}-glow)`
@@ -74,8 +75,8 @@ export const chairSVG = ({ mode = 'paint', palette = PALETTES.aurum, id = 'c' } 
   const groups = PARTS.map(([stage, label, shapes]) => {
     const body = shapes
       .map(([tag, a]) => {
-        const stroke = paint ? (a.f === 'none' ? palette[a.c ?? 'shellDark'] : 'rgba(0,0,0,.08)') : 'currentColor'
-        const width = paint ? (a.s ?? 1) : Math.min(a.s ?? 1.4, 3)
+        const stroke = build ? 'currentColor' : paint ? (a.f === 'none' ? palette[a.c ?? 'shellDark'] : 'rgba(0,0,0,.08)') : 'currentColor'
+        const width = build ? Math.min(Math.max(a.s ?? 1.4, 1.4), 12) : paint ? (a.s ?? 1) : Math.min(a.s ?? 1.4, 3)
         return `<${tag} ${ATTRS(a)} fill="${fill(a.f)}" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/>`
       })
       .join('')
