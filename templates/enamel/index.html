@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0c1513" />
+    <title>Enamel Dental Studio · Gentle dentistry</title>
+    <meta name="description" content="Check-ups, aligners, implants and smile makeovers, planned on screen with you before anything begins." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230c1513'/%3E%3Cpath d='M10 9c3-2 4 0 6 0s3-2 6 0c2 2 1 6 0 9l-1 6c0 1-2 1-2 0l-1-4c0-1-2-1-2 0l-1 4c0 1-2 1-2 0l-1-6c-1-3-2-7 0-9z' fill='%23eef0eb'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#book">Skip to booking</a>
+    <header class="nav" id="nav">
+      <a class="logo" href="#top" aria-label="Enamel Dental Studio, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 9c3-2 4 0 6 0s3-2 6 0c2 2 1 6 0 9l-1 6c0 1-2 1-2 0l-1-4c0-1-2-1-2 0l-1 4c0 1-2 1-2 0l-1-6c-1-3-2-7 0-9z" /></svg>
+        enamel
+      </a>
+      <nav aria-label="Main">
+        <a href="#treatments">Treatments</a>
+        <a href="#visit">First visit</a>
+        <a href="#reviews">Reviews</a>
+      </nav>
+      <a class="btn btn--small" href="#book">Book a visit</a>
+    </header>
+
+    <main>
+      <!-- hero: the chart is the menu -->
+      <section class="hero" id="top">
+        <div class="hero__copy">
+          <h1>
+            <span class="line"><span>Gentle</span></span>
+            <span class="line"><span>dentistry</span></span>
+            <span class="line"><span>for every</span></span>
+            <span class="script" aria-hidden="true">smile</span>
+            <span class="sr">smile</span>
+          </h1>
+          <p class="hero__sub">Check-ups, aligners, implants and smile makeovers, planned on screen with you before anything begins.</p>
+          <div class="hero__actions">
+            <a class="btn" href="#book">Book a visit</a>
+            <a class="link" href="#treatments">See treatments</a>
+          </div>
+        </div>
+
+        <div class="arch" id="arch">
+          <div class="arch__chart" id="chart"></div>
+          <article class="card" id="card" aria-live="polite">
+            <div class="card__in" id="cardIn">
+              <h2 class="card__name" id="cardName">Porcelain veneers</h2>
+              <p class="card__line" id="cardLine">Thin shells that reshape chipped or uneven front teeth.</p>
+              <dl class="card__meta">
+                <div><dt>Time</dt><dd id="cardVisits">2 visits</dd></div>
+                <div><dt>From</dt><dd>₹X,XXX</dd></div>
+              </dl>
+              <p class="card__teeth" id="cardTeeth">Teeth 11 12 21 22</p>
+            </div>
+          </article>
+          <p class="arch__hint">Tap any tooth</p>
+        </div>
+      </section>
+
+      <!-- treatments: photo strips that open on hover or tap -->
+      <section class="treat" id="treatments">
+        <h2 class="treat__title">Treatments, in plain words.</h2>
+        <div class="strips" id="strips">
+          <button class="strip is-open" type="button" aria-expanded="true">
+            <img src="./assets/checkup.jpg" alt="A dentist checking a patient's teeth with a mirror" loading="lazy" />
+            <span class="strip__label">Check-ups &amp; cleaning</span>
+            <span class="strip__more">A thorough look, a gentle clean, and a clear note of anything to watch. <em>From ₹X,XXX · 45 min</em></span>
+          </button>
+          <button class="strip" type="button" aria-expanded="false">
+            <img src="./assets/whitening.jpg" alt="A close-up of a bright, even smile" loading="lazy" />
+            <span class="strip__label">Veneers &amp; whitening</span>
+            <span class="strip__more">Shade, shape and length designed on screen first, so you see it before we start. <em>From ₹X,XXX · 1 to 2 visits</em></span>
+          </button>
+          <button class="strip" type="button" aria-expanded="false">
+            <img src="./assets/aligners.jpg" alt="Someone fitting a clear aligner over their teeth" style="object-position: 55% 50%" loading="lazy" />
+            <span class="strip__label">Clear aligners</span>
+            <span class="strip__more">A new set of trays every few weeks, and a check-in on your phone in between. <em>From ₹X,XXX · 6 to 12 months</em></span>
+          </button>
+          <button class="strip" type="button" aria-expanded="false">
+            <img src="./assets/implants.jpg" alt="A model showing an implant between two natural teeth" loading="lazy" />
+            <span class="strip__label">Implants</span>
+            <span class="strip__more">A titanium root, a porcelain crown, and a tooth that feels like your own again. <em>From ₹X,XXX · 3 visits</em></span>
+          </button>
+          <button class="strip" type="button" aria-expanded="false">
+            <img src="./assets/planning.jpg" alt="A dentist reviewing 3D scans of teeth on a light box" style="object-position: 40% 50%" loading="lazy" />
+            <span class="strip__label">Root canal &amp; scans</span>
+            <span class="strip__more">3D scans find the problem precisely, so treatment is shorter and calmer. <em>From ₹X,XXX · 1 to 2 visits</em></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- the room: the photo opens out as it scrolls in -->
+      <section class="studio" aria-labelledby="studioTitle">
+        <div class="studio__frame" id="studioFrame">
+          <img src="./assets/studio.jpg" alt="A bright, quiet treatment room with a white dental chair" loading="lazy" />
+        </div>
+        <div class="studio__copy">
+          <h2 id="studioTitle">A quiet room. A dentist who explains first.</h2>
+          <ul class="comfort">
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" /><rect x="3" y="14" width="4" height="6" rx="1.5" /><rect x="17" y="14" width="4" height="6" rx="1.5" /></svg>
+              Headphones and your own playlist
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V6a2 2 0 0 1 4 0v4m0-1V4a2 2 0 0 1 4 0v6m0-2a2 2 0 0 1 4 0v5a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4a1.8 1.8 0 0 1 3-2L7 13" /></svg>
+              Raise a hand and we stop
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg>
+              Every step shown on the screen above you
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- first visit: a path that draws itself -->
+      <section class="visit" id="visit">
+        <h2 class="visit__title">Your first visit, minute by minute.</h2>
+        <div class="visit__track" id="visitTrack">
+          <svg class="visit__line" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
+            <path id="visitPath" d="M20 120 C 180 120, 220 40, 380 40 S 600 120, 760 120 S 980 40, 1180 40" pathLength="1" />
+          </svg>
+          <ol class="steps">
+            <li style="--i: 0"><b>10 min</b><h3>Say hello</h3><p>Tell us what is bothering you, or what you would like to change. We listen first.</p></li>
+            <li style="--i: 1"><b>5 min</b><h3>A 3D scan</h3><p>A small wand maps your teeth. No trays of paste, nothing to bite on.</p></li>
+            <li style="--i: 2"><b>15 min</b><h3>See your plan</h3><p>We walk you through the scan on screen, with every option and its cost in writing.</p></li>
+            <li style="--i: 3"><b>Your call</b><h3>Start, or think it over</h3><p>Begin the same day if you like. Or take the plan home. There is no pressure either way.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- reviews: one slow band -->
+      <section class="reviews" id="reviews" aria-labelledby="reviewsTitle">
+        <h2 class="reviews__title" id="reviewsTitle">What patients tell us.</h2>
+        <div class="marquee" id="marquee">
+          <ul class="marquee__row">
+            <li><q>I have been scared of dentists for twenty years. I fell asleep in the chair.</q><span>A.K. · Check-up</span></li>
+            <li><q>They showed me the scan and the price before touching a thing.</q><span>R.M. · Implants</span></li>
+            <li><q>My aligners were done two months early. Nobody at work noticed I had them.</q><span>S.P. · Clear aligners</span></li>
+            <li><q>Root canal on a Saturday morning, lunch with my family by one.</q><span>V.N. · Root canal</span></li>
+            <li><q>The first place that explained why, not just what.</q><span>D.F. · Veneers</span></li>
+            <li><q>My daughter now asks when her next visit is.</q><span>M.J. · Family care</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- booking: a working slot picker -->
+      <section class="book" id="book">
+        <div class="book__intro">
+          <h2>Pick a time. We will do the rest.</h2>
+          <p>Choose a treatment, a day and a slot. We call to confirm within the hour.</p>
+          <figure class="book__photo"><img src="./assets/smile.jpg" alt="A woman laughing with an easy, bright smile" loading="lazy" /></figure>
+          <address>
+            <span>Plot X, Street Name, Your City</span>
+            <span>Mon to Sat, 9:00 to 19:00</span>
+            <a href="tel:+910000000000">+91 XXXXX XXXXX</a>
+          </address>
+        </div>
+
+        <form class="picker" id="picker" novalidate>
+          <fieldset>
+            <legend>Treatment</legend>
+            <div class="chips" id="treatChips">
+              <label><input type="radio" name="treatment" value="Check-up" checked /><span>Check-up</span></label>
+              <label><input type="radio" name="treatment" value="Whitening" /><span>Whitening</span></label>
+              <label><input type="radio" name="treatment" value="Aligners" /><span>Aligners</span></label>
+              <label><input type="radio" name="treatment" value="Implants" /><span>Implants</span></label>
+              <label><input type="radio" name="treatment" value="Not sure yet" /><span>Not sure yet</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Day</legend>
+            <div class="days" id="days"></div>
+          </fieldset>
+          <fieldset>
+            <legend>Time</legend>
+            <div class="times" id="times"></div>
+            <p class="error" id="timeError" hidden>Choose a time to continue.</p>
+          </fieldset>
+          <div class="fields">
+            <div class="field">
+              <label for="name">Your name</label>
+              <input id="name" name="name" autocomplete="name" required />
+              <p class="error" id="nameError" hidden>Tell us what to call you.</p>
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required />
+              <p class="error" id="phoneError" hidden>Add a 10-digit number so we can confirm.</p>
+            </div>
+          </div>
+          <button class="btn btn--wide" type="submit" id="submit">Book a visit</button>
+
+          <div class="done" id="done" hidden>
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" /><path d="M20 33l8 8 16-17" /></svg>
+            <h3 id="doneTitle">You are booked.</h3>
+            <p id="doneText"></p>
+            <button class="link" type="button" id="again">Book another visit</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span class="logo">enamel</span>
+      <small>Enamel Dental Studio is a demo practice. Prices, reviews and contact details are placeholders.</small>
+    </footer>
+  </body>
+</html>

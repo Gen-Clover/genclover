@@ -101,6 +101,26 @@ export const websiteTemplates = [
     thumbnail: '/templates/aurum.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'enamel',
+    name: 'Enamel',
+    style: 'Premium dental clinic',
+    summary:
+      'A dark, polished clinic site built around a live tooth chart: tap any tooth to see its treatment, then book a slot in seconds.',
+    bestFor: ['Dental clinics and smile studios', 'Orthodontists and implant centres', 'Cosmetic and skin clinics', 'Specialist practices'],
+    thumbnail: '/templates/enamel.jpg',
+    chrome: 'dark',
+  },
+  {
+    slug: 'ivory',
+    name: 'Ivory',
+    style: 'Cinematic implant studio',
+    summary:
+      'A film you scroll: a 3D implant assembles root, connector and crown, then a before and after slider and a doctor-led story.',
+    bestFor: ['Implant and cosmetic dental clinics', 'Smile design studios', 'Specialist surgeons', 'Premium medical practices'],
+    thumbnail: '/templates/ivory.jpg',
+    chrome: 'dark',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#09090a" />
+    <title>Ivory · Implant and smile studio</title>
+    <meta name="description" content="Doctor-led implants and smile design, planned in 3D before anything begins. Your first consultation is on us." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309090a'/%3E%3Ctext x='16' y='23' font-family='Georgia' font-size='20' text-anchor='middle' fill='%23f2ede4'%3EI%3C/text%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <div class="intro" id="intro" aria-hidden="true">
+      <div class="intro__word"><span>I</span><span>V</span><span>O</span><span>R</span><span>Y</span></div>
+      <div class="intro__bar"><i id="introBar"></i></div>
+      <div class="intro__half intro__half--top"></div>
+      <div class="intro__half intro__half--bottom"></div>
+    </div>
+
+    <header class="nav" id="nav">
+      <a class="brand" href="#top">IVORY</a>
+      <nav aria-label="Main">
+        <a href="#results">Results</a>
+        <a href="#doctor">The doctor</a>
+        <a href="#technology">Technology</a>
+        <a href="#treatments">Treatments</a>
+      </nav>
+      <a class="btn btn--ghost" href="#consult">Book a free consultation</a>
+    </header>
+
+    <main>
+      <!-- the implant film: the scroll assembles the implant -->
+      <section class="film" id="top" aria-label="How an implant is built">
+        <div class="film__stage">
+          <div class="film__glow" aria-hidden="true"></div>
+          <canvas class="film__canvas" id="film" aria-hidden="true"></canvas>
+          <img class="film__fallback" src="./assets/implants.jpg" alt="A model of a dental implant between two natural teeth" hidden id="filmFallback" />
+
+          <div class="prologue" data-from="0" data-to="0.08">
+            <h1><span class="reveal"><span>Implants,</span></span> <span class="reveal"><span><em>made to</em></span></span> <span class="reveal"><span>disappear.</span></span></h1>
+            <p>Doctor-led implants and smile design, planned in 3D with you before anything begins.</p>
+            <a class="btn" href="#consult">Book a free consultation</a>
+          </div>
+
+          <article class="chapter" data-from="0.21" data-to="0.4">
+            <b>01</b>
+            <h2>The root</h2>
+            <p>A titanium post placed where the old root was. Over a few months the bone grows firmly around it.</p>
+            <small>Medical-grade titanium · guided placement</small>
+          </article>
+          <article class="chapter" data-from="0.4" data-to="0.57">
+            <b>02</b>
+            <h2>The connector</h2>
+            <p>An abutment locks into the post and is shaped to your gum line, so the new tooth emerges naturally.</p>
+            <small>Custom-milled to your scan</small>
+          </article>
+          <article class="chapter" data-from="0.57" data-to="0.75">
+            <b>03</b>
+            <h2>The crown</h2>
+            <p>Porcelain, layered and shade-matched to the teeth beside it. This is the part everyone sees.</p>
+            <small>Shade-matched porcelain</small>
+          </article>
+          <article class="chapter chapter--final" data-from="0.78" data-to="1.01">
+            <b>04</b>
+            <h2>The tooth you forget</h2>
+            <p>Bite, chew and smile as before. Most patients stop noticing which one it was.</p>
+            <a class="btn" href="#consult">Book a free consultation</a>
+          </article>
+
+          <ol class="rail" aria-hidden="true">
+            <li data-at="0">Prologue</li>
+            <li data-at="0.21">Root</li>
+            <li data-at="0.4">Connector</li>
+            <li data-at="0.57">Crown</li>
+            <li data-at="0.78">In place</li>
+            <i class="rail__fill" id="railFill"></i>
+          </ol>
+        </div>
+      </section>
+
+      <!-- results: drag to compare -->
+      <section class="results screen" id="results">
+        <div class="results__head">
+          <h2>Results you can <em>see</em>.</h2>
+          <div class="cases" role="tablist" aria-label="Cases">
+            <button role="tab" aria-selected="true" data-case="0">Whitening</button>
+            <button role="tab" aria-selected="false" data-case="1">Veneers</button>
+          </div>
+        </div>
+        <div class="compare" id="compare" style="--x: 50%">
+          <img class="compare__after" id="after" src="./assets/smile.jpg" alt="After: an even, bright smile" />
+          <img class="compare__before" id="before" src="./assets/smile.jpg" alt="Before: the same smile, duller and uneven in shade" />
+          <span class="compare__tag compare__tag--before">Before</span>
+          <span class="compare__tag compare__tag--after">After</span>
+          <div class="compare__handle" aria-hidden="true"><i></i></div>
+          <input class="compare__range" id="compareRange" type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after" />
+        </div>
+        <p class="results__note">Illustrative pair. Your own before and after cases go here.</p>
+      </section>
+
+      <!-- the doctor -->
+      <section class="doctor screen" id="doctor">
+        <figure class="doctor__photo"><img src="./assets/hands.jpg" alt="A dentist's gloved hands at work during a treatment" loading="lazy" /></figure>
+        <div class="doctor__copy">
+          <blockquote>
+            <p>Every implant here starts with a scan, a plan and a conversation. <em>Never with the drill.</em></p>
+          </blockquote>
+          <p class="signature" aria-label="Signed, Dr. Your Name">Dr. Your Name</p>
+          <dl class="creds">
+            <div><dt>Training</dt><dd>BDS, MDS (Implantology)</dd></div>
+            <div><dt>In practice</dt><dd>XX years</dd></div>
+            <div><dt>Implants placed</dt><dd>X,XXX</dd></div>
+            <div><dt>Member</dt><dd>Your association</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- technology: a sideways reel -->
+      <section class="tech" id="technology">
+        <div class="tech__pin" id="techPin">
+          <div class="tech__track" id="techTrack">
+            <h2 class="tech__title">The equipment<br />behind the <em>calm</em>.</h2>
+            <figure class="reel">
+              <img src="./assets/planning.jpg" alt="A dentist reviewing 3D scans of teeth on a light box" loading="lazy" />
+              <figcaption><h3>3D scans and guided surgery</h3><p>Every implant is planned on a scan first, then placed through a guide made for your mouth.</p></figcaption>
+            </figure>
+            <figure class="reel">
+              <img src="./assets/light.jpg" alt="A blue curing light setting a tooth-coloured filling" loading="lazy" />
+              <figcaption><h3>Light-cured restorations</h3><p>Tooth-coloured fillings set in seconds under a precise blue light.</p></figcaption>
+            </figure>
+            <figure class="reel">
+              <img src="./assets/handpieces.jpg" alt="A row of electric dental handpieces" loading="lazy" />
+              <figcaption><h3>Quiet electric handpieces</h3><p>Smoother and far quieter than the whine most people remember.</p></figcaption>
+            </figure>
+            <figure class="reel">
+              <img src="./assets/suite.jpg" alt="A private treatment suite with an orange dental chair" loading="lazy" />
+              <figcaption><h3>Private treatment suites</h3><p>One patient, one room, start to finish. No curtains, no queue outside.</p></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- treatments: a type index with a floating preview -->
+      <section class="treatments screen" id="treatments">
+        <h2>Treatments</h2>
+        <ul class="index" id="index">
+          <li data-img="./assets/implants.jpg"><a href="#consult"><span class="index__name">Dental implants</span><span class="index__meta">From ₹XX,XXX</span></a></li>
+          <li data-img="./assets/planning.jpg"><a href="#consult"><span class="index__name">Full-mouth rehabilitation</span><span class="index__meta">Custom plan</span></a></li>
+          <li data-img="./assets/veneers.jpg"><a href="#consult"><span class="index__name">Porcelain veneers</span><span class="index__meta">From ₹X,XXX per tooth</span></a></li>
+          <li data-img="./assets/aligners.jpg"><a href="#consult"><span class="index__name">Clear aligners</span><span class="index__meta">From ₹XX,XXX</span></a></li>
+          <li data-img="./assets/portrait.jpg"><a href="#consult"><span class="index__name">Smile design</span><span class="index__meta">Preview on screen</span></a></li>
+          <li data-img="./assets/checkup.jpg"><a href="#consult"><span class="index__name">General care</span><span class="index__meta">From ₹X,XXX</span></a></li>
+        </ul>
+        <figure class="peek" id="peek" aria-hidden="true"><img alt="" id="peekImg" src="./assets/implants.jpg" /></figure>
+      </section>
+
+      <!-- reviews -->
+      <section class="voices screen" aria-labelledby="voicesTitle">
+        <h2 class="sr" id="voicesTitle">What patients say</h2>
+        <div class="voices__stage" id="voices">
+          <figure class="voice is-on"><blockquote>“I put off an implant for six years. The whole thing was calmer than a haircut.”</blockquote><figcaption>R.M. · Single implant</figcaption></figure>
+          <figure class="voice"><blockquote>“They showed me my scan, the plan and the price before anything started.”</blockquote><figcaption>A.S. · Full-mouth rehabilitation</figcaption></figure>
+          <figure class="voice"><blockquote>“People ask if I have had work done. I tell them I just sleep better now.”</blockquote><figcaption>N.K. · Porcelain veneers</figcaption></figure>
+        </div>
+        <div class="voices__nav">
+          <button type="button" id="voicePrev" aria-label="Previous review"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg></button>
+          <span class="voices__count" id="voiceCount">1 / 3</span>
+          <button type="button" id="voiceNext" aria-label="Next review"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg></button>
+        </div>
+      </section>
+
+      <!-- consultation -->
+      <section class="consult screen" id="consult">
+        <img class="consult__bg" src="./assets/portrait.jpg" alt="" loading="lazy" />
+        <div class="consult__copy">
+          <h2>Your first consultation is <em>on us</em>.</h2>
+          <p>A 3D scan, a written plan and a clear quote. EMI from ₹X,XXX a month.</p>
+        </div>
+        <form class="consult__form" id="consultForm" novalidate>
+          <div class="field">
+            <label for="cName">Name</label>
+            <input id="cName" name="name" autocomplete="name" required />
+            <p class="error" id="cNameError" hidden>Tell us what to call you.</p>
+          </div>
+          <div class="field">
+            <label for="cPhone">Phone</label>
+            <input id="cPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required />
+            <p class="error" id="cPhoneError" hidden>Add a 10-digit number so we can call you back.</p>
+          </div>
+          <div class="field">
+            <label for="cTreat">Interested in</label>
+            <select id="cTreat" name="treatment">
+              <option>Dental implants</option>
+              <option>Porcelain veneers</option>
+              <option>Clear aligners</option>
+              <option>Smile design</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <button class="btn btn--solid" type="submit" id="cSubmit">Book a free consultation</button>
+          <div class="sent" id="sent" hidden>
+            <h3 id="sentTitle">Thank you.</h3>
+            <p id="sentText">We will call within the hour to find a time. This is a demo, so nothing was sent.</p>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="foot__cols">
+        <address>Plot X, Street Name<br />Your City, PIN XXXXXX</address>
+        <p>Mon to Sat<br />10:00 to 20:00</p>
+        <p><a href="tel:+910000000000">+91 XXXXX XXXXX</a><br /><a href="mailto:hello@ivory.example">hello@ivory.example</a></p>
+      </div>
+      <p class="foot__word" aria-hidden="true">IVORY</p>
+      <small>Ivory is a demo practice. Doctor, figures, prices and reviews are placeholders.</small>
+    </footer>
+  </body>
+</html>
