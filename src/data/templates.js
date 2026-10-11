@@ -101,6 +101,16 @@ export const websiteTemplates = [
     thumbnail: '/templates/aurum.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'enamel',
+    name: 'Enamel',
+    style: 'Premium dental clinic',
+    summary:
+      'A dark, polished clinic site built around a live tooth chart: tap any tooth to see its treatment, then book a slot in seconds.',
+    bestFor: ['Dental clinics and smile studios', 'Orthodontists and implant centres', 'Cosmetic and skin clinics', 'Specialist practices'],
+    thumbnail: '/templates/enamel.jpg',
+    chrome: 'dark',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
