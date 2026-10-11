@@ -79,7 +79,7 @@ export const pageMeta = {
   home: {
     title: 'Gen Clover | Digital Products, Technology & AI Solutions',
     description:
-      'Gen Clover designs and builds digital products that move businesses forward: websites, web applications, e-commerce, AI and automation, data, DevOps and SEO.',
+      'Gen Clover designs and builds digital products that move businesses forward: websites, web applications, e-commerce, AI and automation, data platforms, DevOps and SEO.',
     path: '/',
   },
   services: {
