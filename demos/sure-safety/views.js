@@ -1,6 +1,7 @@
 /** Page views. Each returns HTML; main.js mounts it and wires the behaviour. */
 import { CATEGORIES, categoryBy, PRODUCTS, productBy, inCategory, HAZARDS, SERVICES, INDUSTRIES, COMPANY } from './site.js'
 import { icon, esc, asset } from './ui.js'
+import { PLANT_SVG } from './plant.js'
 
 const img = (p) => asset(`p/${p.slug}.webp`)
 const gal = (name) => asset(`g/${name}.webp`)
@@ -67,7 +68,7 @@ export function home() {
           ${side ? `<span class="kit__tag kit__tag--${side}"><b>${esc(categoryBy[cat].label)}</b>${count(cat)}</span>` : ''}
         </a>`,
       ).join('')}
-      <p class="kit__caption"><b>2,200+</b> products, head to toe</p>
+      <p class="kit__caption"><b data-count="2200" data-suffix="+">2,200+</b> products, head to toe</p>
     </div>
   </section>
 
@@ -78,26 +79,30 @@ export function home() {
     <div class="proof__brands"><p>Also distributing</p><ul>${COMPANY.distributes.map((b) => `<li>${b}</li>`).join('')}</ul></div>
   </section>
 
-  <section class="finder" id="finder">
-    <div class="finder__side">
-      <h2 class="h2">What are your teams up against?</h2>
-      <p class="lede">Pick a hazard. We’ll pull the right kit from the range.</p>
-      <div class="hazards" role="tablist" aria-label="Hazards">
-        ${HAZARDS.map(
-          (h, i) => `<button class="hazard" role="tab" type="button" id="hz-${h.id}" data-hazard="${h.id}" aria-selected="${i === 0}" aria-controls="finderGrid">
-            ${icon(h.icon)}<span><b>${esc(h.label)}</b><small>${esc(h.line)}</small></span></button>`,
-        ).join('')}
+  <section class="plant-sec" id="finder">
+    <div class="plant-sec__inner">
+      <div class="plant-head">
+        <h2 class="h2 split">Walk the plant.</h2>
+        <p class="lede">Every area of a site has its own hazard. Pick one and we’ll pull the kit that answers it.</p>
       </div>
-    </div>
-    <div class="finder__main">
-      <div class="finder__head"><p id="finderLabel">${esc(HAZARDS[0].label)}</p><button class="link" type="button" data-add-all>${icon('plus')} Add all to quote list</button></div>
-      <div class="grid grid--finder" id="finderGrid" role="tabpanel" aria-live="polite">${HAZARDS[0].products.map((s) => productCard(productBy[s])).join('')}</div>
+      <div class="plant-stage">
+        <div class="plant-scroll" id="plantScroll">${PLANT_SVG}</div>
+        <div class="plant-card" id="plantCard" aria-live="polite"></div>
+      </div>
+      <div class="hazards" role="tablist" aria-label="Hazards">
+        ${HAZARDS.map((h, i) => `<button class="hazard" role="tab" type="button" id="hz-${h.id}" data-hazard="${h.id}" aria-selected="${i === 0}" aria-controls="finderGrid">${icon(h.icon)}<b>${esc(h.label)}</b></button>`).join('')}
+      </div>
+      <div class="finder__main">
+        <div class="finder__head"><p id="finderLabel">${esc(HAZARDS[0].label)}</p><button class="link link--light" type="button" data-add-all>${icon('plus')} Add all to quote list</button></div>
+        <div class="grid grid--finder" id="finderGrid" role="tabpanel" aria-live="polite">${HAZARDS[0].products.map((s) => productCard(productBy[s])).join('')}</div>
+      </div>
     </div>
   </section>
 
   <section class="spot" aria-label="Saviour helmets">
     <div class="spot__stage">
       <div class="spot__tabs" role="tablist" aria-label="Helmet">${SPOT.map((s, i) => `<button role="tab" type="button" data-spot="${s}" aria-selected="${i === 0}">${esc(productBy[s].name)}</button>`).join('')}</div>
+      <p class="spot__ghost" id="spotGhost" aria-hidden="true">Freedom</p>
       <div class="spot__img" id="spotImg"><img src="${gal('freedom-1')}" alt="Freedom helmet in orange" /></div>
       <div class="spot__swatches" id="spotSwatches" role="radiogroup" aria-label="Colour"></div>
     </div>
@@ -105,13 +110,13 @@ export function home() {
   </section>
 
   <section class="cats" aria-labelledby="catsTitle">
-    <div class="sec-head"><h2 class="h2" id="catsTitle">Every category of risk, in one catalogue.</h2><a class="link" href="#/products">All ${PRODUCTS.length} products ${icon('arrow-right')}</a></div>
+    <div class="sec-head"><h2 class="h2 split" id="catsTitle">Every category of risk, in one catalogue.</h2><a class="link" href="#/products">All ${PRODUCTS.length} products ${icon('arrow-right')}</a></div>
     <div class="cats__grid">
       ${big
         .map(
           (c) => `<a class="cat" href="#/products/${c.slug}">
             <img src="${asset(`${c.face}.webp`)}" alt="" loading="lazy" />
-            <span class="cat__name">${esc(c.label)}</span><span class="cat__count">${count(c.slug)}</span>
+            <span class="cat__name">${esc(c.label)}</span><span class="cat__count" data-count="${count(c.slug)}">${count(c.slug)}</span>
             <span class="cat__line">${esc(c.line)}</span></a>`,
         )
         .join('')}
@@ -125,7 +130,7 @@ export function home() {
     <img class="maker__bg" src="${asset('photo/plant-worker.jpg')}" alt="" loading="lazy" />
     <div class="maker__copy">
       <img src="${asset('brand/saviour.webp')}" alt="Saviour, Performing PPE" width="190" height="75" />
-      <h2 class="h2">Our own brand, built to the Indian standard.</h2>
+      <h2 class="h2 split">Our own brand, built to the Indian standard.</h2>
       <dl class="maker__facts">
         <div><dt>IS 2925:1984</dt><dd>Industrial helmets under ISI licence CM/L-7572484</dd></div>
         <div><dt>IS 2745:1983</dt><dd>Fire Pro firefighter’s helmet, tested for shock, flame and leakage current</dd></div>
@@ -135,7 +140,7 @@ export function home() {
   </section>
 
   <section class="svc" aria-labelledby="svcTitle">
-    <div class="sec-head"><h2 class="h2" id="svcTitle">We test the site, not just sell the kit.</h2><a class="link" href="#/services">All services ${icon('arrow-right')}</a></div>
+    <div class="sec-head"><h2 class="h2 split" id="svcTitle">We test the site, not just sell the kit.</h2><a class="link" href="#/services">All services ${icon('arrow-right')}</a></div>
     <div class="svc__body">
       <div class="svc__tabs" role="tablist" aria-label="Services">${SERVICES.map((s, i) => `<button role="tab" type="button" data-svc="${s.id}" aria-selected="${i === 0}"><b>${esc(s.title)}</b><small>${esc(s.line)}</small></button>`).join('')}</div>
       <div class="svc__panel" id="svcPanel"></div>
@@ -149,7 +154,7 @@ export function home() {
 
   <section class="cta">
     <div>
-      <h2 class="h2">Send us your PPE list. We’ll quote it.</h2>
+      <h2 class="h2 split">Send us your PPE list. We’ll quote it.</h2>
       <p>Add products as you browse, or describe what you need. The sales team prices every order by model, quantity and branding.</p>
     </div>
     <div class="cta__actions">
@@ -271,7 +276,7 @@ export const services = () => `
     ${SERVICES.map(
       (s, i) => `<article class="svc-item${i % 2 ? ' svc-item--flip' : ''}">
         <figure><img src="${asset(`photo/${s.photo}.jpg`)}" alt="" loading="lazy" /></figure>
-        <div><h2 class="h2">${esc(s.title)}</h2><p class="lede">${esc(s.line)}</p><ul class="ticks ticks--2">${s.items.map((x) => `<li>${icon('check')}${esc(x)}</li>`).join('')}</ul>
+        <div><h2 class="h2 split">${esc(s.title)}</h2><p class="lede">${esc(s.line)}</p><ul class="ticks ticks--2">${s.items.map((x) => `<li>${icon('check')}${esc(x)}</li>`).join('')}</ul>
         <button class="btn btn--primary" type="button" data-assist="I'd like to book ${esc(s.title.toLowerCase())} for my site">Book a site visit ${icon('arrow-right')}</button></div>
       </article>`,
     ).join('')}

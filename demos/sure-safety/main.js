@@ -3,6 +3,7 @@ import './style.css'
 import { CATEGORIES, PRODUCTS, productBy, categoryBy, HAZARDS, SERVICES, COMPANY } from './site.js'
 import { reply, chipAction, GREETING } from './assistant.js'
 import * as views from './views.js'
+import { startSmoothScroll, mountMotion, scrollToTop, scrollToEl, pauseScroll } from './motion.js'
 import {
   icon, paintIcons, esc, $, $$, reduced, asset, toast, demoNote,
   quoteList, onQuote, addToQuote, setQty, clearQuote, saveLead, openOverlay, closeOverlay, overlayOpen,
@@ -26,10 +27,13 @@ const parse = () => {
 }
 
 let lastPath = null
+let routeCleanup = () => {}
 const render = () => {
   const { path, params } = parse()
   const route = routes.find(([re]) => re.test(path))
   const swap = () => {
+    routeCleanup()
+    routeCleanup = () => {}
     if (route) {
       const m = path.match(route[0])
       main.innerHTML = route[1](m)
@@ -38,10 +42,10 @@ const render = () => {
     $$('.bar__link').forEach((a) => a.classList.toggle('is-on', path.startsWith(`/${a.dataset.nav}`) || (a.dataset.nav === 'products' && path.startsWith('/product'))))
     if (path !== lastPath) {
       const target = params.has('find') ? $('#finder') : null
-      target ? target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }) : scrollTo(0, 0)
+      target ? setTimeout(() => scrollToEl(target), 60) : scrollToTop()
     }
     lastPath = path
-    reveal()
+    mountMotion(main)
   }
   if (document.startViewTransition && !reduced && lastPath !== null && path !== lastPath) document.startViewTransition(swap)
   else swap()
@@ -51,11 +55,26 @@ addEventListener('hashchange', render)
 
 /* ===================================================================== home */
 function mountHome(params) {
-  // hazard finder
+  // the plant: zones light up, the card and the kit grid follow
   const grid = $('#finderGrid')
-  const pick = (id, focus = false) => {
+  const card = $('#plantCard')
+  const plant = $('.plant')
+  const TOUR_MS = 3400
+  let current = null
+  let touring = !reduced
+  const show = (id, { fromUser = false, scroll = true } = {}) => {
     const h = HAZARDS.find((x) => x.id === id) ?? HAZARDS[0]
+    if (fromUser) stopTour()
+    if (h.id === current) return
+    current = h.id
+    plant.dataset.active = h.id
+    $$('.pl-zone', plant).forEach((z) => z.classList.toggle('is-on', z.dataset.zone === h.id))
     $$('.hazard').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.hazard === h.id)))
+    const top = h.products.slice(0, 4).map((s) => productBy[s])
+    card.innerHTML = `<div class="plant-card__in">
+      <div class="plant-card__txt"><p class="plant-card__k">${icon(h.icon)} ${esc(h.line)}</p><h3>${esc(h.label)}</h3></div>
+      <div class="plant-card__kit">${top.map((p, i) => `<a href="#/product/${p.slug}" style="--i:${i}" title="${esc(p.name)}"><img src="${asset(`p/${p.slug}.webp`)}" alt="${esc(p.name)}" /></a>`).join('')}</div>
+      <button class="btn btn--primary" type="button" data-see-kit>See all ${h.products.length} ${icon('arrow-right')}</button></div>`
     $('#finderLabel').textContent = `${h.label} · ${h.products.length} products`
     grid.classList.add('is-swapping')
     setTimeout(() => {
@@ -63,17 +82,32 @@ function mountHome(params) {
       grid.dataset.hazard = h.id
       grid.classList.remove('is-swapping')
     }, reduced ? 0 : 160)
-    if (focus) $(`#hz-${h.id}`).focus()
+    // on narrow screens the plant scrolls sideways: bring the lit zone into view
+    const sc = $('#plantScroll')
+    if (scroll && sc.scrollWidth > sc.clientWidth) {
+      const hit = $(`[data-hit="${h.id}"]`, plant).getBoundingClientRect()
+      const box = sc.getBoundingClientRect()
+      sc.scrollTo({ left: sc.scrollLeft + hit.left - box.left - (box.width - hit.width) / 2, behavior: reduced ? 'auto' : 'smooth' })
+    }
   }
-  $$('.hazard').forEach((b) => b.addEventListener('click', () => pick(b.dataset.hazard)))
-  $('.hazards').addEventListener('keydown', (e) => {
-    if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return
-    e.preventDefault()
-    const i = HAZARDS.findIndex((h) => h.id === document.activeElement.dataset.hazard)
-    pick(HAZARDS[(i + (e.key === 'ArrowDown' ? 1 : -1) + HAZARDS.length) % HAZARDS.length].id, true)
+  const order = HAZARDS.map((h) => h.id)
+  let tourTimer = setInterval(() => touring && document.visibilityState === 'visible' && show(order[(order.indexOf(current) + 1) % order.length], { scroll: false }), TOUR_MS)
+  function stopTour() {
+    touring = false
+    clearInterval(tourTimer)
+  }
+  routeCleanup = () => clearInterval(tourTimer)
+  $$('.pl-hit', plant).forEach((hit) => {
+    const id = hit.dataset.hit
+    hit.setAttribute('aria-label', HAZARDS.find((h) => h.id === id).label)
+    hit.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && show(id, { fromUser: true, scroll: false }))
+    hit.addEventListener('click', () => show(id, { fromUser: true, scroll: false }))
+    hit.addEventListener('focus', () => show(id, { fromUser: true }))
+    hit.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), scrollToEl($('.finder__main'))))
   })
-  grid.dataset.hazard = HAZARDS[0].id
-  if (params.get('hazard')) pick(params.get('hazard'))
+  $$('.hazard').forEach((b) => b.addEventListener('click', () => show(b.dataset.hazard, { fromUser: true })))
+  card.addEventListener('click', (e) => e.target.closest('[data-see-kit]') && scrollToEl($('.finder__main')))
+  show(params.get('hazard') ?? HAZARDS[0].id, { fromUser: !!params.get('hazard') })
   $('[data-add-all]').addEventListener('click', () => {
     const h = HAZARDS.find((x) => x.id === grid.dataset.hazard)
     h.products.forEach((s) => addToQuote(s))
@@ -89,11 +123,17 @@ function mountHome(params) {
     $('#spotSwatches').innerHTML = colours
       .map((g, i) => `<button type="button" role="radio" class="swatch swatch--lg" style="--c:${g.swatch}" aria-checked="${i === 0}" data-img="${g.img}" aria-label="${esc(g.label)}"><span>${esc(g.label)}</span></button>`)
       .join('')
-    setSpotImage(colours[0].img, `${p.name} helmet in ${colours[0].label.toLowerCase()}`)
+    setSpotImage(colours[0].img, `${p.name} helmet in ${colours[0].label.toLowerCase()}`, colours[0].swatch)
+    const ghost = $('#spotGhost')
+    ghost.classList.remove('is-in')
+    requestAnimationFrame(() => {
+      ghost.textContent = p.name
+      requestAnimationFrame(() => ghost.classList.add('is-in'))
+    })
     $$('#spotSwatches .swatch').forEach((s) =>
       s.addEventListener('click', () => {
         $$('#spotSwatches .swatch').forEach((x) => x.setAttribute('aria-checked', String(x === s)))
-        setSpotImage(s.dataset.img, `${p.name} helmet in ${s.getAttribute('aria-label').toLowerCase()}`)
+        setSpotImage(s.dataset.img, `${p.name} helmet in ${s.getAttribute('aria-label').toLowerCase()}`, s.style.getPropertyValue('--c'))
       }),
     )
   }
@@ -110,8 +150,9 @@ function mountHome(params) {
 }
 
 /** Crossfade the spotlight helmet with a short blur, so colour changes read as one object. */
-const setSpotImage = (name, alt) => {
+const setSpotImage = (name, alt, glow) => {
   const box = $('#spotImg')
+  if (glow) box.closest('.spot').style.setProperty('--glow', glow)
   const next = new Image()
   next.src = asset(`g/${name}.webp`)
   next.alt = alt
@@ -227,6 +268,7 @@ document.addEventListener('click', (e) => {
   else if (t.dataset.demo) demoNote(t.dataset.demo)
 })
 $('#scrim').addEventListener('click', closeOverlay)
+new MutationObserver(() => pauseScroll(document.documentElement.classList.contains('is-locked'))).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (overlayOpen()) closeOverlay()
@@ -458,19 +500,8 @@ assist.addEventListener('click', (e) => {
   if (e.target.closest('.mini') && !e.target.closest('.mini__add') && matchMedia('(max-width: 700px)').matches) closeAssist()
 })
 
-/* ======================================================= reveal on scroll */
-const io = new IntersectionObserver(
-  (es) =>
-    es.forEach((en) => {
-      if (!en.isIntersecting) return
-      en.target.classList.add('is-in')
-      io.unobserve(en.target)
-    }),
-  { rootMargin: '0px 0px -10% 0px' },
-)
-const reveal = () => $$('.reveal-up', main).forEach((el) => io.observe(el))
-
 /* ====================================================================== go */
 paintIcons()
 drawQuote()
+startSmoothScroll()
 render()

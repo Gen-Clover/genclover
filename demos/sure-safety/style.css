@@ -34,7 +34,7 @@
 [hidden] { display: none !important; }
 /* grid items holding sideways-scrolling rows must be allowed to shrink */
 .finder > *, .svc__body > *, .catalog__body > *, .spot > *, .hero > *, .contact > *, .pdp__top > * { min-width: 0; }
-html { scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; }
+html { scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; overflow-x: clip; }
 html.is-locked { overflow: hidden; }
 body { margin: 0; background: var(--ground); color: var(--ink); font: 400 16px/1.55 var(--font); font-stretch: 100%; -webkit-font-smoothing: antialiased; caret-color: var(--orange); }
 ::selection { background: var(--orange); color: #fff; }
@@ -674,4 +674,203 @@ body.assist-on .assist-launch { transform: scale(0.9); opacity: 0; pointer-event
   .marquee ul { animation: none; flex-wrap: wrap; width: auto; padding: 0 var(--gutter); }
   .marquee li[aria-hidden='true'] { display: none; }
   .marquee { mask-image: none; }
+}
+
+/* ===================================================================== MOTION LAYER */
+
+/* scroll progress in the header */
+.bar::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--orange); transform-origin: left; transform: scaleX(0); }
+@supports (animation-timeline: scroll()) {
+  .bar::after { animation: progress linear both; animation-timeline: scroll(root); }
+  @keyframes progress { to { transform: scaleX(1); } }
+}
+
+/* headings rise out of their own line, word by word */
+.split .w, .h1 .w { display: inline-block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; vertical-align: top; }
+.split .w > span, .h1 .w > span { display: inline-block; transform: translateY(105%); transition: transform 900ms var(--ease); transition-delay: calc(var(--i) * 45ms); }
+.split.is-in .w > span, .h1.is-in .w > span { transform: none; }
+
+/* hero kit leans toward the pointer: deeper pieces move more */
+.kit { --px: 0; --py: 0; }
+.kit__item img { translate: calc(var(--px) * var(--depth, 0) * 18px) calc(var(--py) * var(--depth, 0) * 12px); transition: transform 400ms var(--ease), filter 400ms ease, translate 600ms var(--ease); }
+.kit__axis { animation: axis 1.4s var(--ease-io) 0.2s both; transform-origin: top; }
+@keyframes axis { from { transform: scaleY(0); } }
+.kit::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(240px 240px at calc(50% + var(--px) * 100%) calc(50% + var(--py) * 100%), rgba(242, 106, 27, 0.13), transparent 70%); }
+
+/* category tiles fly in from scattered positions and settle */
+.cat, .cat-row { transform: translate(var(--fx), var(--fy)) rotate(var(--fr)); opacity: 0; transition: transform 1s var(--ease), opacity 600ms ease, box-shadow 300ms var(--ease); transition-delay: var(--fd), var(--fd), 0s; }
+.cat.is-in, .cat-row.is-in { transform: none; opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .cat.is-in:hover { transform: translateY(-4px); transition-delay: 0s; } }
+
+/* helmet spotlight: a colour-matched glow and the model name behind the helmet */
+.spot { --glow: #e2522b; position: relative; overflow: hidden; }
+.spot::before { content: ''; position: absolute; left: -10%; top: 10%; width: 70%; height: 90%; background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 45%, transparent), transparent); opacity: 0.55; filter: blur(30px); transition: background 700ms ease; pointer-events: none; }
+.spot__stage { position: static; }
+.spot__ghost { position: absolute; left: 50%; bottom: -0.2em; z-index: 0; translate: -50% 0; margin: 0; color: transparent; -webkit-text-stroke: 1px rgba(233, 235, 237, 0.16); font-size: clamp(6rem, 22vw, 20rem); font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: 1; white-space: nowrap; pointer-events: none; opacity: 0; transform: translateX(-60px); transition: opacity 500ms ease, transform 900ms var(--ease); }
+.spot__ghost.is-in { opacity: 1; transform: none; }
+.spot__img, .spot__tabs, .spot__swatches, .spot__info { position: relative; z-index: 1; }
+.spot__img { box-shadow: 0 40px 80px -40px color-mix(in srgb, var(--glow) 70%, black); transition: box-shadow 700ms ease; }
+
+/* ---------------------------------------------------------------- the plant section */
+.plant-sec { max-width: none !important; background: var(--graphite); color: var(--on-dark); }
+.plant-sec__inner { max-width: var(--max); margin: 0 auto; padding: clamp(64px, 8vw, 110px) var(--gutter) clamp(64px, 8vw, 100px); }
+.plant-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 40px; }
+.plant-head .lede { margin: 0; max-width: 46ch; color: var(--on-dark-mute); }
+.plant-stage { position: relative; margin-top: clamp(24px, 3vw, 40px); border-radius: var(--r); overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.plant-scroll { overflow-x: auto; scrollbar-width: none; }
+.plant-scroll::-webkit-scrollbar { display: none; }
+.plant { display: block; width: 100%; min-width: 980px; height: auto; }
+/* the readout under the drawing: what this area needs, at a glance */
+.plant-card { padding: 16px clamp(16px, 2vw, 24px); background: var(--graphite-2); border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.plant-card__in { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px 28px; }
+.plant-card__kit { margin: 0 !important; width: min(320px, 34vw); }
+.plant-card__kit a { aspect-ratio: 4 / 3; }
+.plant-card__in { animation: cardIn 420ms var(--ease) both; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } }
+.plant-card__k { display: flex; align-items: center; gap: 6px; color: var(--on-dark-mute); font-size: 13px; }
+.plant-card__k .ico { color: var(--orange); }
+.plant-card h3 { margin-top: 4px; font-size: 30px; font-weight: 850; font-stretch: 68%; line-height: 1; text-transform: uppercase; color: #fff; }
+.plant-card__kit { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0 10px; }
+.plant-card__kit a { aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: #f4f5f6; animation: kitIn 500ms var(--ease) both; animation-delay: calc(80ms + var(--i) * 60ms); transition: transform 200ms var(--ease); }
+.plant-card__kit a:hover { transform: translateY(-3px); }
+.plant-card__kit img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes kitIn { from { opacity: 0; transform: translateY(10px) scale(0.92); } }
+.link--light { color: #ffb183; }
+.plant-sec .hazards { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.plant-sec .hazard { gap: 8px; padding: 9px 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 99px; background: transparent; color: var(--on-dark-mute); }
+.plant-sec .hazard b { font-size: 14px; color: inherit; }
+.plant-sec .hazard .ico { width: 17px; height: 17px; color: inherit; }
+.plant-sec .hazard:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+.plant-sec .hazard[aria-selected='true'] { background: var(--orange); border-color: var(--orange); color: #fff; box-shadow: none; }
+.plant-sec .finder__main { margin-top: clamp(28px, 3vw, 44px); }
+.plant-sec .finder__head p { color: var(--on-dark-mute); }
+.plant-sec .card { box-shadow: none; }
+
+/* ------------------------------------------------------------- the plant drawing */
+.plant { --stroke: #aab1b8; --stroke-dim: #6c747c; --fill: #262a30; --glass: #121417; --hot: #ff7a2a; }
+.pl-horizon { stroke: #3a4047; stroke-width: 1.5; }
+.pl-lane { stroke: #3a4047; stroke-width: 2; stroke-dasharray: 18 14; animation: lane 2.4s linear infinite; }
+@keyframes lane { to { stroke-dashoffset: -32; } }
+.pl-cloud { fill: rgba(255, 255, 255, 0.035); animation: cloud var(--cd) linear infinite; animation-delay: var(--co, 0s); }
+@keyframes cloud { from { transform: translateX(-260px); } to { transform: translateX(1700px); } }
+.pl-body { fill: var(--fill); stroke: var(--stroke); stroke-width: 1.5; stroke-linejoin: round; transition: stroke 400ms ease, fill 400ms ease; }
+.pl-line, .pl-pole { fill: none; stroke: var(--stroke); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 400ms ease; }
+.pl-faint { stroke: var(--stroke-dim); }
+.pl-thick { stroke-width: 3; }
+.pl-glass { fill: var(--glass); stroke: var(--stroke-dim); stroke-width: 1.2; }
+.pl-win { fill: #2d3237; transition: fill 400ms ease; }
+.pl-win--lit { fill: rgba(255, 196, 140, 0.55); animation: flicker 6s ease-in-out infinite; animation-delay: var(--dl); }
+@keyframes flicker { 0%, 47%, 53%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.pl-band { fill: rgba(242, 106, 27, 0.7); }
+
+/* zones rise on load, then dim while another is chosen */
+.pl-rise { transform-box: fill-box; transform-origin: bottom; animation: rise-bld 1.1s var(--ease) both; animation-delay: calc(var(--d) * 900ms + 150ms); }
+@keyframes rise-bld { from { transform: translateY(40px) scaleY(0.6); opacity: 0; } }
+.pl-zone { transition: opacity 500ms ease, filter 500ms ease; }
+.plant[data-active] .pl-zone:not(.is-on) { opacity: 0.42; filter: saturate(0.4); }
+.pl-zone.is-on .pl-body { stroke: var(--orange); fill: #2a2622; }
+.pl-zone.is-on .pl-line:not(.pl-faint) { stroke: #ffb183; }
+.pl-zone.is-on .pl-win { fill: rgba(255, 196, 140, 0.4); }
+.pl-sign { animation: fadein 600ms ease both; animation-delay: calc(var(--d) * 900ms + 700ms); }
+.pl-sign-box { fill: #2a2f35; stroke: #4a5158; stroke-width: 1; transition: fill 300ms ease, stroke 300ms ease; }
+.pl-sign-text { fill: #d3d8dc; font: 800 15px var(--font); font-stretch: 80%; letter-spacing: 0.12em; text-anchor: middle; transition: fill 300ms ease; }
+.pl-pole { stroke: #4a5158; }
+.pl-zone.is-on .pl-sign-box { fill: var(--orange); stroke: var(--orange); }
+.pl-zone.is-on .pl-sign-text { fill: #fff; }
+.pl-zone.is-on .pl-sign > * { animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+.pl-hit { fill: transparent; cursor: pointer; outline: none; }
+.pl-hit:focus-visible { stroke: var(--orange); stroke-width: 2; stroke-dasharray: 6 6; }
+
+/* heat: molten metal pours, the pool glows, sparks fly */
+.pl-metal { fill: #3a3f45; stroke: var(--stroke); stroke-width: 1.5; }
+.pl-ladle { transform-box: fill-box; transform-origin: 70% 0; animation: tilt 5s ease-in-out infinite; }
+@keyframes tilt { 0%, 100% { transform: rotate(0); } 40%, 70% { transform: rotate(-14deg); } }
+.pl-pour { fill: none; stroke: var(--hot); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 10 8; animation: pour 0.6s linear infinite, pourOn 5s ease-in-out infinite; filter: drop-shadow(0 0 6px rgba(255, 122, 42, 0.8)); }
+@keyframes pour { to { stroke-dashoffset: -18; } }
+@keyframes pourOn { 0%, 30%, 85%, 100% { opacity: 0; } 42%, 72% { opacity: 1; } }
+.pl-pool { fill: var(--hot); filter: drop-shadow(0 0 8px rgba(255, 122, 42, 0.9)); }
+.pl-heatglow { animation: glow 2.6s ease-in-out infinite; }
+@keyframes glow { 50% { opacity: 0.55; } }
+.pl-spark { fill: #ffd28a; opacity: 0; animation: spark var(--t) ease-out infinite; animation-delay: var(--dl); }
+@keyframes spark { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(var(--sx), var(--sy)); } }
+.pl-smoke { fill: rgba(200, 205, 210, 0.16); transform-box: fill-box; transform-origin: center; animation: smoke 3.6s ease-out infinite; animation-delay: var(--dl); opacity: 0; }
+.pl-smoke--big { fill: rgba(200, 205, 210, 0.2); animation-duration: 4.4s; }
+@keyframes smoke { 0% { opacity: 0; transform: translate(0, 0) scale(0.4); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(40px, -90px) scale(1.6); } }
+
+/* electrical: the arc snaps between insulators */
+.pl-insul { fill: #4a5158; stroke: var(--stroke); stroke-width: 1; }
+.pl-wire { fill: none; stroke: var(--stroke-dim); stroke-width: 1.2; }
+.pl-arc { fill: none; stroke: #9fdcff; stroke-width: 2; stroke-linejoin: round; opacity: 0; filter: drop-shadow(0 0 6px #6cc8ff); animation: arc 2.2s steps(1) infinite; }
+.pl-arc--b { animation-delay: 0.12s; stroke: #d6f0ff; }
+@keyframes arc { 0%, 62%, 70%, 78%, 100% { opacity: 0; } 64%, 72%, 80% { opacity: 1; } }
+.pl-warn { fill: #ffc531; stroke: #1b1e22; stroke-width: 1.5; stroke-linejoin: round; }
+.pl-warn-bolt { fill: #1b1e22; }
+
+/* chemical: the liquid sways and bubbles rise, a drip falls */
+.pl-liquid { fill: url(#plLiquid); opacity: 0.85; animation: sway 3s ease-in-out infinite; }
+.pl-liquid--b { animation-duration: 3.8s; animation-direction: reverse; }
+@keyframes sway { 50% { transform: translateX(-24px); } }
+.pl-bubble { fill: rgba(255, 255, 255, 0.55); animation: bubble 2.8s ease-in infinite; animation-delay: var(--dl); }
+@keyframes bubble { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-62px); opacity: 0; } }
+.pl-drip { fill: #7fd6c2; animation: drip 2.6s ease-in infinite; }
+@keyframes drip { 0%, 40% { transform: translateY(0); opacity: 1; } 90% { transform: translateY(18px); opacity: 1; } 100% { transform: translateY(20px); opacity: 0; } }
+.pl-diamond { fill: #fff; stroke: #c4321b; stroke-width: 2; }
+.pl-diamond-t { fill: #1b1e22; font: 800 10px var(--font); text-anchor: middle; }
+
+/* height: a beacon blinks, the harnessed worker sways on the lanyard */
+.pl-beacon { fill: #ff4b2b; animation: beacon 1.4s steps(1) infinite; filter: drop-shadow(0 0 6px #ff4b2b); }
+.pl-beacon--small { animation-duration: 0.9s; }
+@keyframes beacon { 50% { opacity: 0.15; } }
+.pl-worker { transform-box: view-box; transform-origin: 745px 206px; animation: swing 3.2s ease-in-out infinite; }
+@keyframes swing { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+.pl-lanyard { stroke: var(--orange); stroke-width: 2; stroke-dasharray: 3 3; }
+.pl-person { fill: #d9dde1; }
+.pl-hardhat { fill: var(--orange); }
+.pl-person-line { fill: none; stroke: #d9dde1; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.pl-harness { stroke: #c8ff3d; stroke-width: 2; }
+
+/* air: dust drifts out of the extractor */
+.pl-dust { fill: rgba(220, 200, 160, 0.6); animation: dust 3s ease-out infinite; animation-delay: var(--dl); }
+@keyframes dust { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(30px, -50px); opacity: 0; } }
+
+/* noise: the fan turns, sound waves pulse out */
+.pl-fan { transform-box: view-box; transform-origin: 1072px 415px; animation: spin 1.2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pl-blade { fill: #4a5158; }
+.pl-hub { fill: var(--stroke); }
+.pl-wave { fill: none; stroke: var(--orange); stroke-width: 2; stroke-linecap: round; opacity: 0; animation: wave 1.6s ease-out infinite; animation-delay: var(--dl); }
+@keyframes wave { 0% { opacity: 0; transform: translateX(0); } 30% { opacity: 0.9; } 100% { opacity: 0; transform: translateX(26px); } }
+
+/* fire: flames lick, the mist nozzle sprays */
+.pl-flame { fill: #ff7a2a; transform-box: fill-box; transform-origin: bottom center; animation: flame 0.9s ease-in-out infinite alternate; animation-delay: var(--dl); filter: drop-shadow(0 0 8px rgba(255, 122, 42, 0.8)); }
+.pl-flame--hot { fill: #ffd28a; }
+@keyframes flame { from { transform: scaleY(0.82) skewX(-4deg); } to { transform: scaleY(1.12) skewX(5deg); } }
+.pl-accent { fill: var(--orange); }
+.pl-mist { fill: rgba(170, 220, 255, 0.8); opacity: 0; animation: mist 1.4s ease-out infinite; animation-delay: var(--dl); }
+@keyframes mist { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(var(--mx), var(--my)); } }
+
+/* impact: the grinder throws sparks, the crane load swings */
+.pl-disc { fill: #3a3f45; stroke: #c3c9cf; stroke-width: 2; stroke-dasharray: 4 3; transform-box: fill-box; transform-origin: center; animation: spin 0.4s linear infinite; }
+.pl-hook { transform-box: view-box; transform-origin: 1560px 300px; animation: swing 4s ease-in-out infinite; }
+.pl-crate { fill: #6b4a2b; stroke: #c39062; stroke-width: 1.5; }
+
+/* the forklift drives through */
+.pl-forklift { animation: drive 22s linear infinite; }
+@keyframes drive { from { transform: translateX(-80px); } to { transform: translateX(1680px); } }
+.pl-fork-body { fill: var(--orange); }
+.pl-fork-load { fill: #6b4a2b; stroke: #c39062; stroke-width: 1; }
+.pl-wheel { fill: #111; stroke: #6c737a; stroke-width: 1.5; }
+
+@media (max-width: 960px) {
+  .plant-card__in { grid-template-columns: 1fr; }
+  .plant-card__kit { width: 100%; }
+  .plant-sec .hazards { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .plant-sec .hazard { flex: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plant, .plant * { animation: none !important; }
+  .pl-pour { opacity: 1; }
+  .cat, .cat-row { transform: none; opacity: 1; }
+  .split .w > span, .h1 .w > span { transform: none; }
 }
