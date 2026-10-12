@@ -116,35 +116,41 @@ export function mountMotion(root) {
 
   if (reduced) return
 
-  // hero kit: pieces separate as the page scrolls, and lean toward the pointer
+  // hero: a torch beam follows the pointer and lights the kit; idle, it sweeps by itself
   const kit = $$('.kit', root)[0]
-  if (kit) {
-    $$('.kit__item', kit).forEach((item, i) => {
-      const depth = [-1.6, -0.9, 0.6, -0.3, 0.4, 1.2, 1.4, 2][i] ?? 0
-      item.style.setProperty('--depth', depth)
-      gsap.to(item, { y: depth * 60, ease: 'none', scrollTrigger: { trigger: kit, start: 'top 20%', end: 'bottom top', scrub: 0.6 } })
-    })
-    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      let raf = 0
-      const move = (e) => {
-        const b = kit.getBoundingClientRect()
-        cancelAnimationFrame(raf)
-        raf = requestAnimationFrame(() => {
-          kit.style.setProperty('--px', ((e.clientX - b.left) / b.width - 0.5).toFixed(3))
-          kit.style.setProperty('--py', ((e.clientY - b.top) / b.height - 0.5).toFixed(3))
-        })
-      }
-      const leave = () => {
-        kit.style.setProperty('--px', 0)
-        kit.style.setProperty('--py', 0)
-      }
-      kit.addEventListener('pointermove', move)
-      kit.addEventListener('pointerleave', leave)
-      cleanups.push(() => {
-        kit.removeEventListener('pointermove', move)
-        kit.removeEventListener('pointerleave', leave)
+  if (kit && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let raf = 0
+    let idle
+    const move = (e) => {
+      const b = kit.getBoundingClientRect()
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        kit.classList.add('is-aimed')
+        kit.style.setProperty('--bx', `${e.clientX - b.left}px`)
+        kit.style.setProperty('--by', `${e.clientY - b.top}px`)
+        kit.style.setProperty('--px', ((e.clientX - b.left) / b.width - 0.5).toFixed(3))
+        kit.style.setProperty('--py', ((e.clientY - b.top) / b.height - 0.5).toFixed(3))
       })
+      clearTimeout(idle)
+      idle = setTimeout(() => kit.classList.remove('is-aimed'), 2600)
     }
+    const host = kit.closest('.ch') ?? kit
+    host.addEventListener('pointermove', move)
+    cleanups.push(() => host.removeEventListener('pointermove', move))
+  }
+
+  const desktop = matchMedia('(min-width: 961px)').matches
+  // chapters rise in like cards dealt onto the table
+  if (desktop)
+    $$('.ch', root).slice(1).forEach((ch) =>
+      gsap.fromTo(ch, { scale: 0.93, borderRadius: 36, filter: 'brightness(0.55)' }, { scale: 1, borderRadius: 0, filter: 'brightness(1)', ease: 'none', scrollTrigger: { trigger: ch, start: 'top bottom', end: 'top 25%', scrub: true } }),
+    )
+  // the range: vertical scroll walks along the rack
+  const track = $$('#rangeTrack', root)[0]
+  if (track && desktop) {
+    const dist = () => track.scrollWidth - track.parentElement.clientWidth + 48
+    gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: track.closest('.ch'), start: 'top top', end: () => `+=${dist()}`, pin: true, scrub: 0.8, invalidateOnRefresh: true } })
+    $$('.rack', track).forEach((r) => gsap.fromTo(r, { rotate: 4, y: 30 }, { rotate: 0, y: 0, ease: 'none', scrollTrigger: { trigger: r, containerAnimation: gsap.getTweensOf(track)[0], start: 'left right', end: 'left 60%', scrub: true } }))
   }
 
   // photo bands drift slower than the page

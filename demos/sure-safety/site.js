@@ -149,3 +149,32 @@ export const SERVICES = [
 ]
 
 export const INDUSTRIES = ['Pharmaceuticals', 'Steel', 'Aluminium & power', 'Chemicals', 'Petroleum', 'Cement', 'Automotive', 'Mining', 'Construction', 'Paint', 'Manufacturing', 'Hospitals']
+
+/** The 35 client logos shown on suresafety.com, in assets/clients/c1..c35.webp. */
+export const CLIENT_LOGOS = [
+  'Reliance Industries', 'Unilever', 'INEOS Styrolution', 'ABB', 'Siemens', 'Asian Paints', 'Essar', 'Hindalco', 'Larsen & Toubro',
+  'GACL', 'Tata', 'ArcelorMittal', 'GE', 'Alstom', 'Castrol', 'Kosa Chemicals', 'Vedanta', 'Godrej', 'GSFC', 'Alembic',
+  'Sun Pharma', 'Chambal Fertilisers', 'SRF', 'Adani', 'Hindustan Zinc', 'Dorf Ketal', 'Nestlé', 'Cummins India', 'Aarti Industries',
+  'Vedanta Resources', 'Coromandel', 'Hindustan Coca-Cola Beverages', 'GMSC', 'Deepak Nitrite', 'Gallantt',
+].map((name, i) => ({ name, img: `clients/c${i + 1}.webp` }))
+
+/** Short excerpts of the testimonials published on suresafety.com. */
+export const TESTIMONIALS = [
+  { quote: 'Their rescue team developed rescue plans and was available round the clock during the shutdown, building confidence across the workforce at height and in confined spaces.', who: 'Jeevan Mahadik', role: 'Head Safety' },
+  { quote: 'Through the nine-day scaffolding inspection training, our employees benefited a great deal, and we are constantly improving scaffolding activities in our plant.', who: 'Head of Department, HSE', role: 'ESL Steel, Vedanta Bokaro' },
+  { quote: 'Effectively provided and implemented fire fighting systems across multiple manufacturing facilities.', who: 'Vikash Patel', role: 'Director' },
+  { quote: 'Supplied, installed, tested and commissioned a high velocity water spray transformer protection system at Deccan Fine Chemicals.', who: 'Supriyo Mukherjee', role: 'Manager Electrical' },
+  { quote: 'The team provided training, guidance and advice to the workforce during shutdown to prevent incidents, and executed the job commendably.', who: 'Project Head', role: 'Lodha Group' },
+]
+
+/**
+ * The site scan on the services chapter: where each service sits on the photo,
+ * and an example reading of the kind it produces. Readings are illustrative.
+ */
+export const SCAN = [
+  { id: 'hygiene', x: 18, y: 40, reading: 'Noise', value: 88, unit: 'dB(A)', range: [84, 93] },
+  { id: 'audits', x: 44, y: 30, reading: 'Hydrant pressure', value: 7.1, unit: 'bar', range: [6.8, 7.4], dp: 1 },
+  { id: 'fit', x: 54, y: 56, reading: 'Fit factor', value: 212, unit: 'pass', range: [180, 240] },
+  { id: 'training', x: 30, y: 72, reading: 'Crew certified', value: 24, unit: 'of 26', range: [24, 24] },
+  { id: 'systems', x: 78, y: 32, reading: 'Lifeline load', value: 12, unit: 'kN rated', range: [12, 12] },
+]

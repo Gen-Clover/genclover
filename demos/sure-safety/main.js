@@ -1,6 +1,9 @@
-import '@fontsource-variable/archivo/wdth.css'
+import '@fontsource-variable/big-shoulders-stencil-display/wght'
+import '@fontsource-variable/big-shoulders-display/wght'
+import '@fontsource-variable/geist/wght'
+import '@fontsource-variable/geist-mono/wght'
 import './style.css'
-import { CATEGORIES, PRODUCTS, productBy, categoryBy, HAZARDS, SERVICES, COMPANY } from './site.js'
+import { CATEGORIES, PRODUCTS, productBy, categoryBy, HAZARDS, SERVICES, COMPANY, SCAN } from './site.js'
 import { reply, chipAction, GREETING } from './assistant.js'
 import * as views from './views.js'
 import { startSmoothScroll, mountMotion, scrollToTop, scrollToEl, pauseScroll } from './motion.js'
@@ -55,16 +58,18 @@ addEventListener('hashchange', render)
 
 /* ===================================================================== home */
 function mountHome(params) {
-  // the plant: zones light up, the card and the kit grid follow
-  const grid = $('#finderGrid')
+  const timers = []
+  const every = (fn, ms) => timers.push(setInterval(() => document.visibilityState === 'visible' && fn(), ms))
+  routeCleanup = () => timers.forEach(clearInterval)
+
+  /* the plant: zones light up, the readout follows, the full kit opens in a sheet */
   const card = $('#plantCard')
   const plant = $('.plant')
-  const TOUR_MS = 3400
   let current = null
   let touring = !reduced
   const show = (id, { fromUser = false, scroll = true } = {}) => {
     const h = HAZARDS.find((x) => x.id === id) ?? HAZARDS[0]
-    if (fromUser) stopTour()
+    if (fromUser) touring = false
     if (h.id === current) return
     current = h.id
     plant.dataset.active = h.id
@@ -74,15 +79,7 @@ function mountHome(params) {
     card.innerHTML = `<div class="plant-card__in">
       <div class="plant-card__txt"><p class="plant-card__k">${icon(h.icon)} ${esc(h.line)}</p><h3>${esc(h.label)}</h3></div>
       <div class="plant-card__kit">${top.map((p, i) => `<a href="#/product/${p.slug}" style="--i:${i}" title="${esc(p.name)}"><img src="${asset(`p/${p.slug}.webp`)}" alt="${esc(p.name)}" /></a>`).join('')}</div>
-      <button class="btn btn--primary" type="button" data-see-kit>See all ${h.products.length} ${icon('arrow-right')}</button></div>`
-    $('#finderLabel').textContent = `${h.label} · ${h.products.length} products`
-    grid.classList.add('is-swapping')
-    setTimeout(() => {
-      grid.innerHTML = h.products.map((s) => views.productCard(productBy[s])).join('')
-      grid.dataset.hazard = h.id
-      grid.classList.remove('is-swapping')
-    }, reduced ? 0 : 160)
-    // on narrow screens the plant scrolls sideways: bring the lit zone into view
+      <button class="btn btn--hv" type="button" data-see-kit="${h.id}">See the kit · ${h.products.length} ${icon('arrow-right')}</button></div>`
     const sc = $('#plantScroll')
     if (scroll && sc.scrollWidth > sc.clientWidth) {
       const hit = $(`[data-hit="${h.id}"]`, plant).getBoundingClientRect()
@@ -91,30 +88,24 @@ function mountHome(params) {
     }
   }
   const order = HAZARDS.map((h) => h.id)
-  let tourTimer = setInterval(() => touring && document.visibilityState === 'visible' && show(order[(order.indexOf(current) + 1) % order.length], { scroll: false }), TOUR_MS)
-  function stopTour() {
-    touring = false
-    clearInterval(tourTimer)
-  }
-  routeCleanup = () => clearInterval(tourTimer)
+  every(() => touring && show(order[(order.indexOf(current) + 1) % order.length], { scroll: false }), 3400)
   $$('.pl-hit', plant).forEach((hit) => {
     const id = hit.dataset.hit
     hit.setAttribute('aria-label', HAZARDS.find((h) => h.id === id).label)
     hit.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && show(id, { fromUser: true, scroll: false }))
-    hit.addEventListener('click', () => show(id, { fromUser: true, scroll: false }))
+    hit.addEventListener('click', () => (show(id, { fromUser: true, scroll: false }), openKit(id)))
     hit.addEventListener('focus', () => show(id, { fromUser: true }))
-    hit.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), scrollToEl($('.finder__main'))))
+    hit.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openKit(id)))
   })
   $$('.hazard').forEach((b) => b.addEventListener('click', () => show(b.dataset.hazard, { fromUser: true })))
-  card.addEventListener('click', (e) => e.target.closest('[data-see-kit]') && scrollToEl($('.finder__main')))
-  show(params.get('hazard') ?? HAZARDS[0].id, { fromUser: !!params.get('hazard') })
-  $('[data-add-all]').addEventListener('click', () => {
-    const h = HAZARDS.find((x) => x.id === grid.dataset.hazard)
-    h.products.forEach((s) => addToQuote(s))
-    toast(`${icon('check')}<span>Added ${h.products.length} products for ${esc(h.label.toLowerCase())} to your quote list.</span>`)
+  card.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-see-kit]')
+    if (b) openKit(b.dataset.seeKit)
   })
+  show(params.get('hazard') ?? HAZARDS[0].id, { fromUser: !!params.get('hazard') })
+  if (params.get('hazard')) setTimeout(() => openKit(params.get('hazard')), 600)
 
-  // helmet spotlight
+  /* showroom: four Saviour helmets, each in its real colourways */
   const showSpot = (slug) => {
     const p = productBy[slug]
     $$('[data-spot]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.spot === slug)))
@@ -123,44 +114,95 @@ function mountHome(params) {
     $('#spotSwatches').innerHTML = colours
       .map((g, i) => `<button type="button" role="radio" class="swatch swatch--lg" style="--c:${g.swatch}" aria-checked="${i === 0}" data-img="${g.img}" aria-label="${esc(g.label)}"><span>${esc(g.label)}</span></button>`)
       .join('')
-    setSpotImage(colours[0].img, `${p.name} helmet in ${colours[0].label.toLowerCase()}`, colours[0].swatch)
+    setHelmet(colours[0].img, `${p.name} helmet in ${colours[0].label.toLowerCase()}`, colours[0].swatch)
     const ghost = $('#spotGhost')
     ghost.classList.remove('is-in')
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       ghost.textContent = p.name
-      requestAnimationFrame(() => ghost.classList.add('is-in'))
-    })
+      ghost.classList.add('is-in')
+    }, reduced ? 0 : 200)
     $$('#spotSwatches .swatch').forEach((s) =>
       s.addEventListener('click', () => {
         $$('#spotSwatches .swatch').forEach((x) => x.setAttribute('aria-checked', String(x === s)))
-        setSpotImage(s.dataset.img, `${p.name} helmet in ${s.getAttribute('aria-label').toLowerCase()}`, s.style.getPropertyValue('--c'))
+        setHelmet(s.dataset.img, `${p.name} helmet in ${s.getAttribute('aria-label').toLowerCase()}`, s.style.getPropertyValue('--c'))
       }),
     )
   }
   $$('[data-spot]').forEach((b) => b.addEventListener('click', () => showSpot(b.dataset.spot)))
   showSpot('freedom')
 
-  // services
-  const showSvc = (id) => {
-    $$('[data-svc]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.svc === id)))
-    $('#svcPanel').innerHTML = views.svcPanel(SERVICES.find((s) => s.id === id))
+  /* site scan: probes on the photo, live-looking readings, a panel per service */
+  const panel = $('#scanPanel')
+  let probe = null
+  let scanning = !reduced
+  const pickProbe = (id, fromUser = false) => {
+    if (fromUser) scanning = false
+    probe = id
+    $$('.probe').forEach((p) => p.classList.toggle('is-on', p.dataset.probe === id))
+    panel.innerHTML = views.scanPanel(SERVICES.find((s) => s.id === id), SCAN.find((s) => s.id === id))
   }
-  $$('[data-svc]').forEach((b) => b.addEventListener('click', () => showSvc(b.dataset.svc)))
-  showSvc(SERVICES[0].id)
+  $$('.probe').forEach((p) => p.addEventListener('click', () => pickProbe(p.dataset.probe, true)))
+  pickProbe(SCAN[0].id)
+  every(() => scanning && pickProbe(SCAN[(SCAN.findIndex((s) => s.id === probe) + 1) % SCAN.length].id), 4200)
+  if (!reduced)
+    every(() => {
+      $$('[data-live]').forEach((el) => {
+        const p = JSON.parse(el.dataset.live)
+        const [lo, hi] = p.range
+        const v = lo + Math.random() * (hi - lo)
+        el.textContent = p.dp ? v.toFixed(p.dp) : Math.round(v)
+      })
+    }, 1300)
+
+  /* testimonials */
+  const quotes = $$('.quote')
+  let qi = 0
+  const showQuote = (i) => {
+    qi = (i + quotes.length) % quotes.length
+    quotes.forEach((q, j) => q.classList.toggle('is-on', j === qi))
+    $$('[data-quote-i]').forEach((b, j) => b.setAttribute('aria-current', String(j === qi)))
+  }
+  $$('[data-quote-i]').forEach((b) => b.addEventListener('click', () => showQuote(+b.dataset.quoteI)))
+  if (!reduced) every(() => showQuote(qi + 1), 6500)
+
+  /* chapter rail: follows the reader, jumps on click */
+  const links = $$('[data-chapter-link]')
+  const io = new IntersectionObserver(
+    (es) => es.forEach((e) => e.isIntersecting && links.forEach((l) => l.classList.toggle('is-on', l.dataset.chapterLink === e.target.dataset.chapter))),
+    { rootMargin: '-45% 0px -50% 0px' },
+  )
+  $$('[data-chapter]').forEach((c) => io.observe(c))
+  const prev = routeCleanup
+  routeCleanup = () => (prev(), io.disconnect())
+  if (params.get('to')) setTimeout(() => scrollToEl($(`#${params.get('to')}`)), 80)
 }
 
-/** Crossfade the spotlight helmet with a short blur, so colour changes read as one object. */
-const setSpotImage = (name, alt, glow) => {
+/** The full kit for a hazard, in a sheet over the page. */
+function openKit(id) {
+  const h = HAZARDS.find((x) => x.id === id)
+  const el = $('#sheet')
+  el.innerHTML = views.kitSheet(h)
+  $('[data-close]', el).addEventListener('click', closeOverlay)
+  $('[data-add-all]', el).addEventListener('click', () => {
+    h.products.forEach((s) => addToQuote(s))
+    toast(`${icon('check')}<span>Added ${h.products.length} products for ${esc(h.label.toLowerCase())} to your quote list.</span>`)
+  })
+  openOverlay(el)
+}
+
+/** Swap the floating helmet: the new colour rises in as the old one fades, and the stage glow follows. */
+const setHelmet = (name, alt, glow) => {
   const box = $('#spotImg')
-  if (glow) box.closest('.spot').style.setProperty('--glow', glow)
+  if (glow) box.closest('.ch--show').style.setProperty('--glow', glow)
   const next = new Image()
-  next.src = asset(`g/${name}.webp`)
+  next.src = asset(`helm/${name}.webp`)
   next.alt = alt
   next.className = 'is-entering'
   box.appendChild(next)
   const old = [...box.querySelectorAll('img')].filter((i) => i !== next)
+  old.forEach((o) => o.classList.add('is-leaving'))
   requestAnimationFrame(() => requestAnimationFrame(() => next.classList.remove('is-entering')))
-  setTimeout(() => old.forEach((o) => o.remove()), reduced ? 0 : 450)
+  setTimeout(() => old.forEach((o) => o.remove()), reduced ? 0 : 600)
 }
 
 /* ================================================================== catalog */
