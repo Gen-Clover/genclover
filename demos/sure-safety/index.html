@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#1b1e22" />
+    <title>Sure Safety · Complete Safety Solutions</title>
+    <meta name="description" content="Saviour PPE and safety systems for 20 categories of risk, with consulting and training. Demo redesign." />
+    <link rel="icon" href="./assets/brand/favicon.png" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="util">
+      <p>ISI-licensed Saviour PPE · Distributor for 3M, Honeywell, Ansell, BATA, Respirex, Pelican and Demron</p>
+      <div class="util__end">
+        <span class="util__phone" data-icon="phone">+91 96625 22138</span>
+        <button class="util__wa" type="button" data-whatsapp><span data-icon="whatsapp-logo"></span>WhatsApp</button>
+      </div>
+    </div>
+    <header class="bar" id="bar">
+      <a class="bar__logo" href="#/" aria-label="Sure Safety, home"><img src="./assets/brand/suresafety.webp" alt="Sure Safety" width="140" height="84" /></a>
+      <nav class="bar__nav" aria-label="Main">
+        <div class="mega-wrap">
+          <a href="#/products" class="bar__link" data-nav="products" aria-haspopup="true">Products <span data-icon="caret-down"></span></a>
+          <div class="mega" id="mega"></div>
+        </div>
+        <a href="#/?find" class="bar__link" data-nav="finder">Hazard finder</a>
+        <a href="#/services" class="bar__link" data-nav="services">Services</a>
+        <a href="#/contact" class="bar__link" data-nav="contact">Contact</a>
+      </nav>
+      <div class="bar__end">
+        <button class="icon-btn" type="button" id="openSearch" aria-label="Search products"><span data-icon="magnifying-glass"></span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn quote-btn" type="button" data-quote-open aria-label="Quote list"><span data-icon="clipboard-text"></span><b id="quoteCount" hidden>0</b></button>
+        <a class="btn btn--primary bar__cta" href="#/contact">Request a quote</a>
+        <button class="icon-btn bar__menu" type="button" id="openMenu" aria-label="Menu"><span data-icon="list"></span></button>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1"></main>
+
+    <footer class="foot">
+      <div class="foot__top">
+        <div class="foot__brand">
+          <img src="./assets/brand/suresafety.webp" alt="Sure Safety" width="150" height="90" />
+          <p>Complete safety solutions: Saviour PPE, safety systems, consulting and training.</p>
+          <img class="foot__saviour" src="./assets/brand/saviour.webp" alt="Saviour, Performing PPE" width="150" height="59" />
+        </div>
+        <div class="foot__col" id="footCats"></div>
+        <div class="foot__col">
+          <h4>Services</h4>
+          <a href="#/services">Industrial hygiene</a>
+          <a href="#/services">Safety and fire audits</a>
+          <a href="#/services">Respiratory fit testing</a>
+          <a href="#/services">Training</a>
+          <a href="#/services">Fire and fall systems</a>
+        </div>
+        <div class="foot__col">
+          <h4>Visit</h4>
+          <address>Plot 42, beside Zenith Tin, NH 8<br />Yoginagar Township, Chhani<br />Vadodara, Gujarat 391740</address>
+          <p>+91 96625 22138<br />+91 72290 79494<br />marketing@suresafety.com</p>
+        </div>
+      </div>
+      <div class="foot__end">
+        <small>© Sure Safety (India) Limited</small>
+        <small class="foot__demo">Redesign concept by Gen Clover. Forms, chat and WhatsApp are not connected in this demo.</small>
+      </div>
+    </footer>
+
+    <!-- overlays, filled by main.js -->
+    <div class="scrim" id="scrim" hidden></div>
+    <aside class="drawer" id="quoteDrawer" aria-label="Quote list" hidden></aside>
+    <div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search products" hidden></div>
+    <div class="wa" id="wa" role="dialog" aria-modal="true" aria-label="WhatsApp" hidden></div>
+    <div class="menu" id="menu" hidden></div>
+    <section class="assist" id="assist" aria-label="Sure Assist" hidden></section>
+    <button class="assist-launch" type="button" id="assistLaunch" aria-controls="assist" aria-expanded="false">
+      <span class="assist-launch__dot" aria-hidden="true"></span>
+      <span data-icon="chat-circle-dots"></span>
+      <span class="assist-launch__label">Ask Sure Assist</span>
+    </button>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

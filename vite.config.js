@@ -89,6 +89,9 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
           input: {
             main: resolve('index.html'),
             ...Object.fromEntries(TEMPLATE_SLUGS.map((slug) => [`template-${slug}`, resolve(`templates/${slug}/index.html`)])),
+            // Client demos: built and served like templates, but unlisted (not in the
+            // templates list, the sitemap or any link) and marked noindex.
+            'demo-sure-safety': resolve('demos/sure-safety/index.html'),
           },
         },
   },
