@@ -1,5 +1,5 @@
 /** Page views. Each returns HTML; main.js mounts it and wires the behaviour. */
-import { CATEGORIES, categoryBy, PRODUCTS, productBy, inCategory, HAZARDS, SERVICES, COMPANY, CLIENT_LOGOS, TESTIMONIALS, SCAN } from './site.js'
+import { CATEGORIES, categoryBy, PRODUCTS, productBy, inCategory, HAZARDS, SERVICES, COMPANY, CLIENT_LOGOS, TESTIMONIALS } from './site.js'
 import { icon, esc, asset } from './ui.js'
 import { PLANT_SVG } from './plant.js'
 
@@ -22,212 +22,313 @@ export const productCard = (p, { lazy = true } = {}) => `
         ${p.standards ? `<div class="card__std">${stdBadges(p, 2)}</div>` : ''}
       </div>
     </a>
+    <button class="card__qv" type="button" data-qv="${p.slug}" aria-label="Quick view of ${esc(p.name)}">${icon('eye')}<span>Quick view</span></button>
     <button class="card__add" type="button" data-add="${p.slug}" aria-label="Add ${esc(p.name)} to quote list">${icon('plus')}<span>Quote</span></button>
   </article>`
 
 /* ------------------------------------------------------------------ home */
 
-/** The kit laid out as a body map: [product, category, grid area, label side]. */
-const KIT = [
-  ['freedom', 'head-protection', 'head', 'r'],
-  ['foldable-earmuffs', 'ear-protection', 'ear', 'b'],
-  ['series-2-safety-eyewear', 'eye-protection', 'eye', 'l'],
-  ['tiger-ffp-1-mask-with-valve', 'respiratory-protection', 'mask', 'r'],
-  ['black-pu-coated-on-hppe-liner-gloves-cut-5', 'hand-protection', 'handl', 'b'],
-  ['t-560-safety-rescue-harness-with-trauma-strap', 'fall-protection', 'body', 'r'],
-  ['chem-pro-gloves', 'hand-protection', 'handr', null],
-  ['lion', 'feet-protection', 'feet', 'l'],
+/** The stations of the line, in page order. The pipe on the right joins them. */
+export const STATIONS = [
+  ['top', 'Intake'],
+  ['gauges', 'Output'],
+  ['conveyor', 'The range'],
+  ['finder', 'Hazards'],
+  ['qc', 'Quality'],
+  ['stations', 'Services'],
+  ['clients', 'Clients'],
+  ['faq', 'Questions'],
+  ['talk', 'Dispatch'],
 ]
+const UNIQUE_COUNT = PRODUCTS.filter((p, i) => PRODUCTS.findIndex((x) => x.name === p.name) === i).length
+const stationNo = (id) => String(STATIONS.findIndex(([s]) => s === id)).padStart(2, '0')
+const tag = (id) => `<p class="station-tag"><span>${stationNo(id)}</span>${esc(STATIONS.find(([s]) => s === id)[1])}</p>`
 
-export const CHAPTERS = [
-  ['torch', 'Kit'],
-  ['finder', 'The plant'],
-  ['showroom', 'Saviour'],
-  ['range', 'Range'],
-  ['scan', 'Services'],
-  ['trust', 'Clients'],
-  ['quote', 'Quote'],
+const QC = ['freedom', 'vento', 'wind', 'tough-hat']
+
+const FAQ = [
+  ['Are Saviour helmets ISI certified?', 'Yes. Saviour industrial helmets are made to IS 2925:1984 under ISI licence CM/L-7572484. Freedom, Wind and the Electrical Helmet are also tested to EN 397:2012, and the Fire Pro helmet meets IS 2745:1983.'],
+  ['Can you print our logo on helmets?', 'Yes. Logo printing and reflective strips are available on Saviour helmets for bulk orders. Mention it in your quote and the sales team will confirm the options.'],
+  ['Do you only sell your own brand?', 'No. Alongside our own Saviour range we distribute 3M, Honeywell, Ansell, BATA, Respirex, Pelican and Demron, so one order can cover a whole site.'],
+  ['Can your team visit our site?', 'Yes. Our consultants run industrial hygiene studies, fire and safety audits, HAZOP studies and respirator fit testing at your location.'],
+  ['How do I get a price?', 'Add products to your quote list as you browse, or describe what you need. Sales prices every order by model, quantity and branding, and replies with a written quote.'],
+  ['Where are you based?', 'Our plant and office are at Plot 42, NH 8, Chhani, Vadodara, Gujarat. We supply sites across India.'],
 ]
-
-const SPOT = ['freedom', 'vento', 'wind', 'tough-hat']
-const stripe = (cls = '') => `<div class="tape ${cls}" aria-hidden="true"><i></i></div>`
 
 export function home() {
   const count = (cat) => inCategory(cat).length
+  const belt = CATEGORIES.map(
+    (c) => `<a class="crate" href="#/products/${c.slug}"><span class="crate__img"><img src="${asset(`${c.face}.webp`)}" alt="" loading="lazy" /></span><span class="crate__name">${esc(c.label)}</span><span class="crate__n">${count(c.slug)}</span></a>`,
+  ).join('')
   return `
-  <nav class="rail" aria-label="Chapters">${CHAPTERS.map(([id, label]) => `<a href="#/?to=${id}" data-chapter-link="${id}"><span>${label}</span><i></i></a>`).join('')}</nav>
+  <svg class="pipe" id="pipe" aria-hidden="true"><path class="pipe__shell" /><path class="pipe__core" /><path class="pipe__flow" /></svg>
 
-  <section class="ch ch--torch" id="torch" data-chapter="torch">
-    <div class="torch__copy">
-      <img class="torch__brand" src="${asset('brand/saviour.webp')}" alt="Saviour, Performing PPE" width="160" height="63" />
-      <h1 class="display"><span class="line">Safeguarding</span> <span class="line">industries.</span> <span class="line hv">Protecting</span> <span class="line hv">workers.</span></h1>
-      <p class="torch__sub">Head-to-toe PPE from our own Saviour range and the brands your sites already trust, with the consultants who test the air your teams breathe.</p>
-      <div class="torch__actions">
-        <a class="btn btn--hv btn--lg" href="#/products">Explore products ${icon('arrow-right')}</a>
-        <button class="btn btn--ghost btn--lg" type="button" data-assist="Which helmet do you recommend for a steel plant?">${icon('sparkle')} Ask Sure Assist</button>
+  <section class="hero" id="top" data-station="top">
+    <div class="hero__frame">
+      <img class="hero__photo" src="${asset('photo/line-hero.jpg')}" alt="Orange robot arms working along a production line" />
+      <canvas class="hero__sparks" id="sparks" aria-hidden="true"></canvas>
+      <div class="hero__shade" aria-hidden="true"></div>
+      <div class="hero__copy">
+        <p class="hero__kicker"><img src="${asset('brand/saviour.webp')}" alt="Saviour" width="96" height="38" /> Made in Vadodara</p>
+        <h1 class="hero__title split">Safeguarding industries.<br /><em class="hero__hl">Protecting workers.</em></h1>
+        <p class="hero__sub">Head-to-toe PPE from our own Saviour line and the brands your sites already trust, with the consultants who test the air your teams breathe.</p>
+        <div class="hero__actions">
+          <a class="btn btn--accent btn--lg" href="#/products">Explore products <i class="btn__ball">${icon('arrow-up-right')}</i></a>
+          <button class="btn btn--glass btn--lg" type="button" data-assist="Which helmet do you recommend for a steel plant?">${icon('sparkle')} Ask Sure Assist</button>
+        </div>
       </div>
-      <button class="searchbar" type="button" data-open-search>${icon('magnifying-glass')}<span>Search ${PRODUCTS.length} products, a model or a standard</span><kbd>Ctrl K</kbd></button>
+      <a class="glass glass--isi" href="#/product/freedom">
+        <span class="glass__k">${icon('shield-check')} ISI licensed</span>
+        <b>IS 2925:1984</b><small>CM/L-7572484</small>
+      </a>
+      <div class="glass glass--helm">
+        <img src="${asset('helm/freedom-1.webp')}" alt="Freedom helmet" id="heroHelm" />
+        <div><span class="glass__k">Saviour Freedom</span><div class="dots" id="heroDots">${['freedom-1:#e2522b', 'freedom-007:#e9c43b', 'freedom-hdpa-2:#2f5fc4', 'freedom-05:#1f9a54'].map((d, i) => `<button type="button" style="--c:${d.split(':')[1]}" data-helm="${d.split(':')[0]}" aria-pressed="${i === 0}" aria-label="Colour ${i + 1}"></button>`).join('')}</div></div>
+      </div>
+      <div class="glass glass--count"><b data-count="2200" data-suffix="+">2,200+</b><small>products,<br />head to toe</small></div>
+      <button class="hero__search" type="button" data-open-search>${icon('magnifying-glass')}<span>Search products or a model</span><kbd>Ctrl K</kbd></button>
     </div>
-    <div class="kit" id="kit" aria-label="Protection from head to toe">
-      ${KIT.map(
-        ([slug, cat, area, side], i) => `
-        <a class="kit__item kit__item--${area}" href="#/products/${cat}" style="--i:${i}" aria-label="${esc(categoryBy[cat].label)} protection, ${count(cat)} products">
-          <img src="${asset(`cut/${slug}.webp`)}" alt="" />
-          ${side ? `<span class="kit__tag kit__tag--${side}"><b>${esc(categoryBy[cat].label)}</b><em data-count="${count(cat)}">${count(cat)}</em></span>` : ''}
-        </a>`,
-      ).join('')}
-      <div class="kit__beam" aria-hidden="true"></div>
-      <p class="kit__caption"><b data-count="2200" data-suffix="+">2,200+</b><span>products,<br />head to toe</span></p>
-    </div>
-    ${stripe('tape--foot')}
   </section>
 
-  <section class="ch ch--plant" id="finder" data-chapter="finder">
-    <div class="ch__head">
-      <h2 class="display display--md split">Walk the plant.</h2>
-      <p class="ch__lede">Every area of a site has its own hazard. Pick one and we’ll pull the kit that answers it.</p>
+  <section class="gauges" id="gauges" data-station="gauges">
+    ${[
+      [2200, '+', 'Products in the range', 0.92],
+      [20, '', 'Categories of protection', 0.62],
+      [15, '+', 'Years of industrial hygiene', 0.5],
+      [35, '', 'Industry leaders served', 0.74],
+    ]
+      .map(
+        ([n, suf, label, f]) => `<div class="gauge reveal-up" style="--f:${f}">
+        <svg viewBox="0 0 120 70" aria-hidden="true"><path class="gauge__track" d="M10 62 A50 50 0 0 1 110 62"/><path class="gauge__fill" d="M10 62 A50 50 0 0 1 110 62" pathLength="1"/>${Array.from({ length: 11 }, (_, i) => {
+          const a = Math.PI * (1 - i / 10)
+          return `<line class="gauge__tick" x1="${(60 + Math.cos(a) * 42).toFixed(1)}" y1="${(62 - Math.sin(a) * 42).toFixed(1)}" x2="${(60 + Math.cos(a) * 37).toFixed(1)}" y2="${(62 - Math.sin(a) * 37).toFixed(1)}"/>`
+        }).join('')}<g class="gauge__needle"><line x1="60" y1="62" x2="60" y2="22"/><circle cx="60" cy="62" r="5"/></g></svg>
+        <b data-count="${n}" data-suffix="${suf}">${n.toLocaleString('en-IN')}${suf}</b><span>${esc(label)}</span></div>`,
+      )
+      .join('')}
+  </section>
+
+  <section class="conveyor" id="conveyor" data-station="conveyor">
+    <div class="sec-top">${tag('conveyor')}<h2 class="h2 split">Every risk, on one line.</h2><a class="btn btn--line" href="#/products">All ${UNIQUE_COUNT} products <i class="btn__ball">${icon('arrow-up-right')}</i></a></div>
+    <div class="conveyor__bay">
+      <figure class="conveyor__photo"><img src="${asset('photo/line-cell.jpg')}" alt="A robot cell on a production line" loading="lazy" /><figcaption><b>${CATEGORIES.length}</b> categories<br />head to toe</figcaption></figure>
+      <div class="belt">
+        <div class="belt__head">
+          <p class="belt__live" id="beltLive"><i></i> <span>Line running</span></p>
+          <p class="belt__hint">Drag or swipe the line. Click a crate to open the range.</p>
+          <div class="belt__arrows"><button type="button" class="icon-btn icon-btn--sm" data-belt="-1" aria-label="Scroll back">${icon('arrow-right', 'flip')}</button><button type="button" class="icon-btn icon-btn--sm" data-belt="1" aria-label="Scroll on">${icon('arrow-right')}</button></div>
+        </div>
+        <div class="belt__lane" id="beltLane" tabindex="0" aria-label="Product categories, scrollable"><div class="belt__run">${belt}${belt.replace(/<a /g, '<a aria-hidden="true" tabindex="-1" ')}</div></div>
+        <div class="belt__rollers" aria-hidden="true">${'<i></i>'.repeat(26)}</div>
+      </div>
     </div>
+  </section>
+
+  <section class="plant-sec" id="finder" data-station="finder">
+    <div class="sec-top">${tag('finder')}<h2 class="h2 split">Walk the plant.</h2><p class="lede">Every area of a site has its own hazard. Pick one and we’ll pull the kit that answers it.</p></div>
     <div class="plant-stage">
       <div class="plant-scroll" id="plantScroll">${PLANT_SVG}</div>
       <div class="plant-card" id="plantCard" aria-live="polite"></div>
     </div>
-    <div class="hazards" role="tablist" aria-label="Hazards">
-      ${HAZARDS.map((h, i) => `<button class="hazard" role="tab" type="button" id="hz-${h.id}" data-hazard="${h.id}" aria-selected="${i === 0}">${icon(h.icon)}<b>${esc(h.label)}</b></button>`).join('')}
-    </div>
+    <div class="hazards" role="tablist" aria-label="Hazards">${HAZARDS.map((h, i) => `<button class="hazard" role="tab" type="button" data-hazard="${h.id}" aria-selected="${i === 0}">${icon(h.icon)}<b>${esc(h.label)}</b></button>`).join('')}</div>
   </section>
 
-  <section class="ch ch--show" id="showroom" data-chapter="showroom">
-    <p class="show__ghost" id="spotGhost" aria-hidden="true">Freedom</p>
-    <div class="show__tabs" role="tablist" aria-label="Helmet">${SPOT.map((s, i) => `<button role="tab" type="button" data-spot="${s}" aria-selected="${i === 0}">${esc(productBy[s].name)}</button>`).join('')}</div>
-    <div class="show__stage">
-      <div class="show__plinth" aria-hidden="true"></div>
-      <div class="show__helmet" id="spotImg"></div>
-      <div class="show__swatches" id="spotSwatches" role="radiogroup" aria-label="Colour"></div>
+  <section class="qc" id="qc" data-station="qc">
+    <div class="qc__bay">
+      <div class="qc__tabs" role="tablist" aria-label="Helmet">${QC.map((s, i) => `<button role="tab" type="button" data-spot="${s}" aria-selected="${i === 0}">${esc(productBy[s].name)}</button>`).join('')}</div>
+      <div class="qc__rig" aria-hidden="true"><i class="qc__arm"></i><i class="qc__laser"></i></div>
+      <div class="qc__helmet" id="spotImg"></div>
+      <div class="qc__turntable" aria-hidden="true"><i></i></div>
+      <div class="qc__swatches" id="spotSwatches" role="radiogroup" aria-label="Colour"></div>
     </div>
-    <div class="show__info" id="spotInfo"></div>
+    <div class="qc__sheet" id="spotInfo"></div>
   </section>
 
-  <section class="ch ch--range" id="range" data-chapter="range">
-    <div class="range__pin">
-      <div class="range__intro">
-        <h2 class="display display--md split">Every risk. One catalogue.</h2>
-        <p class="ch__lede">${CATEGORIES.length} categories, ${PRODUCTS.length} products online and more than 2,200 in the full range.</p>
-        <a class="btn btn--ghost" href="#/products">All products ${icon('arrow-right')}</a>
-      </div>
-      <div class="range__track" id="rangeTrack">
-        ${CATEGORIES.map(
-          (c, i) => `<a class="rack" href="#/products/${c.slug}" style="--i:${i}">
-            <span class="rack__img"><img src="${asset(`${c.face}.webp`)}" alt="" loading="lazy" /></span>
-            <span class="rack__name">${esc(c.label)}</span>
-            <span class="rack__line">${esc(c.line)}</span>
-            <span class="rack__count"><b>${count(c.slug)}</b> products ${icon('arrow-up-right')}</span>
-          </a>`,
-        ).join('')}
-      </div>
+  <section class="stations" id="stations" data-station="stations">
+    <div class="sec-top">${tag('stations')}<h2 class="h2 split">We test the site, not just sell the kit.</h2></div>
+    <div class="stations__row" id="stationRow">
+      ${SERVICES.map(
+        (s, i) => `<button class="stn${i === 0 ? ' is-open' : ''}" type="button" data-stn="${s.id}" aria-expanded="${i === 0}">
+          <span class="stn__no">${String(i + 1).padStart(2, '0')}</span>
+          <span class="stn__title">${esc(s.title)}</span>
+          <span class="stn__body">
+            <img src="${asset(`photo/${s.photo}.jpg`)}" alt="" loading="lazy" />
+            <span class="stn__text"><b>${esc(s.title)}</b><em>${esc(s.line)}</em><span class="stn__items">${s.items.map((x) => `<span>${icon('check')}${esc(x)}</span>`).join('')}</span></span>
+          </span>
+        </button>`,
+      ).join('')}
     </div>
+    <div class="stations__foot"><button class="btn btn--accent" type="button" data-assist="I'd like to book a site visit">Book a site visit <i class="btn__ball">${icon('arrow-up-right')}</i></button><p>AIHA and NABL accredited · 15+ years of industrial hygiene</p></div>
   </section>
 
-  <section class="ch ch--scan" id="scan" data-chapter="scan">
-    <img class="scan__photo" src="${asset('photo/plant-night.jpg')}" alt="" loading="lazy" />
-    <div class="scan__grid" aria-hidden="true"></div>
-    <div class="scan__beam" aria-hidden="true"></div>
-    <div class="ch__head ch__head--over">
-      <h2 class="display display--md split">We test the site, not just sell the kit.</h2>
-      <p class="ch__lede">An AIHA and NABL accredited team with 15+ years of industrial hygiene. Tap a point to see what we measure.</p>
-    </div>
-    ${SCAN.map((p) => {
-      const s = SERVICES.find((x) => x.id === p.id)
-      return `<button class="probe" type="button" data-probe="${p.id}" style="--x:${p.x}%;--y:${p.y}%;--yn:${p.y}" aria-label="${esc(s.title)}">
-        <i class="probe__dot"></i>
-        <span class="probe__read"><small>${esc(p.reading)}</small><b data-live='${JSON.stringify(p)}'>${p.value}</b><em>${esc(p.unit)}</em></span>
-        <span class="probe__name">${esc(s.title)}</span>
-      </button>`
-    }).join('')}
-    <aside class="scan__panel" id="scanPanel" aria-live="polite"></aside>
-    <p class="scan__note">Example readings, for illustration.</p>
-  </section>
-
-  <section class="ch ch--trust" id="trust" data-chapter="trust">
-    <div class="ch__head">
-      <h2 class="display display--md split">Trusted on India’s biggest sites.</h2>
-      <p class="ch__lede"><b data-count="${CLIENT_LOGOS.length}" data-suffix="">${CLIENT_LOGOS.length}</b> industry leaders, from refineries to pharma.</p>
-    </div>
+  <section class="clients" id="clients" data-station="clients">
+    <div class="sec-top">${tag('clients')}<h2 class="h2 split">Trusted on India’s biggest sites.</h2></div>
     <div class="logos">
       ${[0, 1].map((row) => {
         const set = CLIENT_LOGOS.filter((_, i) => i % 2 === row)
         return `<div class="logos__row logos__row--${row}"><ul>${[...set, ...set].map((c, i) => `<li${i >= set.length ? ' aria-hidden="true"' : ''}><img src="${asset(c.img)}" alt="${i >= set.length ? '' : esc(c.name)}" loading="lazy" /></li>`).join('')}</ul></div>`
       }).join('')}
     </div>
-    <div class="quotes" id="quotes">
-      ${TESTIMONIALS.map((t, i) => `<figure class="quote${i === 0 ? ' is-on' : ''}"><blockquote>“${esc(t.quote)}”</blockquote><figcaption><b>${esc(t.who)}</b>${esc(t.role)}</figcaption></figure>`).join('')}
-      <div class="quotes__nav">${TESTIMONIALS.map((_, i) => `<button type="button" data-quote-i="${i}" aria-label="Testimonial ${i + 1}" aria-current="${i === 0}"></button>`).join('')}</div>
+    <div class="voice">
+      <img class="voice__bg" src="${asset('photo/line-blur.jpg')}" alt="" loading="lazy" />
+      <div class="voice__glass" id="quotes">
+        ${TESTIMONIALS.map((t, i) => `<figure class="quote${i === 0 ? ' is-on' : ''}"><blockquote>“${esc(t.quote)}”</blockquote><figcaption><b>${esc(t.who)}</b>${esc(t.role)}</figcaption></figure>`).join('')}
+        <div class="quotes__nav">${TESTIMONIALS.map((_, i) => `<button type="button" data-quote-i="${i}" aria-label="Testimonial ${i + 1}" aria-current="${i === 0}"></button>`).join('')}</div>
+      </div>
     </div>
   </section>
 
-  <section class="ch ch--quote" id="quote" data-chapter="quote">
-    ${stripe('tape--top')}
-    <h2 class="display split">Send us your PPE list.<br /><span class="hv">We’ll quote it.</span></h2>
-    <p class="ch__lede">Add products as you browse, or describe what you need. The sales team prices every order by model, quantity and branding.</p>
-    <div class="quote__actions">
-      <button class="btn btn--hv btn--lg" type="button" data-quote-open>${icon('clipboard-text')} Open quote list</button>
-      <a class="btn btn--ghost btn--lg" href="#/contact">Request a quote ${icon('arrow-right')}</a>
-      <button class="btn btn--wa btn--lg" type="button" data-whatsapp>${icon('whatsapp-logo')} WhatsApp</button>
+  <section class="faq" id="faq" data-station="faq">
+    <div class="faq__head">${tag('faq')}<h2 class="h2 split">Questions buyers ask.</h2><p class="lede">Anything else? Sure Assist answers from the full catalogue.</p><button class="btn btn--line" type="button" data-assist="">${icon('sparkle')} Ask Sure Assist</button></div>
+    <div class="faq__list">${FAQ.map(([q, a], i) => `<details class="qa"${i === 0 ? ' open' : ''}><summary>${esc(q)}<i>${icon('plus')}</i></summary><p>${esc(a)}</p></details>`).join('')}</div>
+  </section>
+
+  <section class="talk" id="talk" data-station="talk">
+    <img class="talk__bg" src="${asset('photo/arm-dark.jpg')}" alt="" loading="lazy" />
+    <div class="talk__copy">
+      ${tag('talk')}
+      <h2 class="talk__title split">Let’s talk.</h2>
+      <p>Send your PPE list or a tender reference. We price every order by model, quantity and branding.</p>
+      <div class="talk__actions">
+        <a class="btn btn--accent btn--lg" href="#/contact">Request a quote <i class="btn__ball">${icon('arrow-up-right')}</i></a>
+        <button class="btn btn--glass btn--lg" type="button" data-quote-open>${icon('clipboard-text')} Quote list</button>
+        <button class="btn btn--glass btn--lg" type="button" data-whatsapp>${icon('whatsapp-logo')} WhatsApp</button>
+      </div>
     </div>
   </section>`
 }
 
+/** The QC sheet for one helmet: each standard is ticked as the scanner passes. */
 export const spotInfo = (p) => `
-  <p class="show__sku">${esc(p.sku)}</p>
-  <h2 class="show__name">${esc(p.name)}</h2>
-  <div class="show__std">${(p.standards ?? []).map((s) => `<span class="std">${esc(s)}</span>`).join('')}</div>
-  <p class="show__sum">${esc(p.summary)}</p>
-  ${p.specs ? `<dl class="show__specs">${['Material', 'Ventilation holes', 'Suspension', 'Size'].filter((k) => p.specs[k]).map((k) => `<div><dt>${k}</dt><dd>${esc(p.specs[k])}</dd></div>`).join('')}</dl>` : ''}
-  <div class="show__actions">
-    <a class="btn btn--hv" href="#/product/${p.slug}">View ${esc(p.name)} ${icon('arrow-right')}</a>
-    <button class="btn btn--ghost" type="button" data-add="${p.slug}">${icon('plus')} Add to quote</button>
+  <p class="qc__sku">Model ${esc(p.sku)}</p>
+  <h2 class="qc__name">${esc(p.name)}</h2>
+  <p class="qc__sum">${esc(p.summary)}</p>
+  <ul class="qc__checks">
+    ${(p.standards ?? []).map((s, i) => `<li style="--i:${i}">${icon('check')}<span>${s.startsWith('CM/L') ? 'ISI licence' : 'Tested to'}</span><b>${esc(s)}</b></li>`).join('')}
+    ${p.specs ? ['Material', 'Ventilation holes', 'Suspension', 'Size'].filter((k) => p.specs[k]).map((k, i) => `<li style="--i:${i + (p.standards?.length ?? 0)}">${icon('check')}<span>${esc(k)}</span><b>${esc(p.specs[k])}</b></li>`).join('') : ''}
+  </ul>
+  <div class="qc__actions">
+    <a class="btn btn--accent" href="#/product/${p.slug}">View ${esc(p.name)} <i class="btn__ball">${icon('arrow-up-right')}</i></a>
+    <button class="btn btn--line" type="button" data-add="${p.slug}">${icon('plus')} Add to quote</button>
   </div>`
 
-export const scanPanel = (s, p) => `
-  <div class="scan__panel-in">
-    <p class="scan__k">${esc(p.reading)} · <b>${esc(String(p.value))} ${esc(p.unit)}</b></p>
-    <h3>${esc(s.title)}</h3>
-    <p>${esc(s.line)}</p>
-    <ul>${s.items.map((i) => `<li>${icon('check')}${esc(i)}</li>`).join('')}</ul>
-    <button class="btn btn--hv" type="button" data-assist="I'd like to book ${esc(s.title.toLowerCase())} for my site">Book a site visit ${icon('arrow-right')}</button>
-  </div>`
-
-/** The kit for one hazard, in a sheet that slides up over the plant. */
+/** The full kit for one hazard, in a sheet. */
 export const kitSheet = (h) => `
   <div class="sheet__head"><div><p class="sheet__k">The kit for</p><h2>${esc(h.label)}</h2></div>
-  <div class="sheet__acts"><button class="btn btn--hv" type="button" data-add-all="${h.id}">${icon('plus')} Add all ${h.products.length}</button><button class="icon-btn" type="button" data-close aria-label="Close">${icon('x')}</button></div></div>
+  <div class="sheet__acts"><button class="btn btn--accent" type="button" data-add-all="${h.id}">${icon('plus')} Add all ${h.products.length}</button><button class="icon-btn" type="button" data-close aria-label="Close">${icon('x')}</button></div></div>
   <div class="grid grid--sheet">${h.products.map((s) => productCard(productBy[s])).join('')}</div>`
 
 /* -------------------------------------------------------------- products */
+/** Some products are listed under two categories; the full list shows each once. */
+const UNIQUE = PRODUCTS.filter((p, i) => PRODUCTS.findIndex((x) => x.name === p.name) === i)
+
+/** The round category chips across the top of every catalogue page. */
+const catRow = (cat) => `
+  <nav class="cat-row-nav" aria-label="Categories">
+    <div class="cat-orbs" id="catOrbs">
+      <a class="orb${cat ? '' : ' is-on'}" href="#/products"><span class="orb__img orb__img--all">${icon('magnifying-glass')}</span><b>All</b><small>${UNIQUE.length}</small></a>
+      ${CATEGORIES.map((x) => `<a class="orb${x.slug === cat ? ' is-on' : ''}" href="#/products/${x.slug}"><span class="orb__img"><img src="${asset(`${x.face}.webp`)}" alt="" loading="lazy" /></span><b>${esc(x.label)}</b><small>${inCategory(x.slug).length}</small></a>`).join('')}
+    </div>
+  </nav>`
+
+const toolbar = (list) => {
+  const brands = [...new Set(list.map((p) => p.brand).filter(Boolean))]
+  const certified = list.some((p) => p.standards)
+  return `<div class="shop__tools">
+    <label class="filter">${icon('magnifying-glass')}<input type="search" id="filter" placeholder="Filter by name or model" aria-label="Filter products" autocomplete="off" /></label>
+    <div class="facets" role="group" aria-label="Refine">
+      <button type="button" class="facet is-on" data-facet="all">All</button>
+      ${brands.map((b) => `<button type="button" class="facet" data-facet="brand:${esc(b)}">${esc(b)}</button>`).join('')}
+      ${certified ? `<button type="button" class="facet" data-facet="certified">${icon('certificate')} Certified</button>` : ''}
+    </div>
+    <p class="catalog__count" id="filterCount" aria-live="polite">${list.length} products</p>
+  </div>`
+}
+
+const emptyState = `<div class="empty" id="filterEmpty" hidden>
+  ${icon('magnifying-glass')}<p><b>Nothing matches that here.</b>Try a shorter word, or ask Sure to search the full range.</p>
+  <button class="btn btn--line" type="button" data-assist-filter>Ask Sure</button></div>`
+
 export function products(cat) {
   const c = cat ? categoryBy[cat] : null
-  const list = c ? inCategory(cat) : PRODUCTS.filter((p, i) => PRODUCTS.findIndex((x) => x.name === p.name) === i)
-  return `
-  <section class="catalog">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a>${icon('caret-right')}${c ? `<a href="#/products">Products</a>${icon('caret-right')}<span>${esc(c.label)}</span>` : '<span>Products</span>'}</nav>
-    <div class="catalog__head">
-      <div><h1 class="h1">${c ? `${esc(c.label)} protection` : 'All products'}</h1><p class="lede">${c ? esc(c.line) : `${list.length} products across ${CATEGORIES.length} categories.`}</p></div>
-      <label class="filter">${icon('magnifying-glass')}<input type="search" id="filter" placeholder="Filter by name or model" aria-label="Filter products" autocomplete="off" /></label>
+  const crumbs = `<nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a>${icon('caret-right')}${c ? `<a href="#/products">Products</a>${icon('caret-right')}<span>${esc(c.label)}</span>` : '<span>Products</span>'}</nav>`
+
+  if (!c) {
+    const shelves = CATEGORIES.map((x) => {
+      const items = inCategory(x.slug).filter((p) => UNIQUE.includes(p))
+      return `<section class="shelf" aria-labelledby="sh-${x.slug}">
+        <div class="shelf__head"><div><h2 id="sh-${x.slug}">${esc(x.label)}</h2><p>${esc(x.line)}</p></div>
+          <div class="shelf__acts"><a class="btn btn--line" href="#/products/${x.slug}">View all ${inCategory(x.slug).length} <i class="btn__ball">${icon('arrow-up-right')}</i></a>
+          <button type="button" class="icon-btn icon-btn--sm" data-shelf="-1" aria-label="Scroll ${esc(x.label)} back">${icon('arrow-right', 'flip')}</button><button type="button" class="icon-btn icon-btn--sm" data-shelf="1" aria-label="Scroll ${esc(x.label)} on">${icon('arrow-right')}</button></div></div>
+        <div class="shelf__row">${items.slice(0, 10).map((p) => productCard(p)).join('')}</div>
+      </section>`
+    }).join('')
+    return `
+  <section class="shop">
+    ${crumbs}
+    <div class="shop__title"><h1 class="h1">The catalogue</h1><p class="lede">${UNIQUE.length} products across ${CATEGORIES.length} categories, from our own Saviour line and the brands we distribute.</p></div>
+    ${catRow(null)}
+    <div class="feature">
+      <a class="feat feat--big" href="#/products/head-protection">
+        <span class="feat__k">Saviour · ISI licensed</span><b>Helmets made to IS 2925</b><span class="feat__go">Shop helmets ${icon('arrow-up-right')}</span>
+        <img src="${asset('helm/freedom-1.webp')}" alt="" class="feat__img feat__img--a" /><img src="${asset('helm/vento-1-1.webp')}" alt="" class="feat__img feat__img--b" /><img src="${asset('helm/wind-5.webp')}" alt="" class="feat__img feat__img--c" />
+      </a>
+      <a class="feat" href="#/products/electrical-safety"><span class="feat__k">Arc flash</span><b>8.6 to 40 cal kits</b><span class="feat__go">Electrical ${icon('arrow-up-right')}</span><img src="${asset('p/40-cal-arc-kit.webp')}" alt="" class="feat__img" /></a>
+      <a class="feat" href="#/products/respiratory-protection"><span class="feat__k">Breathing air</span><b>SCBA, escape sets and airline</b><span class="feat__go">Respiratory ${icon('arrow-up-right')}</span><img src="${asset('p/scba-pro.webp')}" alt="" class="feat__img" /></a>
+      <a class="feat feat--dark" href="#/contact"><span class="feat__k">Bulk orders</span><b>Your logo on every helmet</b><p>Logo printing and reflective strips on Saviour helmets.</p><span class="feat__go">Request a quote ${icon('arrow-up-right')}</span></a>
     </div>
-    <div class="catalog__body">
-      <aside class="catalog__side" aria-label="Categories">
-        <a href="#/products" class="side-link${c ? '' : ' is-on'}">All products<b>${PRODUCTS.length}</b></a>
-        ${CATEGORIES.map((x) => `<a href="#/products/${x.slug}" class="side-link${x.slug === cat ? ' is-on' : ''}">${esc(x.label)}<b>${inCategory(x.slug).length}</b></a>`).join('')}
-      </aside>
-      <div>
-        <p class="catalog__count" id="filterCount" aria-live="polite">${list.length} products</p>
-        <div class="grid" id="catalogGrid">${list.map((p, i) => productCard(p, { lazy: i > 7 })).join('')}</div>
-        <div class="empty" id="filterEmpty" hidden>
-          ${icon('magnifying-glass')}<p><b>Nothing matches that here.</b>Try a shorter word, or ask Sure Assist to search the full range.</p>
-          <button class="btn btn--ghost" type="button" data-assist-filter>Ask Sure Assist</button>
-        </div>
-      </div>
-    </div>
+    <div class="shop__search">${toolbar(UNIQUE)}</div>
+    <div class="grid" id="catalogGrid" hidden></div>
+    ${emptyState}
+    <div class="shelves" id="shelves">${shelves}</div>
   </section>`
+  }
+
+  const list = inCategory(cat)
+  const stds = [...new Set(list.flatMap((p) => (p.standards ?? []).filter((s) => !s.startsWith('CM/L'))))]
+  return `
+  <section class="shop">
+    ${crumbs}
+    ${catRow(cat)}
+    <div class="banner">
+      <div class="banner__copy">
+        <p class="banner__k">${list.length} products</p>
+        <h1 class="h1">${esc(c.label)} protection</h1>
+        <p class="lede">${esc(c.line)}</p>
+        ${stds.length ? `<div class="banner__std">${stds.slice(0, 5).map((s) => `<span class="std">${esc(s)}</span>`).join('')}</div>` : ''}
+      </div>
+      <div class="banner__art"><img src="${asset(`${c.face}.webp`)}" alt="" /></div>
+    </div>
+    ${toolbar(list)}
+    <div class="grid" id="catalogGrid">${list.map((p, i) => productCard(p, { lazy: i > 7 })).join('')}</div>
+    ${emptyState}
+  </section>`
+}
+
+/** Quick view: the product without leaving the page. */
+export const quickView = (p) => {
+  const c = categoryBy[p.cat]
+  const g = p.gallery ?? []
+  const shots = g.length ? g.map((x) => ({ src: asset(`g/${x.img}.webp`), label: x.label, swatch: x.swatch })) : [{ src: img(p), label: p.name }]
+  return `
+  <div class="qv__box">
+    <button class="icon-btn qv__x" type="button" data-close aria-label="Close">${icon('x')}</button>
+    <div class="qv__thumbs" role="list">${shots.map((s, i) => `<button type="button" role="listitem" class="qv__thumb${i === 0 ? ' is-on' : ''}" data-shot="${i}" aria-label="${esc(s.label)}"><img src="${s.src}" alt="" /></button>`).join('')}</div>
+    <div class="qv__stage"><img id="qvImg" src="${shots[0].src}" alt="${esc(p.name)}" />${shots.length > 1 ? `<span class="qv__label" id="qvLabel">${esc(shots[0].label)}</span>` : ''}</div>
+    <div class="qv__info">
+      <p class="pdp__cat">${esc(c.label)} protection${p.brand ? ` · ${esc(p.brand)}` : ''}</p>
+      <h2 class="qv__name">${esc(p.name)}</h2>
+      ${p.sku ? `<p class="sku">Model ${esc(p.sku)}</p>` : ''}
+      <p class="qv__sum">${p.summary ? esc(p.summary) : `Part of our ${esc(c.label.toLowerCase())} range. The full datasheet comes with your quote.`}</p>
+      ${p.standards ? `<div class="pdp__std">${p.standards.filter((s) => !s.startsWith('CM/L')).map((s) => `<span class="std">${esc(s)}</span>`).join('')}</div>` : ''}
+      ${shots.some((s) => s.swatch) ? `<div class="qv__sw"><p>Colour</p><div>${shots.map((s, i) => (s.swatch ? `<button type="button" class="swatch" style="--c:${s.swatch}" data-shot="${i}" aria-label="${esc(s.label)}"></button>` : '')).join('')}</div></div>` : ''}
+      <div class="qv__buy">
+        <div class="stepper" aria-label="Quantity"><button type="button" data-qstep="-1" aria-label="Fewer">${icon('minus')}</button><input id="qvQty" type="number" min="1" value="${p.cat === 'head-protection' ? 50 : 10}" inputmode="numeric" aria-label="Quantity" /><button type="button" data-qstep="1" aria-label="More">${icon('plus')}</button></div>
+        <button class="btn btn--accent" type="button" data-qv-add="${p.slug}">${icon('clipboard-text')} Add to quote</button>
+      </div>
+      <div class="qv__links"><a class="link" href="#/product/${p.slug}">Full details and specification ${icon('arrow-right')}</a><button class="link" type="button" data-assist="Tell me about the ${esc(p.name)}">${icon('sparkle')} Ask Sure about it</button></div>
+    </div>
+  </div>`
 }
 
 /* --------------------------------------------------------------- product */

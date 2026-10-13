@@ -23,6 +23,7 @@
     <header class="bar" id="bar">
       <a class="bar__logo" href="#/" aria-label="Sure Safety, home"><img src="./assets/brand/suresafety.webp" alt="Sure Safety" width="140" height="84" /></a>
       <nav class="bar__nav" aria-label="Main">
+        <a href="#/" class="bar__link" data-nav="home">Home</a>
         <div class="mega-wrap">
           <a href="#/products" class="bar__link" data-nav="products" aria-haspopup="true">Products <span data-icon="caret-down"></span></a>
           <div class="mega" id="mega"></div>
@@ -73,14 +74,18 @@
     <div class="scrim" id="scrim" hidden></div>
     <aside class="drawer" id="quoteDrawer" aria-label="Quote list" hidden></aside>
     <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Kit" hidden></section>
+    <div class="qv" id="qv" role="dialog" aria-modal="true" aria-label="Quick view" hidden></div>
     <div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search products" hidden></div>
     <div class="wa" id="wa" role="dialog" aria-modal="true" aria-label="WhatsApp" hidden></div>
     <div class="menu" id="menu" hidden></div>
     <section class="assist" id="assist" aria-label="Sure Assist" hidden></section>
+    <div class="nudge" id="nudge" role="status" hidden>
+      <p><b>Hi, I’m Sure.</b> Not sure which glove is rated for heat? Ask me about any product.</p>
+      <button type="button" class="nudge__x" id="nudgeX" aria-label="Dismiss"><span data-icon="x"></span></button>
+    </div>
     <button class="assist-launch" type="button" id="assistLaunch" aria-controls="assist" aria-expanded="false">
-      <span class="assist-launch__dot" aria-hidden="true"></span>
-      <span data-icon="chat-circle-dots"></span>
-      <span class="assist-launch__label">Ask Sure Assist</span>
+      <span class="assist-launch__bot" id="launchBot"></span>
+      <span class="assist-launch__label"><b>Ask Sure</b><small>Safety assistant</small></span>
     </button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>

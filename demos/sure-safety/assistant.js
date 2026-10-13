@@ -149,7 +149,7 @@ const continueLead = (raw, state) => {
 /* --------------------------------------------------------------------- answers */
 
 export const GREETING = {
-  text: `Hi, I’m Sure Assist. Ask me about any of our ${PRODUCTS.length} products: what suits a hazard, which standard a helmet meets, or what a model weighs. I can also pass your enquiry to sales.`,
+  text: `Hi, I’m Sure Assist. Ask me about any of our ${new Set(PRODUCTS.map((p) => p.name)).size} products: what suits a hazard, which standard a helmet meets, or what a model weighs. I can also pass your enquiry to sales.`,
   chips: ['Helmet for electrical work', 'Gloves for heat', 'Do you do fit testing?', 'Get a quote'],
 }
 

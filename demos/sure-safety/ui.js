@@ -8,6 +8,7 @@ import chat from '@phosphor-icons/core/assets/regular/chat-circle-dots.svg?raw'
 import check from '@phosphor-icons/core/assets/regular/check.svg?raw'
 import clipboard from '@phosphor-icons/core/assets/regular/clipboard-text.svg?raw'
 import ear from '@phosphor-icons/core/assets/regular/ear.svg?raw'
+import eye from '@phosphor-icons/core/assets/regular/eye.svg?raw'
 import envelope from '@phosphor-icons/core/assets/regular/envelope-simple.svg?raw'
 import factory from '@phosphor-icons/core/assets/regular/factory.svg?raw'
 import filePdf from '@phosphor-icons/core/assets/regular/file-pdf.svg?raw'
@@ -33,7 +34,7 @@ import x from '@phosphor-icons/core/assets/regular/x.svg?raw'
 
 const ICONS = {
   'arrow-right': arrowRight, 'arrow-up-right': arrowUpRight, 'caret-down': caretDown, 'caret-right': caretRight, certificate,
-  'chat-circle-dots': chat, check, 'clipboard-text': clipboard, ear, 'envelope-simple': envelope, factory, 'file-pdf': filePdf,
+  'chat-circle-dots': chat, check, 'clipboard-text': clipboard, ear, 'envelope-simple': envelope, eye, factory, 'file-pdf': filePdf,
   fire, 'first-aid': firstAid, flask, 'hard-hat': hardHat, lightning, list: listIcon, 'magnifying-glass': search,
   'map-pin': mapPin, minus, 'paper-plane-right': paperPlane, phone, plus, ruler, 'shield-check': shieldCheck, sparkle,
   trash, 'whatsapp-logo': whatsapp, wind, x,
@@ -45,6 +46,17 @@ export const paintIcons = (root = document) =>
     el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon))
     el.removeAttribute('data-icon')
   })
+
+/** Sure, the assistant: a small robot in a Saviour hard hat. Eyes blink; while it thinks they scan. */
+export const botFace = (cls = '') => `<svg class="bot ${cls}" viewBox="0 0 64 64" aria-hidden="true">
+  <path class="bot__hat" d="M8 30c0-14 10.7-24 24-24s24 10 24 24z"/>
+  <path class="bot__ridge" d="M28 7.5h8v22h-8z"/>
+  <path class="bot__brim" d="M4 29.5h56a3 3 0 0 1 0 6H4a3 3 0 0 1 0-6z"/>
+  <rect class="bot__head" x="12" y="34" width="40" height="24" rx="10"/>
+  <rect class="bot__visor" x="16" y="38" width="32" height="15" rx="7.5"/>
+  <g class="bot__eyes"><rect class="bot__eye" x="23" y="41.5" width="5" height="8" rx="2.5"/><rect class="bot__eye" x="36" y="41.5" width="5" height="8" rx="2.5"/></g>
+  <circle class="bot__bolt" cx="12" cy="46" r="2.2"/><circle class="bot__bolt" cx="52" cy="46" r="2.2"/>
+</svg>`
 
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 export const $ = (sel, root = document) => root.querySelector(sel)

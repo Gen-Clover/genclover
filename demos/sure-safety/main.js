@@ -1,15 +1,14 @@
-import '@fontsource-variable/big-shoulders-stencil-display/wght'
-import '@fontsource-variable/big-shoulders-display/wght'
-import '@fontsource-variable/geist/wght'
+import '@fontsource-variable/manrope/wght'
 import '@fontsource-variable/geist-mono/wght'
 import './style.css'
-import { CATEGORIES, PRODUCTS, productBy, categoryBy, HAZARDS, SERVICES, COMPANY, SCAN } from './site.js'
+import { CATEGORIES, PRODUCTS, productBy, categoryBy, HAZARDS, SERVICES, COMPANY } from './site.js'
+import { startSparks, mountPipe } from './line.js'
 import { reply, chipAction, GREETING } from './assistant.js'
 import * as views from './views.js'
 import { startSmoothScroll, mountMotion, scrollToTop, scrollToEl, pauseScroll } from './motion.js'
 import {
   icon, paintIcons, esc, $, $$, reduced, asset, toast, demoNote,
-  quoteList, onQuote, addToQuote, setQty, clearQuote, saveLead, openOverlay, closeOverlay, overlayOpen,
+  quoteList, onQuote, addToQuote, setQty, clearQuote, saveLead, openOverlay, closeOverlay, overlayOpen, botFace,
 } from './ui.js'
 
 const main = $('#main')
@@ -42,7 +41,7 @@ const render = () => {
       main.innerHTML = route[1](m)
       route[2](params, m)
     } else main.innerHTML = views.notFound()
-    $$('.bar__link').forEach((a) => a.classList.toggle('is-on', path.startsWith(`/${a.dataset.nav}`) || (a.dataset.nav === 'products' && path.startsWith('/product'))))
+    $$('.bar__link').forEach((a) => a.classList.toggle('is-on', a.dataset.nav === 'home' ? path === '/' && !params.has('find') : a.dataset.nav === 'finder' ? params.has('find') : path.startsWith(`/${a.dataset.nav}`) || (a.dataset.nav === 'products' && path.startsWith('/product'))))
     if (path !== lastPath) {
       const target = params.has('find') ? $('#finder') : null
       target ? setTimeout(() => scrollToEl(target), 60) : scrollToTop()
@@ -79,7 +78,7 @@ function mountHome(params) {
     card.innerHTML = `<div class="plant-card__in">
       <div class="plant-card__txt"><p class="plant-card__k">${icon(h.icon)} ${esc(h.line)}</p><h3>${esc(h.label)}</h3></div>
       <div class="plant-card__kit">${top.map((p, i) => `<a href="#/product/${p.slug}" style="--i:${i}" title="${esc(p.name)}"><img src="${asset(`p/${p.slug}.webp`)}" alt="${esc(p.name)}" /></a>`).join('')}</div>
-      <button class="btn btn--hv" type="button" data-see-kit="${h.id}">See the kit · ${h.products.length} ${icon('arrow-right')}</button></div>`
+      <button class="btn btn--accent" type="button" data-see-kit="${h.id}">See the kit · ${h.products.length} <i class="btn__ball">${icon('arrow-up-right')}</i></button></div>`
     const sc = $('#plantScroll')
     if (scroll && sc.scrollWidth > sc.clientWidth) {
       const hit = $(`[data-hit="${h.id}"]`, plant).getBoundingClientRect()
@@ -115,12 +114,11 @@ function mountHome(params) {
       .map((g, i) => `<button type="button" role="radio" class="swatch swatch--lg" style="--c:${g.swatch}" aria-checked="${i === 0}" data-img="${g.img}" aria-label="${esc(g.label)}"><span>${esc(g.label)}</span></button>`)
       .join('')
     setHelmet(colours[0].img, `${p.name} helmet in ${colours[0].label.toLowerCase()}`, colours[0].swatch)
-    const ghost = $('#spotGhost')
-    ghost.classList.remove('is-in')
-    setTimeout(() => {
-      ghost.textContent = p.name
-      ghost.classList.add('is-in')
-    }, reduced ? 0 : 200)
+    // the scanner passes again for each new helmet
+    const bay = $('.qc__bay')
+    bay.classList.remove('is-scanning')
+    void bay.offsetWidth
+    bay.classList.add('is-scanning')
     $$('#spotSwatches .swatch').forEach((s) =>
       s.addEventListener('click', () => {
         $$('#spotSwatches .swatch').forEach((x) => x.setAttribute('aria-checked', String(x === s)))
@@ -131,28 +129,36 @@ function mountHome(params) {
   $$('[data-spot]').forEach((b) => b.addEventListener('click', () => showSpot(b.dataset.spot)))
   showSpot('freedom')
 
-  /* site scan: probes on the photo, live-looking readings, a panel per service */
-  const panel = $('#scanPanel')
-  let probe = null
-  let scanning = !reduced
-  const pickProbe = (id, fromUser = false) => {
-    if (fromUser) scanning = false
-    probe = id
-    $$('.probe').forEach((p) => p.classList.toggle('is-on', p.dataset.probe === id))
-    panel.innerHTML = views.scanPanel(SERVICES.find((s) => s.id === id), SCAN.find((s) => s.id === id))
-  }
-  $$('.probe').forEach((p) => p.addEventListener('click', () => pickProbe(p.dataset.probe, true)))
-  pickProbe(SCAN[0].id)
-  every(() => scanning && pickProbe(SCAN[(SCAN.findIndex((s) => s.id === probe) + 1) % SCAN.length].id), 4200)
-  if (!reduced)
-    every(() => {
-      $$('[data-live]').forEach((el) => {
-        const p = JSON.parse(el.dataset.live)
-        const [lo, hi] = p.range
-        const v = lo + Math.random() * (hi - lo)
-        el.textContent = p.dp ? v.toFixed(p.dp) : Math.round(v)
-      })
-    }, 1300)
+  /* service stations: one opens at a time */
+  const stns = $$('.stn')
+  const openStn = (b) => stns.forEach((s) => {
+    s.classList.toggle('is-open', s === b)
+    s.setAttribute('aria-expanded', String(s === b))
+  })
+  stns.forEach((b) => {
+    b.addEventListener('click', () => openStn(b))
+    b.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && matchMedia('(min-width: 961px)').matches && openStn(b))
+  })
+
+  /* hero: the helmet widget changes colour */
+  $$('#heroDots button').forEach((d) =>
+    d.addEventListener('click', () => {
+      $$('#heroDots button').forEach((x) => x.setAttribute('aria-pressed', String(x === d)))
+      const img = $('#heroHelm')
+      img.classList.add('is-swap')
+      setTimeout(() => {
+        img.src = asset(`helm/${d.dataset.helm}.webp`)
+        img.classList.remove('is-swap')
+      }, reduced ? 0 : 180)
+    }),
+  )
+
+  /* conveyor: runs by itself; the visitor can drag, swipe, wheel or step it */
+  const stopBelt = mountBelt($('#beltLane'))
+
+  /* hero sparks and the pipe */
+  const stopSparks = startSparks($('#sparks'))
+  const stopPipe = mountPipe()
 
   /* testimonials */
   const quotes = $$('.quote')
@@ -165,16 +171,107 @@ function mountHome(params) {
   $$('[data-quote-i]').forEach((b) => b.addEventListener('click', () => showQuote(+b.dataset.quoteI)))
   if (!reduced) every(() => showQuote(qi + 1), 6500)
 
-  /* chapter rail: follows the reader, jumps on click */
-  const links = $$('[data-chapter-link]')
-  const io = new IntersectionObserver(
-    (es) => es.forEach((e) => e.isIntersecting && links.forEach((l) => l.classList.toggle('is-on', l.dataset.chapterLink === e.target.dataset.chapter))),
-    { rootMargin: '-45% 0px -50% 0px' },
-  )
-  $$('[data-chapter]').forEach((c) => io.observe(c))
   const prev = routeCleanup
-  routeCleanup = () => (prev(), io.disconnect())
+  routeCleanup = () => (prev(), stopSparks(), stopPipe(), stopBelt())
   if (params.get('to')) setTimeout(() => scrollToEl($(`#${params.get('to')}`)), 80)
+}
+
+/** The conveyor: an endless scroller. It creeps along on its own, stops while the
+ *  visitor hovers, drags or swipes it, and picks up again shortly after they let go. */
+function mountBelt(lane) {
+  if (!lane) return () => {}
+  const run = lane.firstElementChild
+  const live = $('#beltLive')
+  const half = () => run.scrollWidth / 2
+  let hovering = false
+  let dragging = false
+  let idleUntil = 0
+  let raf = 0
+  let carry = 0
+  let startX = 0
+  let startLeft = 0
+  let moved = 0
+  let wasStopped = null
+  const hold = (ms = 2200) => (idleUntil = performance.now() + ms)
+  const wrap = () => {
+    const h = half()
+    if (lane.scrollLeft >= h) lane.scrollLeft -= h
+    else if (lane.scrollLeft <= 0) lane.scrollLeft += h
+  }
+  const tick = (t) => {
+    raf = requestAnimationFrame(tick)
+    const stopped = reduced || hovering || dragging || t < idleUntil
+    if (stopped !== wasStopped) {
+      wasStopped = stopped
+      live.classList.toggle('is-stopped', stopped)
+      live.querySelector('span').textContent = stopped ? 'Line paused' : 'Line running'
+    }
+    if (stopped) return
+    carry += 0.5
+    const step = Math.floor(carry)
+    if (step) {
+      lane.scrollLeft += step
+      carry -= step
+      wrap()
+    }
+  }
+  lane.scrollLeft = 1
+  raf = requestAnimationFrame(tick)
+  lane.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && (hovering = true))
+  lane.addEventListener('pointerleave', () => {
+    hovering = false
+    hold(700)
+  })
+  lane.addEventListener('wheel', () => hold(), { passive: true })
+  lane.addEventListener('touchstart', () => hold(3200), { passive: true })
+  lane.addEventListener('scroll', () => wrap(), { passive: true })
+  // mouse drag; touch swipes natively
+  lane.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return
+    dragging = true
+    moved = 0
+    startX = e.clientX
+    startLeft = lane.scrollLeft
+  })
+  const move = (e) => {
+    if (!dragging) return
+    const dx = e.clientX - startX
+    moved = Math.max(moved, Math.abs(dx))
+    if (moved > 4) lane.classList.add('is-dragging')
+    lane.scrollLeft = startLeft - dx
+  }
+  const end = () => {
+    if (!dragging) return
+    dragging = false
+    lane.classList.remove('is-dragging')
+    hold()
+  }
+  addEventListener('pointermove', move)
+  addEventListener('pointerup', end)
+  // a drag must not open the crate under the pointer
+  lane.addEventListener('click', (e) => {
+    if (moved > 6) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    moved = 0
+  }, true)
+  const stepBelt = (dir) => {
+    hold(3200)
+    const crate = run.querySelector('.crate')
+    lane.scrollBy({ left: dir * (crate.offsetWidth + 14) * 2, behavior: reduced ? 'auto' : 'smooth' })
+  }
+  lane.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    e.preventDefault()
+    stepBelt(e.key === 'ArrowRight' ? 1 : -1)
+  })
+  $$('[data-belt]').forEach((b) => b.addEventListener('click', () => stepBelt(+b.dataset.belt)))
+  return () => {
+    cancelAnimationFrame(raf)
+    removeEventListener('pointermove', move)
+    removeEventListener('pointerup', end)
+  }
 }
 
 /** The full kit for a hazard, in a sheet over the page. */
@@ -193,7 +290,7 @@ function openKit(id) {
 /** Swap the floating helmet: the new colour rises in as the old one fades, and the stage glow follows. */
 const setHelmet = (name, alt, glow) => {
   const box = $('#spotImg')
-  if (glow) box.closest('.ch--show').style.setProperty('--glow', glow)
+  if (glow) box.closest('.qc').style.setProperty('--glow', glow)
   const next = new Image()
   next.src = asset(`helm/${name}.webp`)
   next.alt = alt
@@ -208,23 +305,80 @@ const setHelmet = (name, alt, glow) => {
 /* ================================================================== catalog */
 function mountCatalog() {
   const input = $('#filter')
-  const cards = $$('#catalogGrid .card')
-  const names = cards.map((c) => {
-    const p = productBy[c.dataset.slug]
-    return `${p.name} ${p.sku ?? ''} ${(p.standards ?? []).join(' ')} ${categoryBy[p.cat].label}`.toLowerCase()
-  })
-  input.addEventListener('input', () => {
+  const grid = $('#catalogGrid')
+  const shelves = $('#shelves')
+  const allMode = !!shelves
+  const base = [...new Set($$('.card', allMode ? shelves : grid).map((c) => c.dataset.slug))].map((s) => productBy[s])
+  // the All page searches the whole catalogue, not just what the shelves show
+  const pool = allMode ? PRODUCTS.filter((p, i) => PRODUCTS.findIndex((x) => x.name === p.name) === i) : base
+  let facet = 'all'
+  const text = (p) => `${p.name} ${p.sku ?? ''} ${(p.standards ?? []).join(' ')} ${categoryBy[p.cat].label} ${p.brand ?? ''}`.toLowerCase()
+  const apply = () => {
     const words = input.value.toLowerCase().split(/\s+/).filter(Boolean)
-    let shown = 0
-    cards.forEach((c, i) => {
-      const ok = words.every((w) => names[i].includes(w))
-      c.hidden = !ok
-      shown += ok
-    })
-    $('#filterCount').textContent = `${shown} product${shown === 1 ? '' : 's'}`
-    $('#filterEmpty').hidden = shown > 0
-  })
+    const filtering = words.length || facet !== 'all'
+    const hits = pool.filter((p) =>
+      words.every((w) => text(p).includes(w)) &&
+      (facet === 'all' || (facet === 'certified' ? !!p.standards : facet === `brand:${p.brand}`)),
+    )
+    if (allMode) {
+      shelves.hidden = !!filtering
+      grid.hidden = !filtering
+      if (filtering) grid.innerHTML = hits.map((p) => views.productCard(p)).join('')
+    } else {
+      const ok = new Set(hits.map((p) => p.slug))
+      $$('.card', grid).forEach((c) => (c.hidden = !ok.has(c.dataset.slug)))
+    }
+    $('#filterCount').textContent = `${filtering ? hits.length : pool.length} product${hits.length === 1 && filtering ? '' : 's'}`
+    $('#filterEmpty').hidden = !filtering || hits.length > 0
+  }
+  input.addEventListener('input', apply)
+  $$('[data-facet]').forEach((b) =>
+    b.addEventListener('click', () => {
+      facet = b.dataset.facet
+      $$('[data-facet]').forEach((x) => x.classList.toggle('is-on', x === b))
+      apply()
+    }),
+  )
   $('[data-assist-filter]')?.addEventListener('click', () => openAssist(input.value || 'What do you stock?'))
+  // shelves scroll sideways by arrow
+  $$('[data-shelf]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const row = b.closest('.shelf').querySelector('.shelf__row')
+      row.scrollBy({ left: +b.dataset.shelf * row.clientWidth * 0.8, behavior: reduced ? 'auto' : 'smooth' })
+    }),
+  )
+  // keep the chosen category chip in view
+  $('.orb.is-on')?.scrollIntoView({ block: 'nearest', inline: 'center' })
+}
+
+/** Quick view: the product in a panel, without leaving the catalogue. */
+function openQuickView(slug) {
+  const p = productBy[slug]
+  const el = $('#qv')
+  el.innerHTML = views.quickView(p)
+  const shots = $$('.qv__thumb', el)
+  const show = (i) => {
+    const t = shots[i]
+    const imgEl = $('#qvImg', el)
+    imgEl.classList.add('is-swap')
+    setTimeout(() => {
+      imgEl.src = t.querySelector('img').src
+      imgEl.classList.remove('is-swap')
+    }, reduced ? 0 : 140)
+    shots.forEach((s, j) => s.classList.toggle('is-on', j === i))
+    $$('.swatch', el).forEach((s) => s.setAttribute('aria-checked', String(+s.dataset.shot === i)))
+    if ($('#qvLabel', el)) $('#qvLabel', el).textContent = t.getAttribute('aria-label')
+  }
+  $$('[data-shot]', el).forEach((b) => b.addEventListener('click', () => show(+b.dataset.shot)))
+  $$('.swatch', el)[0]?.setAttribute('aria-checked', 'true')
+  const qty = $('#qvQty', el)
+  $$('[data-qstep]', el).forEach((b) => b.addEventListener('click', () => (qty.value = Math.max(1, (+qty.value || 1) + +b.dataset.qstep * (+qty.value >= 50 ? 10 : 1)))))
+  $('[data-qv-add]', el).addEventListener('click', () => {
+    addToQuote(slug, Math.max(1, +qty.value || 1))
+    toast(`${icon('check')}<span>${esc(qty.value)} × ${esc(p.name)} added. <button class="link" type="button" data-quote-open>Open quote list</button></span>`)
+  })
+  $('[data-close]', el).addEventListener('click', closeOverlay)
+  openOverlay(el, { focus: '[data-qv-add]' })
 }
 
 /* ================================================================== product */
@@ -306,6 +460,7 @@ document.addEventListener('click', (e) => {
   } else if (t.hasAttribute('data-quote-open')) openQuote()
   else if (t.hasAttribute('data-whatsapp')) openWhatsApp(t.dataset.whatsapp)
   else if (t.hasAttribute('data-assist')) openAssist(t.dataset.assist)
+  else if (t.dataset.qv) openQuickView(t.dataset.qv)
   else if (t.hasAttribute('data-open-search')) openPalette()
   else if (t.dataset.demo) demoNote(t.dataset.demo)
 })
@@ -326,11 +481,15 @@ $('#openSearch').addEventListener('click', openPalette)
 // header: solid once scrolled, mega menu, mobile menu
 new IntersectionObserver(([en]) => $('#bar').classList.toggle('is-scrolled', !en.isIntersecting)).observe($('.util'))
 $('#mega').innerHTML = `<div class="mega__grid">${CATEGORIES.map((c) => `<a href="#/products/${c.slug}"><img src="${asset(`${c.face}.webp`)}" alt="" loading="lazy" /><span><b>${esc(c.label)}</b><small>${esc(c.line)}</small></span></a>`).join('')}</div>
-  <div class="mega__foot"><a href="#/products">All ${PRODUCTS.length} products ${icon('arrow-right')}</a><a href="#/?find">Not sure? Start from a hazard ${icon('arrow-right')}</a></div>`
+  <div class="mega__foot"><a href="#/products">All ${new Set(PRODUCTS.map((p) => p.name)).size} products ${icon('arrow-right')}</a><a href="#/?find">Not sure? Start from a hazard ${icon('arrow-right')}</a></div>`
+// close the menu once a category is chosen, until the pointer leaves it
+const megaWrap = $('.mega-wrap')
+$('#mega').addEventListener('click', (e) => e.target.closest('a') && (megaWrap.classList.add('is-shut'), document.activeElement.blur()))
+megaWrap.addEventListener('pointerleave', () => megaWrap.classList.remove('is-shut'))
 $('#footCats').innerHTML = `<h4>Products</h4>${CATEGORIES.slice(0, 9).map((c) => `<a href="#/products/${c.slug}">${esc(c.label)} protection</a>`).join('')}<a href="#/products">All categories</a>`
 $('#openMenu').addEventListener('click', () => {
   $('#menu').innerHTML = `<div class="menu__head"><img src="${asset('brand/suresafety.webp')}" alt="Sure Safety" /><button class="icon-btn" type="button" data-close aria-label="Close">${icon('x')}</button></div>
-    <nav><a href="#/products">Products</a><a href="#/?find">Hazard finder</a><a href="#/services">Services</a><a href="#/contact">Request a quote</a></nav>
+    <nav><a href="#/">Home</a><a href="#/products">Products</a><a href="#/?find">Hazard finder</a><a href="#/services">Services</a><a href="#/contact">Request a quote</a></nav>
     <div class="menu__cats">${CATEGORIES.map((c) => `<a href="#/products/${c.slug}">${esc(c.label)}</a>`).join('')}</div>
     <button class="btn btn--wa" type="button" data-whatsapp>${icon('whatsapp-logo')} Chat on WhatsApp</button>`
   $('#menu [data-close]').addEventListener('click', closeOverlay)
@@ -455,7 +614,8 @@ let assistState = {}
 let assistReady = false
 
 function buildAssist() {
-  assist.innerHTML = `<div class="assist__head"><span class="assist__avatar">${icon('sparkle')}</span><p><b>Sure Assist</b><small>Answers from the Sure Safety catalogue</small></p><button class="icon-btn icon-btn--sm" type="button" id="assistClose" aria-label="Close chat">${icon('x')}</button></div>
+  const count = new Set(PRODUCTS.map((p) => p.name)).size
+  assist.innerHTML = `<div class="assist__head"><span class="assist__avatar" id="headBot">${botFace()}</span><p><b>Sure</b><small><i class="assist__on"></i>Safety assistant · knows all ${count} products</small></p><button class="icon-btn icon-btn--sm" type="button" id="assistClose" aria-label="Close chat">${icon('x')}</button><i class="assist__scan" aria-hidden="true"></i></div>
     <div class="assist__log" id="assistLog" role="log" aria-live="polite"></div>
     <form class="assist__form" id="assistForm"><input id="assistInput" autocomplete="off" placeholder="Ask about a product, hazard or standard" aria-label="Message Sure Assist" /><button type="submit" aria-label="Send">${icon('paper-plane-right')}</button></form>`
   $('#assistClose').addEventListener('click', closeAssist)
@@ -466,7 +626,13 @@ function buildAssist() {
     $('#assistInput').value = ''
     ask(v)
   })
-  bot(GREETING)
+  log().innerHTML = `<div class="welcome">${botFace('bot--hero')}<h3>Hi, I’m Sure.</h3><p>I know every product in the catalogue, the standard each helmet meets, and what each service covers. I can also pass your enquiry to sales.</p>
+    <div class="welcome__cards">${[
+      ['lightning', 'Helmet for electrical work'],
+      ['fire', 'Gloves for heat'],
+      ['wind', 'Do you do fit testing?'],
+      ['clipboard-text', 'Get a quote'],
+    ].map(([ic, q], i) => `<button type="button" class="welcome__card" data-ask="${q}" style="--i:${i}">${icon(ic)}<span>${q}</span></button>`).join('')}</div></div>`
   assistReady = true
 }
 
@@ -480,7 +646,7 @@ const userSays = (text) => {
 function bot(r) {
   const el = document.createElement('div')
   el.className = 'msg msg--bot'
-  el.innerHTML = `<p>${esc(r.text)}</p>
+  el.innerHTML = `<span class="msg__bot">${botFace()}</span><p>${esc(r.text)}</p>
     ${r.products?.length ? `<div class="msg__cards">${r.products.map((p) => `<a class="mini" href="#/product/${p.slug}"><img src="${asset(`p/${p.slug}.webp`)}" alt="" /><span><b>${esc(p.name)}</b><small>${esc(categoryBy[p.cat].label)}${p.standards ? ` · ${esc(p.standards[0])}` : ''}</small></span><button type="button" class="mini__add" data-add="${p.slug}" aria-label="Add ${esc(p.name)} to quote list">${icon('plus')}</button></a>`).join('')}</div>` : ''}
     ${r.lead ? leadCard(r.lead) : ''}`
   log().appendChild(el)
@@ -498,7 +664,9 @@ function ask(text) {
   userSays(text)
   const typing = document.createElement('div')
   typing.className = 'msg msg--bot msg--typing'
-  typing.innerHTML = '<i></i><i></i><i></i>'
+  typing.innerHTML = `<span class="msg__bot">${botFace('is-thinking')}</span><span class="think">Checking the catalogue<i></i></span>`
+  $('#headBot').classList.add('is-thinking')
+  $('.welcome', log())?.classList.add('is-gone')
   log().appendChild(typing)
   scrollLog()
   const special = chipAction(text, assistState)
@@ -511,6 +679,7 @@ function ask(text) {
   setTimeout(
     () => {
       typing.remove()
+      $('#headBot').classList.remove('is-thinking')
       assistState = r.state ?? assistState
       if (r.lead) saveLead({ ...r.lead, source: 'Sure Assist' })
       bot(r)
@@ -537,10 +706,40 @@ function closeAssist() {
 }
 launch.addEventListener('click', () => (assist.hidden ? openAssist() : closeAssist()))
 assist.addEventListener('click', (e) => {
-  const chip = e.target.closest('.chip')
-  if (chip) ask(chip.textContent)
+  const chip = e.target.closest('.chip, [data-ask]')
+  if (chip) ask(chip.dataset.ask ?? chip.textContent)
   if (e.target.closest('.mini') && !e.target.closest('.mini__add') && matchMedia('(max-width: 700px)').matches) closeAssist()
 })
+
+/* the launcher: Sure peeks up, and once per visit offers a hint */
+$('#launchBot').innerHTML = botFace()
+const nudge = $('#nudge')
+const seen = () => {
+  try {
+    return sessionStorage.getItem('ss-nudge') === '1'
+  } catch {
+    return false
+  }
+}
+const hideNudge = () => {
+  nudge.classList.remove('is-on')
+  setTimeout(() => (nudge.hidden = true), 300)
+  try {
+    sessionStorage.setItem('ss-nudge', '1')
+  } catch {
+    /* fine */
+  }
+}
+if (!seen() && !reduced)
+  setTimeout(() => {
+    if (!assist.hidden || seen()) return
+    nudge.hidden = false
+    requestAnimationFrame(() => nudge.classList.add('is-on'))
+    setTimeout(hideNudge, 9000)
+  }, 4500)
+$('#nudgeX').addEventListener('click', hideNudge)
+nudge.addEventListener('click', (e) => !e.target.closest('#nudgeX') && (hideNudge(), openAssist()))
+launch.addEventListener('click', () => !nudge.hidden && hideNudge())
 
 /* ====================================================================== go */
 paintIcons()
