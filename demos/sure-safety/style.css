@@ -40,6 +40,8 @@
 .catalog__body > *, .pdp__top > *, .contact > *, .qc > *, .faq > *, .conveyor__bay > * { min-width: 0; }
 html { scroll-padding-top: 96px; -webkit-text-size-adjust: 100%; overflow-x: clip; background: var(--canvas); }
 html.is-locked { overflow: hidden; }
+body { overflow-x: clip; }
+main, .foot { max-width: 100vw; }
 body { margin: 0; background: var(--canvas); color: var(--ink); font: 450 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; caret-color: var(--accent); }
 ::selection { background: var(--accent); color: #fff; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
@@ -336,6 +338,7 @@ main > section:not(.hero):not(.talk):not(.page-hero--photo) { max-width: var(--m
 
 /* ================================================================== clients */
 .logos { display: grid; gap: 12px; margin-inline: calc(var(--gutter) * -1); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.logos__row { min-width: 0; overflow: hidden; }
 .logos__row ul { display: flex; gap: 12px; width: max-content; margin: 0; padding: 0; list-style: none; animation: slide 60s linear infinite; }
 .logos__row--1 ul { animation-direction: reverse; animation-duration: 70s; }
 .logos:hover ul { animation-play-state: paused; }
@@ -882,7 +885,7 @@ body.assist-on .assist-launch { transform: scale(0.9); opacity: 0; pointer-event
   --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 2px rgba(16, 20, 24, 0.04), 0 18px 40px -22px rgba(16, 20, 24, 0.28);
 }
 body { background: #e9ecef; }
-body::before { content: ''; position: fixed; inset: -10%; z-index: -1; pointer-events: none;
+body::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
     radial-gradient(38% 34% at 12% 18%, rgba(255, 122, 60, 0.38), transparent 70%),
     radial-gradient(34% 32% at 88% 12%, rgba(255, 196, 120, 0.42), transparent 70%),
@@ -891,7 +894,7 @@ body::before { content: ''; position: fixed; inset: -10%; z-index: -1; pointer-e
     radial-gradient(30% 30% at 50% 50%, rgba(150, 170, 255, 0.16), transparent 70%);
   filter: blur(20px);
   animation: pools 40s ease-in-out infinite alternate; }
-@keyframes pools { to { transform: translate(2%, -2%) scale(1.06) rotate(2deg); } }
+@keyframes pools { to { background-position: 3% -3%, -3% 2%, 2% 3%, -2% -2%, 0 0; } }
 html, body { background-color: transparent; }
 html { background: #e9ecef; }
 
