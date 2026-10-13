@@ -617,7 +617,7 @@ function buildAssist() {
   const count = new Set(PRODUCTS.map((p) => p.name)).size
   assist.innerHTML = `<div class="assist__head"><span class="assist__avatar" id="headBot">${botFace()}</span><p><b>Sure</b><small><i class="assist__on"></i>Safety assistant · knows all ${count} products</small></p><button class="icon-btn icon-btn--sm" type="button" id="assistClose" aria-label="Close chat">${icon('x')}</button><i class="assist__scan" aria-hidden="true"></i></div>
     <div class="assist__log" id="assistLog" role="log" aria-live="polite"></div>
-    <form class="assist__form" id="assistForm"><input id="assistInput" autocomplete="off" placeholder="Ask about a product, hazard or standard" aria-label="Message Sure Assist" /><button type="submit" aria-label="Send">${icon('paper-plane-right')}</button></form>`
+    <form class="assist__form" id="assistForm"><input id="assistInput" autocomplete="off" placeholder="Ask about a product or hazard" aria-label="Message Sure Assist" /><button type="submit" aria-label="Send">${icon('paper-plane-right')}</button></form>`
   $('#assistClose').addEventListener('click', closeAssist)
   $('#assistForm').addEventListener('submit', (e) => {
     e.preventDefault()
@@ -688,16 +688,37 @@ function ask(text) {
   )
 }
 
+/** On phones the chat is a full-screen sheet sized to the visible viewport, so it
+ *  sits above the keyboard rather than behind it, and the page underneath is locked. */
+const phone = matchMedia('(max-width: 600px)')
+const fitViewport = () => {
+  const vv = window.visualViewport
+  if (!vv) return
+  assist.style.setProperty('--vvh', `${vv.height}px`)
+  assist.style.setProperty('--vvt', `${vv.offsetTop}px`)
+  if (document.activeElement === $('#assistInput')) scrollLog()
+}
 function openAssist(prefill) {
   if (!assistReady) buildAssist()
   assist.hidden = false
   launch.setAttribute('aria-expanded', 'true')
   requestAnimationFrame(() => assist.classList.add('is-open'))
   document.body.classList.add('assist-on')
+  if (phone.matches) {
+    document.documentElement.classList.add('is-locked')
+    fitViewport()
+    window.visualViewport?.addEventListener('resize', fitViewport)
+    window.visualViewport?.addEventListener('scroll', fitViewport)
+  }
   if (prefill) ask(prefill)
-  else $('#assistInput').focus()
+  // the keyboard only opens when the visitor taps the box, not on its own
+  else if (!phone.matches) $('#assistInput').focus()
 }
 function closeAssist() {
+  document.documentElement.classList.remove('is-locked')
+  window.visualViewport?.removeEventListener('resize', fitViewport)
+  window.visualViewport?.removeEventListener('scroll', fitViewport)
+  $('#assistInput')?.blur()
   assist.classList.remove('is-open')
   launch.setAttribute('aria-expanded', 'false')
   document.body.classList.remove('assist-on')

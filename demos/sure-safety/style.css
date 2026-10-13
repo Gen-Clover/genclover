@@ -1133,3 +1133,21 @@ html { background: #e9ecef; }
 }
 
 .mega-wrap.is-shut .mega { opacity: 0 !important; visibility: hidden !important; transform: translateY(8px) !important; }
+
+
+/* ============================================================ phone fixes */
+/* iOS zooms the page when an input's text is under 16px */
+.assist__form input, .wa__send textarea, .stepper--sm input { font-size: 16px; }
+@media (max-width: 600px) {
+  /* the chat is a full-screen sheet that follows the visible viewport (above the keyboard) */
+  .assist { top: var(--vvt, 0px); right: 0; bottom: auto; left: 0; width: 100%; height: var(--vvh, 100dvh); max-height: none; border-radius: 0; transform-origin: bottom center; transform: translateY(24px); }
+  .assist.is-open { transform: none; }
+  .assist__head { padding-top: max(14px, env(safe-area-inset-top)); }
+  .assist__form { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+  .assist__log { overscroll-behavior: contain; }
+  .welcome { padding-top: 6px; }
+  .bot--hero { width: 76px; height: 76px; }
+  .welcome h3 { font-size: 22px; }
+  .welcome__card { padding: 11px; }
+  .nudge { right: 12px; bottom: 84px; width: min(280px, calc(100vw - 24px)); }
+}
