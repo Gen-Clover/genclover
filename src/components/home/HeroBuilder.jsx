@@ -356,7 +356,7 @@ const HeroBuilder = () => {
           </motion.div>
 
           <motion.h1 id="hero-heading" variants={v.riseIn} className="mt-6 text-4xl leading-[1.06] tracking-tight sm:text-5xl xl:text-[3.6rem]">
-            We design and build digital products that move businesses
+            Gen Clover designs and builds digital products that move businesses
             <span className="text-accent-500"> forward.</span>
           </motion.h1>
 
