@@ -59,7 +59,7 @@ const devApi = (env) => ({
   },
 })
 
-const TEMPLATE_SLUGS = ['verdant', 'folio', 'clarity', 'meridian', 'orchard', 'poise', 'foundry', 'aurum', 'enamel', 'ivory']
+const TEMPLATE_SLUGS = ['verdant', 'folio', 'clarity', 'meridian', 'orchard', 'poise', 'foundry', 'aurum', 'enamel', 'ivory', 'taanka']
 
 export default defineConfig(({ mode, isSsrBuild }) => ({
   plugins: [react(), devApi(loadEnv(mode, process.cwd(), ''))],

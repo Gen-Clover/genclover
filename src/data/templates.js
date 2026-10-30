@@ -121,6 +121,16 @@ export const websiteTemplates = [
     thumbnail: '/templates/ivory.jpg',
     chrome: 'dark',
   },
+  {
+    slug: 'taanka',
+    name: 'Taanka',
+    style: 'Streetwear fashion store',
+    summary:
+      'A full shop: tap-to-shuffle hero, quick-add sizes, shop-the-look hotspots, a live embroidery customiser, bag and wishlist.',
+    bestFor: ['Streetwear and apparel brands', 'Print-on-demand stores', 'Custom embroidery studios', 'D2C fashion labels'],
+    thumbnail: '/templates/taanka.jpg',
+    chrome: 'light',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
