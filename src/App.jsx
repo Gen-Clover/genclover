@@ -7,7 +7,7 @@ import ScrollRestoration from './components/ScrollRestoration'
 import CursorLight from './components/ui/CursorLight'
 import Home from './pages/Home'
 import { routes } from './data/site'
-import { templatePath } from './data/templates'
+import { templateRoute } from './data/templates'
 import { captureAttribution } from './lib/analytics'
 import { startVisitorLog, logPageview } from './lib/visitorLog'
 import { useHoverSound } from './lib/hoverSound'
@@ -92,7 +92,7 @@ function App() {
         />
         {/* Template previews fill the window, with their own slim bar. */}
         <Route
-          path={templatePath(':slug')}
+          path={templateRoute}
           element={
             <Suspense fallback={<RouteFallback />}>
               <TemplatePreview />

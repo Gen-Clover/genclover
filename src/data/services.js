@@ -21,6 +21,8 @@ import {
  *   capabilities[], deliverables[], relatedIndustries[], ctaLabel, closingTitle
  *   templates      template-led layout (WebsitesLanding), opening on templates
  *                  from data/templates.js: true for all of them, or a list of slugs
+ *   galleryIntro   that layout's line under the headline, if not the website one
+ *   redesignDemo   false hides the "redesign your website" callout there
  *   glanceTitle    heading of that layout's one-screen summary
  * }
  * relatedProjects is derived at read time from projects.js rather than stored
@@ -157,7 +159,12 @@ export const services = [
       'Assistants, intelligent search, document understanding and workflow automation, built into your existing systems rather than bolted on beside them.',
     closingTitle: 'Looking at where AI could help?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Our Work', to: '/work' },
+    secondaryCta: { label: 'Explore Templates', to: '/services/ai-automation#templates' },
+    templates: ['concierge', 'tadka', 'kagaz', 'pigeonhole'],
+    galleryIntro:
+      'Open a working demo and try it yourself: a chat assistant, an ordering bot, a bill reader and a lead inbox. We build the same for your business, wired into the tools you already use.',
+    redesignDemo: false,
+    glanceTitle: 'How we build AI and automation.',
     workCategory: 'ai-automation',
     capabilities: [
       { label: 'AI Assistants', description: 'Assistants grounded in your own content and systems.' },

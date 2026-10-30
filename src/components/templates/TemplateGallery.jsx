@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight, Play, RefreshCcw, Sparkles } from 'lucide-react'
 import Button from '../ui/Button'
-import { websiteTemplates, templatePath } from '../../data/templates'
+import { siteTemplates, templatePath } from '../../data/templates'
 import { routes } from '../../data/site'
 import { useMotionVariants } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
@@ -135,7 +135,7 @@ const ComingSoonCard = ({ className = '' }) => {
 }
 
 /** The gallery: every template, or just the ones passed in. */
-export const TemplateGrid = ({ templates = websiteTemplates }) => {
+export const TemplateGrid = ({ templates = siteTemplates }) => {
   const v = useMotionVariants()
   // Touch only: which tile has its details showing. One at a time.
   const [openSlug, setOpenSlug] = useState(null)

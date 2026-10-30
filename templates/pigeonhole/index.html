@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f4f1ea" />
+    <title>Pigeonhole · Every enquiry, sorted before you open it</title>
+    <meta name="description" content="A demo lead triage inbox: enquiries arrive, get sorted by urgency and type, and come with a suggested reply." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317131f'/%3E%3Crect x='7' y='8' width='8' height='7' rx='1.5' fill='%23ff5a36'/%3E%3Crect x='17' y='8' width='8' height='7' rx='1.5' fill='%23ffb020'/%3E%3Crect x='7' y='17' width='8' height='7' rx='1.5' fill='%2314a38b'/%3E%3Crect x='17' y='17' width='8' height='7' rx='1.5' fill='%23fff' opacity='.4'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="logo" href="#top" aria-label="Pigeonhole, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="4" width="12" height="11" rx="3" class="l1" /><rect x="17" y="4" width="12" height="11" rx="3" class="l2" /><rect x="3" y="17" width="12" height="11" rx="3" class="l3" /><rect x="17" y="17" width="12" height="11" rx="3" class="l4" /></svg>
+        Pigeonhole
+      </a>
+      <p class="top__tag">Demo · Lead triage inbox</p>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <h1>Every enquiry, sorted <em>before you open it.</em></h1>
+        <dl class="stats">
+          <div><dt>Sorted</dt><dd id="statSorted">0</dd></div>
+          <div><dt>Need a reply</dt><dd id="statOpen">0</dd></div>
+          <div><dt>Replied</dt><dd id="statDone">0</dd></div>
+        </dl>
+      </section>
+
+      <section class="room">
+        <div class="left">
+          <!-- new enquiries land here first -->
+          <div class="chute" aria-label="Incoming">
+            <p class="chute__label"><i></i>Incoming</p>
+            <div class="chute__slot" id="chute"><p class="chute__idle">Waiting for the next enquiry…</p></div>
+          </div>
+
+          <div class="lanes" id="lanes"></div>
+
+          <form class="try" id="try" autocomplete="off">
+            <p class="try__label">Send a test enquiry</p>
+            <div class="try__row">
+              <input id="tryName" maxlength="40" placeholder="Your name" aria-label="Your name" required />
+              <input id="tryText" maxlength="300" placeholder="e.g. My kitchen tap is leaking, can someone come today?" aria-label="Your enquiry" required />
+              <button type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- the open enquiry -->
+        <article class="reader" id="reader" aria-live="polite">
+          <div class="reader__empty" id="readerEmpty">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="16" width="44" height="32" rx="6" /><path d="m12 20 20 15 20-15" /></svg>
+            <p>Open an enquiry to see why it was sorted, plus a draft reply.</p>
+          </div>
+          <div class="reader__body" id="readerBody" hidden>
+            <header class="msg-head">
+              <span class="avatar" id="rAvatar" aria-hidden="true"></span>
+              <div>
+                <h2 id="rName"></h2>
+                <p class="msg-head__sub" id="rSub"></p>
+              </div>
+            </header>
+            <div class="tags" id="rTags"></div>
+            <blockquote class="msg" id="rText"></blockquote>
+            <div class="why">
+              <p class="why__label">Why it's here</p>
+              <ul class="why__list" id="rWhy"></ul>
+            </div>
+            <div class="reply" id="rReply">
+              <div class="reply__head">
+                <p class="reply__label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" /></svg>Suggested reply</p>
+                <div class="tone" role="radiogroup" aria-label="Tone">
+                  <button type="button" role="radio" data-tone="friendly" aria-checked="true">Friendly</button>
+                  <button type="button" role="radio" data-tone="formal" aria-checked="false">Formal</button>
+                </div>
+              </div>
+              <textarea id="rDraft" rows="8" aria-label="Reply draft"></textarea>
+              <div class="reply__actions">
+                <button class="btn" type="button" id="send">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-2.5-6.5z" /></svg>
+                  Send reply
+                </button>
+                <button class="btn btn--ghost" type="button" id="copy">Copy</button>
+              </div>
+            </div>
+            <div class="spam" id="rSpam" hidden>
+              <p>No reply needed. This one was filtered as spam.</p>
+              <button class="btn btn--ghost" type="button" id="bin">Delete it</button>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <footer class="foot">
+      <p>Pigeonhole is a demo for a made-up studio, Okra Interiors. The enquiries are made up and no replies are sent.</p>
+    </footer>
+  </body>
+</html>

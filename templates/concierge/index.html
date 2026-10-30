@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#07080c" />
+    <title>Concierge · An AI assistant that knows your business</title>
+    <meta name="description" content="A demo website assistant that answers customers from a business's own FAQs and hands everything else to the team." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23111418'/%3E%3Cpath d='M9 11h14v9h-8l-4 3v-3H9z' fill='%23fff'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <header class="top">
+      <a class="logo" href="#top" aria-label="Concierge, home">
+        <span class="logo__mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        Concierge
+      </a>
+      <p class="top__tag">Demo · AI website assistant</p>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <p class="live"><i></i>Live demo · try it</p>
+        <h1>Answers your customers <em>in seconds,</em> from your own FAQs.</h1>
+        <div class="biz" role="tablist" aria-label="Sample business" id="biz"></div>
+      </section>
+
+      <section class="stage">
+        <!-- what the assistant knows -->
+        <aside class="brain" aria-label="What the assistant knows">
+          <div class="brain__head">
+            <h2>What it knows</h2>
+            <span class="brain__count" id="faqCount"></span>
+          </div>
+          <div class="gaps" id="gaps" hidden>
+            <h3>Questions it couldn't answer</h3>
+            <ul id="gapList"></ul>
+          </div>
+          <div class="faqs-wrap"><ol class="faqs" id="faqs"></ol><span class="beam" aria-hidden="true"></span></div>
+          <form class="teach" id="teach">
+            <h3>Teach it something</h3>
+            <input id="teachQ" placeholder="Question, e.g. Is there parking?" maxlength="80" autocomplete="off" aria-label="Question" />
+            <textarea id="teachA" placeholder="Answer" rows="2" maxlength="220" aria-label="Answer"></textarea>
+            <button class="btn" type="submit">Add to knowledge</button>
+          </form>
+        </aside>
+
+        <!-- the chat widget, as it would sit on the business's website -->
+        <div class="widget" aria-label="Chat assistant">
+          <div class="widget__head">
+            <span class="widget__orb" aria-hidden="true"><span class="widget__avatar" id="avatar"></span></span>
+            <div>
+              <p class="widget__name" id="bizName"></p>
+              <p class="widget__status"><i></i>Replies instantly</p>
+            </div>
+          </div>
+          <div class="chat" id="chat" role="log" aria-live="polite"></div>
+          <div class="suggest" id="suggest" aria-label="Suggested questions"></div>
+          <form class="compose" id="compose">
+            <input id="msg" placeholder="Ask a question" autocomplete="off" maxlength="160" aria-label="Your question" />
+            <button type="submit" aria-label="Send">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-2.5-6.5z" /></svg>
+            </button>
+          </form>
+        </div>
+
+        <!-- live counters -->
+        <dl class="stats">
+          <div><dt>Answered instantly</dt><dd id="statAnswered">0</dd></div>
+          <div><dt>Passed to the team</dt><dd id="statLeads">0</dd></div>
+          <div><dt>Average reply</dt><dd id="statSpeed">–</dd></div>
+        </dl>
+      </section>
+
+      <section class="how" aria-label="How it works">
+        <div><b>1</b><h3>Your FAQs go in</h3><p>Prices, timings, policies. Plain text is enough.</p></div>
+        <div><b>2</b><h3>Customers ask anything</h3><p>Each reply shows which answer it came from.</p></div>
+        <div><b>3</b><h3>Gaps become leads</h3><p>Unknown questions go to your team with a contact.</p></div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>Concierge is a demo. The businesses, prices and policies are placeholders, and the replies come from simple matching in your browser.</p>
+    </footer>
+  </body>
+</html>

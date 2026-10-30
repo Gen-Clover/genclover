@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#efe9df" />
+    <title>Kagaz · Snap a bill, the fields fill themselves</title>
+    <meta name="description" content="A demo receipt and invoice reader: pick a bill, watch the fields fill in, check the totals and export everything to a spreadsheet." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%232f4bff'/%3E%3Cpath d='M10 7h12v18l-3-2-3 2-3-2-3 2z' fill='%23fff'/%3E%3Cpath d='M13 12h6M13 16h6' stroke='%232f4bff' stroke-width='1.6'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="logo" href="#top" aria-label="Kagaz, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 5h14v22l-3.5-2.4L16 27l-3.5-2.4L9 27z" class="logo__slip" /><path d="M12.5 11h7M12.5 15h7M12.5 19h4" class="logo__lines" /></svg>
+        Kagaz
+      </a>
+      <p class="top__tag">Demo · Receipt &amp; invoice reader</p>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <h1>Snap a bill. <em>The fields fill themselves.</em></h1>
+        <ol class="flow" aria-label="How it works">
+          <li><span>1</span>Drop a photo</li>
+          <li><span>2</span>Fields fill in</li>
+          <li><span>3</span>Export to a sheet</li>
+        </ol>
+      </section>
+
+      <section class="desk">
+        <!-- sample bills and the upload slot -->
+        <div class="tray" aria-label="Choose a bill">
+          <p class="tray__label">Try a sample</p>
+          <div class="tray__docs" id="samples"></div>
+          <label class="upload" id="drop">
+            <input type="file" id="file" accept="image/*" />
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>
+            <span><b>Upload a photo</b> or drop it here</span>
+          </label>
+        </div>
+
+        <!-- the scanner bed -->
+        <div class="scanner" id="scanner">
+          <div class="scanner__bed" id="bed">
+            <p class="scanner__empty" id="empty">
+              <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M20 10h24v44l-4-3-4 3-4-3-4 3-4-3-4 3z" /><path d="M26 22h12M26 30h12M26 38h7" /></svg>
+              Pick a bill to read
+            </p>
+            <div class="doc-wrap" id="docWrap"></div>
+            <span class="laser" aria-hidden="true"></span>
+          </div>
+          <p class="scanner__status" id="status" role="status">Ready</p>
+        </div>
+
+        <!-- the extracted fields -->
+        <form class="fields" id="fields" autocomplete="off">
+          <div class="fields__head">
+            <h2>Extracted fields</h2>
+            <span class="fields__src" id="src">Nothing read yet</span>
+          </div>
+          <p class="note" id="note" hidden></p>
+          <div class="grid">
+            <label class="f f--wide" data-key="vendor"><span>Vendor</span><input name="vendor" /><i class="conf"></i></label>
+            <label class="f" data-key="date"><span>Date</span><input name="date" type="date" /><i class="conf"></i></label>
+            <label class="f" data-key="number"><span>Bill no.</span><input name="number" /><i class="conf"></i></label>
+            <label class="f f--wide" data-key="category"><span>Category</span><select name="category" id="category"></select><i class="conf"></i></label>
+            <label class="f" data-key="subtotal"><span>Subtotal ₹</span><input name="subtotal" inputmode="decimal" /><i class="conf"></i></label>
+            <label class="f" data-key="tax"><span>Tax ₹</span><input name="tax" inputmode="decimal" /><i class="conf"></i></label>
+            <label class="f f--wide f--total" data-key="total"><span>Total ₹</span><input name="total" inputmode="decimal" /><i class="conf"></i></label>
+          </div>
+          <p class="check" id="check" data-state="idle">Totals will be checked here</p>
+          <button class="btn" type="submit" id="add" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            Add to sheet
+          </button>
+        </form>
+      </section>
+
+      <section class="sheet" aria-labelledby="sheetTitle">
+        <div class="sheet__head">
+          <div>
+            <h2 id="sheetTitle">Expense sheet</h2>
+            <p class="sheet__sub"><span id="rowCount">0 bills</span> · <span id="sum">₹0</span></p>
+          </div>
+          <button class="btn btn--ghost" type="button" id="export" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" /></svg>
+            Export CSV
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Vendor</th><th>Date</th><th>Bill no.</th><th>Category</th><th class="num">Tax</th><th class="num">Total</th><th><span class="sr">Remove</span></th></tr></thead>
+            <tbody id="rows"><tr class="placeholder"><td colspan="7">Bills you add show up here</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>Kagaz is a demo. The sample bills are from made-up businesses, and uploaded photos stay in your browser.</p>
+    </footer>
+  </body>
+</html>
