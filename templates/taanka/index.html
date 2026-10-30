@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0e0e0e" />
+    <title>TAANKA · Oversized tees, stitched by hand</title>
+    <meta name="description" content="Oversized heavyweight tees with hand-finished embroidery and bold prints. Demo store." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0e0e'/%3E%3Cpath d='M9 22 23 8' stroke='%23ff3b1f' stroke-width='2.5' stroke-linecap='round' stroke-dasharray='3 3'/%3E%3Ccircle cx='23' cy='8' r='2.5' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#shop">Skip to the shop</a>
+
+    <div class="ticker" aria-label="Store news">
+      <div class="ticker__run">
+        <span>Free shipping over ₹X,XXX</span><i>✳</i><span>Drop 04 is live</span><i>✳</i><span>Easy 7-day exchanges</span><i>✳</i><span>Custom embroidery on any tee</span><i>✳</i>
+        <span aria-hidden="true">Free shipping over ₹X,XXX</span><i aria-hidden="true">✳</i><span aria-hidden="true">Drop 04 is live</span><i aria-hidden="true">✳</i><span aria-hidden="true">Easy 7-day exchanges</span><i aria-hidden="true">✳</i><span aria-hidden="true">Custom embroidery on any tee</span><i aria-hidden="true">✳</i>
+      </div>
+    </div>
+
+    <header class="nav" id="nav">
+      <a class="logo" href="#top" aria-label="TAANKA, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path class="logo__thread" d="M6 24 C 12 20, 14 12, 24 8" /><circle cx="25" cy="7.5" r="3" /></svg>
+        TAANKA
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="#shop" data-jump="all">New drop</a>
+        <a href="#shop" data-jump="embroidery">Embroidery</a>
+        <a href="#shop" data-jump="print">Prints</a>
+        <a href="#custom">Make your own</a>
+        <a href="#story">Story</a>
+      </nav>
+      <div class="nav__acts">
+        <button class="nav__btn" type="button" data-open="search" aria-label="Search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
+        </button>
+        <button class="nav__btn" type="button" data-open="wish" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /></svg><b id="wishCount" hidden>0</b>
+        </button>
+        <button class="nav__btn nav__cart" type="button" data-open="cart" aria-label="Cart">
+          <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z" /><path d="M9 8V6.5a3 3 0 0 1 6 0V8" /></svg><b id="cartCount" hidden>0</b>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- hero: oversized type beside a deck of photos that shuffles -->
+      <section class="hero" id="top">
+        <div class="hero__copy">
+          <p class="hero__drop"><span>Drop 04</span> Heavyweight oversized, 240 GSM</p>
+          <h1 class="hero__title">
+            <span class="ln"><span>Wear</span></span>
+            <span class="ln"><span>your <em class="stitch">story.</em></span></span>
+          </h1>
+          <p class="hero__sub">Boxy, drop-shoulder tees in thick cotton, finished with hand-guided embroidery and bold prints.</p>
+          <div class="hero__ctas">
+            <a class="btn btn--ink" href="#shop">Shop the drop <span class="btn__arrow">→</span></a>
+            <a class="btn btn--line" href="#custom">Make your own</a>
+          </div>
+        </div>
+        <div class="deck" id="deck" aria-label="Featured looks, tap to shuffle" role="button" tabindex="0">
+          <figure class="deck__card" data-i="0"><img src="./assets/oldcity.jpg" alt="A model in a black oversized tee with a large back print" /></figure>
+          <figure class="deck__card" data-i="1"><img src="./assets/wild.jpg" alt="A white oversized tee with a hand-drawn back print" /></figure>
+          <figure class="deck__card" data-i="2"><img src="./assets/neem.jpg" alt="A white oversized tee with a small chest embroidery" /></figure>
+          <span class="deck__tag" id="deckTag">Old City Back Print</span>
+          <span class="deck__hint">Tap to shuffle</span>
+        </div>
+      </section>
+
+      <!-- category tiles -->
+      <section class="cats" aria-label="Shop by style">
+        <a class="cat" href="#shop" data-jump="embroidery"><img src="./assets/neem.jpg" alt="" loading="lazy" /><span class="cat__name">Embroidery</span><span class="cat__go">→</span></a>
+        <a class="cat" href="#shop" data-jump="print"><img src="./assets/bones.jpg" alt="" loading="lazy" /><span class="cat__name">Bold prints</span><span class="cat__go">→</span></a>
+        <a class="cat" href="#shop" data-jump="blank"><img src="./assets/ash.jpg" alt="" loading="lazy" /><span class="cat__name">Heavy blanks</span><span class="cat__go">→</span></a>
+        <a class="cat" href="#shop" data-jump="dye"><img src="./assets/monsoon.jpg" alt="" loading="lazy" /><span class="cat__name">Washed &amp; dyed</span><span class="cat__go">→</span></a>
+      </section>
+
+      <!-- the shop -->
+      <section class="shop" id="shop">
+        <div class="shop__head">
+          <h2 class="h2">Trending <em class="stitch">now.</em></h2>
+          <div class="tabs" role="tablist" aria-label="Filter">
+            <button role="tab" type="button" data-tab="all" aria-selected="true">All</button>
+            <button role="tab" type="button" data-tab="embroidery" aria-selected="false">Embroidery</button>
+            <button role="tab" type="button" data-tab="print" aria-selected="false">Prints</button>
+            <button role="tab" type="button" data-tab="blank" aria-selected="false">Blanks</button>
+            <button role="tab" type="button" data-tab="dye" aria-selected="false">Washed</button>
+          </div>
+          <label class="sort"><span>Sort</span>
+            <select id="sort"><option value="featured">Featured</option><option value="az">A to Z</option><option value="new">Newest</option></select>
+          </label>
+        </div>
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <div class="band" aria-hidden="true">
+        <div class="band__run">
+          <span>Hand-finished embroidery</span><i>✳</i><span>240 GSM cotton</span><i>✳</i><span>Drop shoulder</span><i>✳</i><span>Made in India</span><i>✳</i>
+          <span>Hand-finished embroidery</span><i>✳</i><span>240 GSM cotton</span><i>✳</i><span>Drop shoulder</span><i>✳</i><span>Made in India</span><i>✳</i>
+        </div>
+      </div>
+
+      <!-- shop the look: hotspots on a photo -->
+      <section class="look" id="look">
+        <figure class="look__photo">
+          <img src="./assets/cargo.jpg" alt="A model in a white oversized tee and orange cargo trousers" loading="lazy" />
+          <button class="spot" type="button" style="--x: 52%; --y: 34%" data-look="cargo" aria-label="See the tee"><i></i></button>
+          <button class="spot" type="button" style="--x: 64%; --y: 78%" data-look="ash" aria-label="See a matching blank"><i></i></button>
+        </figure>
+        <div class="look__panel" id="lookPanel" aria-live="polite"></div>
+      </section>
+
+      <!-- make your own: live tee preview -->
+      <section class="custom" id="custom">
+        <div class="custom__stage">
+          <svg class="tee" id="tee" viewBox="0 0 400 440" role="img" aria-label="Your custom tee preview">
+            <path class="tee__body" d="M120 40 Q200 74 280 40 L372 92 L338 168 L300 152 L300 410 Q200 424 100 410 L100 152 L62 168 L28 92 Z" />
+            <path class="tee__collar" d="M150 44 Q200 82 250 44" />
+            <path class="tee__seam" d="M100 152 L100 410 M300 152 L300 410 M62 168 L28 92 M338 168 L372 92" />
+            <text class="tee__text" id="teeText" x="200" y="190" text-anchor="middle">Your words</text>          </svg>
+          <p class="custom__note" id="customNote">Chest · Thread colour: Sindoor</p>
+        </div>
+        <form class="custom__form" id="customForm">
+          <h2 class="h2">Make it <em class="stitch">yours.</em></h2>
+          <p class="lede">Add a name, a date or a line that matters. We embroider it by hand on any tee in the store.</p>
+          <fieldset>
+            <legend>Tee colour</legend>
+            <div class="chips" id="teeColour">
+              <label><input type="radio" name="tee" value="#f4f4f2" checked /><span style="--c:#f4f4f2"></span>White</label>
+              <label><input type="radio" name="tee" value="#1a1a1a" /><span style="--c:#1a1a1a"></span>Black</label>
+              <label><input type="radio" name="tee" value="#7c7f7a" /><span style="--c:#7c7f7a"></span>Ash</label>
+              <label><input type="radio" name="tee" value="#2f4a3c" /><span style="--c:#2f4a3c"></span>Bottle</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Thread</legend>
+            <div class="chips" id="threadColour">
+              <label><input type="radio" name="thread" value="#ff3b1f" data-name="Sindoor" checked /><span style="--c:#ff3b1f"></span>Sindoor</label>
+              <label><input type="radio" name="thread" value="#e8b931" data-name="Haldi" /><span style="--c:#e8b931"></span>Haldi</label>
+              <label><input type="radio" name="thread" value="#f4f4f2" data-name="Chalk" /><span style="--c:#f4f4f2"></span>Chalk</label>
+              <label><input type="radio" name="thread" value="#1a1a1a" data-name="Ink" /><span style="--c:#1a1a1a"></span>Ink</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Placement</legend>
+            <div class="seg" id="placement">
+              <label><input type="radio" name="place" value="chest" checked /><span>Chest</span></label>
+              <label><input type="radio" name="place" value="centre" /><span>Centre</span></label>
+              <label><input type="radio" name="place" value="hem" /><span>Hem</span></label>
+            </div>
+          </fieldset>
+          <label class="field"><span>Your text <small id="textLeft">18 left</small></span><input id="customText" maxlength="18" placeholder="Your words" autocomplete="off" /></label>
+          <div class="custom__acts">
+            <button class="btn btn--ink" type="submit">Send to the studio <span class="btn__arrow">→</span></button>
+            <p class="custom__price">From ₹X,XXX</p>
+          </div>
+        </form>
+      </section>
+
+      <!-- spotlight -->
+      <section class="spotlight" id="spotlight">
+        <div class="spotlight__gallery">
+          <img id="spotMain" src="./assets/oldcity.jpg" alt="Old City Back Print tee, back view" loading="lazy" />
+          <div class="spotlight__thumbs">
+            <button type="button" class="is-on" data-src="./assets/oldcity.jpg" aria-label="Back view"><img src="./assets/oldcity.jpg" alt="" loading="lazy" /></button>
+            <button type="button" data-src="./assets/charcoal.jpg" aria-label="Styled look"><img src="./assets/charcoal.jpg" alt="" loading="lazy" /></button>
+            <button type="button" data-src="./assets/wild.jpg" aria-label="Front view"><img src="./assets/wild.jpg" alt="" loading="lazy" /></button>
+          </div>
+        </div>
+        <div class="spotlight__info">
+          <p class="kicker">Spotlight</p>
+          <h2 class="h2">Old City <em class="stitch">Back Print.</em></h2>
+          <p class="price"><s>₹X,XXX</s> <b>₹X,XXX</b></p>
+          <p class="lede">A heavyweight black tee with an oversized back print inspired by old shop signboards. Washed for a soft hand from day one.</p>
+          <div class="acc" id="acc">
+            <details open><summary>Fabric &amp; fit</summary><p>100% cotton, 240 GSM. Boxy fit with a drop shoulder and a rib crew neck. Size down for a closer fit.</p></details>
+            <details><summary>Care</summary><p>Wash cold inside out. Do not iron on the print. Dry in shade.</p></details>
+            <details><summary>Size guide</summary>
+              <table class="sizes"><thead><tr><th>Size</th><th>Chest (in)</th><th>Length (in)</th></tr></thead>
+              <tbody><tr><td>S</td><td>44</td><td>28</td></tr><tr><td>M</td><td>46</td><td>29</td></tr><tr><td>L</td><td>48</td><td>30</td></tr><tr><td>XL</td><td>50</td><td>31</td></tr><tr><td>2XL</td><td>52</td><td>32</td></tr></tbody></table>
+              <small>Sample measurements for the demo.</small>
+            </details>
+          </div>
+          <div class="sizes-pick" role="radiogroup" aria-label="Size" id="spotSizes"></div>
+          <button class="btn btn--ink btn--wide" type="button" id="spotAdd">Add to bag <span class="btn__arrow">→</span></button>
+        </div>
+      </section>
+
+      <!-- feed -->
+      <section class="feed" aria-label="Worn by you">
+        <h2 class="h2">#Worn<em class="stitch">Taanka</em></h2>
+        <div class="feed__row">
+          <img src="./assets/layer.jpg" alt="" loading="lazy" /><img src="./assets/charcoal.jpg" alt="" loading="lazy" /><img src="./assets/neem.jpg" alt="" loading="lazy" />
+          <img src="./assets/blank.jpg" alt="" loading="lazy" /><img src="./assets/monsoon.jpg" alt="" loading="lazy" /><img src="./assets/ash-2.jpg" alt="" loading="lazy" />
+        </div>
+      </section>
+
+      <!-- story + newsletter -->
+      <section class="story" id="story">
+        <div>
+          <p class="kicker">Our story</p>
+          <h2 class="h2">Every tee is <em class="stitch">finished by hand.</em></h2>
+          <p class="lede">TAANKA started as a small embroidery table and a few heavyweight blanks. We still finish every piece by hand, one stitch at a time.</p>
+        </div>
+        <form class="news" id="news" novalidate>
+          <label for="newsEmail">Get early access to drops</label>
+          <div class="news__row"><input id="newsEmail" type="email" placeholder="you@example.com" autocomplete="email" /><button class="btn btn--ink" type="submit">Join</button></div>
+          <p class="news__msg" id="newsMsg" role="status"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="foot__big" aria-hidden="true">TAANKA</div>
+      <div class="foot__cols">
+        <div><h3>Shop</h3><a href="#shop" data-jump="embroidery">Embroidery</a><a href="#shop" data-jump="print">Prints</a><a href="#shop" data-jump="blank">Blanks</a><a href="#custom">Make your own</a></div>
+        <div><h3>Help</h3><a href="#top">Shipping</a><a href="#top">Exchanges</a><a href="#top">Size guide</a><a href="#top">Contact</a></div>
+        <div><h3>Studio</h3><p>Your City, India</p><p>hello@taanka.example</p><p>Mon to Sat, 10:00 to 19:00</p></div>
+      </div>
+      <p class="foot__demo">TAANKA is a demo store. Products, prices and contact details are placeholders.</p>
+    </footer>
+
+    <!-- overlays -->
+    <div class="scrim" id="scrim" hidden></div>
+    <aside class="drawer" id="cart" aria-label="Your bag" hidden></aside>
+    <aside class="drawer" id="wish" aria-label="Wishlist" hidden></aside>
+    <div class="modal" id="quick" role="dialog" aria-modal="true" aria-label="Quick view" hidden></div>
+    <div class="search" id="search" role="dialog" aria-modal="true" aria-label="Search" hidden>
+      <div class="search__box">
+        <input id="searchInput" type="search" placeholder="Search tees" autocomplete="off" aria-label="Search tees" />
+        <p class="search__trend">Trending: <button type="button" data-q="embroidery">embroidery</button><button type="button" data-q="black">black</button><button type="button" data-q="oversized">oversized</button></p>
+        <div class="search__results" id="searchResults"></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

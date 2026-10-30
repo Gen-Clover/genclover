@@ -125,7 +125,7 @@ export const services = [
     closingTitle: 'Building or rebuilding a store?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'Explore Templates', to: '/services/ecommerce#templates' },
-    templates: ['poise'],
+    templates: ['poise', 'taanka'],
     glanceTitle: 'How we build stores.',
     workCategory: 'ecommerce',
     capabilities: [
