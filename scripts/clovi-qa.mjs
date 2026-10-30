@@ -10,7 +10,7 @@
  */
 import { createServer } from 'vite'
 
-const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
+const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error', optimizeDeps: { noDiscovery: true } })
 let failures = 0
 let passes = 0
 

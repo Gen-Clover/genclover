@@ -14,6 +14,9 @@ const server = await createServer({
   server: { middlewareMode: true },
   appType: 'custom',
   logLevel: 'error',
+  // Only loads data modules: skip the dev-time dependency scan, which Vite 6
+  // would otherwise abort noisily when the server closes.
+  optimizeDeps: { noDiscovery: true },
 })
 
 try {

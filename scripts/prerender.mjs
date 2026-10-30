@@ -27,7 +27,7 @@ console.error = (...args) => {
   consoleError(...args)
 }
 
-const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
+const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error', optimizeDeps: { noDiscovery: true } })
 
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
