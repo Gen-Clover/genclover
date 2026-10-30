@@ -96,7 +96,12 @@ export const services = [
       'Customer portals, dashboards, internal tools and SaaS products, engineered around real workflows, with the maintainability, performance and security to run for years.',
     closingTitle: 'Have an application in mind?',
     ctaLabel: 'Discuss Your Project',
-    secondaryCta: { label: 'View Our Work', to: '/work' },
+    secondaryCta: { label: 'Explore Templates', to: '/services/web-applications#templates' },
+    templates: ['sehat', 'kaarigar', 'sanjha', 'godown'],
+    galleryIntro:
+      'Open a working app and click through it yourself: a clinic booking portal, a field-service tracker, a client portal and an inventory manager. We build yours around how your business actually runs.',
+    redesignDemo: false,
+    glanceTitle: 'How we build web applications.',
     workCategory: 'web-applications',
     capabilities: [
       { label: 'Customer Portals', description: 'Self-service experiences for the people you serve.' },
@@ -127,7 +132,7 @@ export const services = [
     closingTitle: 'Building or rebuilding a store?',
     ctaLabel: 'Discuss Your Project',
     secondaryCta: { label: 'Explore Templates', to: '/services/ecommerce#templates' },
-    templates: ['poise', 'taanka'],
+    templates: ['poise', 'taanka', 'godown'],
     glanceTitle: 'How we build stores.',
     workCategory: 'ecommerce',
     capabilities: [

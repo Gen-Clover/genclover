@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#eef1f5" />
+    <title>Godown · Stock and orders for a small factory</title>
+    <meta name="description" content="A demo inventory and orders manager for a small factory or wholesaler: live stock, order picking, production runs and reorder suggestions." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111d33'/%3E%3Cpath d='M6 14 16 7l10 7v11H6z' fill='none' stroke='%23ffc531' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M11 25v-7h10v7' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="logo" href="#top" aria-label="Godown, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" class="logo__bg" /><path d="M6 14 16 7l10 7v11H6z" class="logo__roof" /><path d="M11 25v-7h10v7M11 21h10" class="logo__door" /></svg>
+        Godown
+      </a>
+      <p class="top__biz"><b>Norvik Fasteners</b> · Plant 1, Chakan</p>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <h1>Stock you can trust. <em>Orders that ship.</em></h1>
+        <dl class="kpis" id="kpis"></dl>
+      </section>
+
+      <section class="floor">
+        <div class="orders">
+          <div class="sec-head"><h2>Orders</h2><div class="filters" id="filters" role="tablist" aria-label="Filter orders"></div></div>
+          <div class="order-list" id="orders"></div>
+        </div>
+
+        <div class="side">
+          <div class="sec-head"><h2>Stock</h2><p class="legend"><i class="lg lg--free"></i>Free <i class="lg lg--held"></i>Reserved <i class="lg lg--line"></i>Reorder point</p></div>
+          <div class="bins" id="bins"></div>
+          <div class="prod" id="prod" hidden></div>
+          <div class="reorder" id="reorder"></div>
+          <div class="ledger">
+            <h3>Stock movements</h3>
+            <ol id="ledger"></ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <footer class="foot">
+      <p>Norvik Fasteners is a demo business. Customers, stock levels and suppliers are made up, and nothing is sent anywhere.</p>
+    </footer>
+  </body>
+</html>

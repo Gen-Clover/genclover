@@ -178,6 +178,50 @@ export const websiteTemplates = [
     chrome: 'light',
     home: 'ai-automation',
   },
+  {
+    slug: 'sehat',
+    name: 'Sehat',
+    style: 'Clinic booking portal',
+    summary:
+      'Patients book a slot, the front desk runs the day on a calendar, and doctors call patients in from a live queue.',
+    bestFor: ['Clinics and polyclinics', 'Dental and physio practices', 'Diagnostic centres', 'Any appointment-led practice'],
+    thumbnail: '/templates/sehat.jpg',
+    chrome: 'light',
+    home: 'web-applications',
+  },
+  {
+    slug: 'kaarigar',
+    name: 'Kaarigar',
+    style: 'Field-service job tracker',
+    summary:
+      'A jobs board and live map for the office, a phone app for technicians with photo proof and signatures, and invoice status.',
+    bestFor: ['Home services and repairs', 'AC and appliance servicing', 'Facility maintenance', 'Installation teams'],
+    thumbnail: '/templates/kaarigar.jpg',
+    chrome: 'light',
+    home: 'web-applications',
+  },
+  {
+    slug: 'sanjha',
+    name: 'Sanjha',
+    style: 'Client portal',
+    summary:
+      'One place for a client project: a live timeline, approvals that move it forward, shared files and messages.',
+    bestFor: ['Design and marketing agencies', 'Architects and interior studios', 'Consultancies', 'Construction projects'],
+    thumbnail: '/templates/sanjha.jpg',
+    chrome: 'paper',
+    home: 'web-applications',
+  },
+  {
+    slug: 'godown',
+    name: 'Godown',
+    style: 'Inventory and orders manager',
+    summary:
+      'Live stock for a small factory: orders reserve and ship, shortfalls become production runs, low stock raises a PO.',
+    bestFor: ['Small manufacturers', 'Wholesalers and distributors', 'Traders with a warehouse', 'D2C brands holding stock'],
+    thumbnail: '/templates/godown.jpg',
+    chrome: 'light',
+    home: 'web-applications',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
