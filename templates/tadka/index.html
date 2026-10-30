@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0d3527" />
+    <title>Tadka · Orders on chat, straight to the kitchen</title>
+    <meta name="description" content="A demo chat ordering bot for a restaurant: customers order and pay in a chat, and orders land on a live kitchen screen." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230d3527'/%3E%3Cpath d='M8 17a8 8 0 0 0 16 0z' fill='%23ffb627'/%3E%3Cpath d='M13 8c0 2 2 2 2 4M18 8c0 2 2 2 2 4' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="logo" href="#top" aria-label="Tadka, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 16a11 11 0 0 0 22 0z" class="logo__bowl" /><path d="M12 5c0 2.5 2.5 2.5 2.5 5M18 5c0 2.5 2.5 2.5 2.5 5" class="logo__steam" /></svg>
+        Tadka
+      </a>
+      <p class="top__tag">Demo · Chat ordering bot</p>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <h1>Orders come in on chat. <em>Straight to the kitchen.</em></h1>
+        <ul class="perks">
+          <li>No app to download</li>
+          <li>Type or tap to order</li>
+          <li>Live order updates</li>
+        </ul>
+      </section>
+
+      <section class="stage">
+        <!-- the customer's phone -->
+        <div class="phone" aria-label="Customer chat">
+          <div class="screen">
+            <div class="chat-head">
+              <span class="chat-head__avatar" aria-hidden="true">🍛</span>
+              <div>
+                <p class="chat-head__name">Tadka Street Kitchen <span class="tick" aria-label="Verified business">✓</span></p>
+                <p class="chat-head__sub" id="presence">Business account</p>
+              </div>
+            </div>
+            <div class="thread" id="thread" role="log" aria-live="polite"></div>
+
+            <div class="sheet" id="sheet" hidden>
+              <div class="sheet__grab" aria-hidden="true"></div>
+              <div class="sheet__head">
+                <h2>Menu</h2>
+                <button class="sheet__x" type="button" id="sheetClose" aria-label="Close menu">×</button>
+              </div>
+              <div class="cats" id="cats" role="tablist" aria-label="Menu sections"></div>
+              <ul class="items" id="items"></ul>
+              <button class="sheet__cart" type="button" id="sheetCart" disabled>Add items to your cart</button>
+            </div>
+
+            <form class="composer" id="composer">
+              <button class="composer__menu" type="button" id="openMenu" aria-label="Open menu">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" /></svg>
+              </button>
+              <input id="text" placeholder="Try: 2 butter naan and a dal" autocomplete="off" maxlength="120" aria-label="Message" />
+              <button class="composer__send" type="submit" aria-label="Send">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-2.5-6.5z" /></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- the restaurant's kitchen screen -->
+        <section class="board" aria-label="Kitchen screen">
+          <div class="board__head">
+            <div>
+              <h2>Kitchen screen</h2>
+              <p class="board__sub"><i></i>Live · <span id="clock"></span></p>
+            </div>
+            <dl class="board__stats">
+              <div><dt>Orders today</dt><dd id="statToday">0</dd></div>
+              <div><dt>In progress</dt><dd id="statLive">0</dd></div>
+            </dl>
+          </div>
+          <div class="cols" id="cols"></div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>Tadka Street Kitchen is a demo restaurant. Menu, prices and payments are placeholders, and nothing is sent anywhere.</p>
+    </footer>
+  </body>
+</html>

@@ -11,7 +11,7 @@ import {
   templateChoiceOptions,
   validateDemoRequest,
 } from '../../lib/demoRequest'
-import { websiteTemplates } from '../../data/templates'
+import { siteTemplates } from '../../data/templates'
 import { getDialCodeOptions } from '../../lib/intlOptions'
 import { routes, contact } from '../../data/site'
 import { trackEvent, events, readAttribution } from '../../lib/analytics'
@@ -52,7 +52,7 @@ const FIELDS = {
 /** For a redesign, a template is only a style to lean towards; '' keeps their own look. */
 const redesignStyleOptions = [
   { value: '', label: 'No, keep my current look' },
-  ...websiteTemplates.map((t) => ({ value: t.slug, label: `Lean towards ${t.name}` })),
+  ...siteTemplates.map((t) => ({ value: t.slug, label: `Lean towards ${t.name}` })),
 ]
 
 const Fieldset = ({ legend, help, children }) => (

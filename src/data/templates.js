@@ -18,6 +18,9 @@
  *   thumbnail   still image for the tile, in public/templates/
  *   chrome      look of the preview dock, so it sits well on the template:
  *               'dark' | 'paper' | 'light'
+ *   home        optional service slug for working demos (bots, tools) rather
+ *               than websites: they live in that service's gallery and are
+ *               left out of the all-templates one on /services/websites
  * }
  */
 export const websiteTemplates = [
@@ -131,12 +134,63 @@ export const websiteTemplates = [
     thumbnail: '/templates/taanka.jpg',
     chrome: 'light',
   },
+  {
+    slug: 'concierge',
+    name: 'Concierge',
+    style: 'Website chat assistant',
+    summary:
+      'A chat assistant trained on a business’s FAQs: answers with its source, turns unknown questions into leads, learns new answers.',
+    bestFor: ['Clinics and studios', 'Coworking and hospitality', 'Local service businesses', 'Any site with repeat questions'],
+    thumbnail: '/templates/concierge.jpg',
+    chrome: 'dark',
+    home: 'ai-automation',
+  },
+  {
+    slug: 'tadka',
+    name: 'Tadka',
+    style: 'Chat ordering bot',
+    summary:
+      'Customers order and pay in a chat, typed or tapped, and every order lands on a live kitchen screen with status updates.',
+    bestFor: ['Restaurants and cloud kitchens', 'Cafés and bakeries', 'Grocery and local stores', 'Takeaway and delivery'],
+    thumbnail: '/templates/tadka.jpg',
+    chrome: 'dark',
+    home: 'ai-automation',
+  },
+  {
+    slug: 'kagaz',
+    name: 'Kagaz',
+    style: 'Receipt and invoice reader',
+    summary:
+      'Drop in a bill and the fields fill themselves, with confidence scores and a totals check, then export it all to a spreadsheet.',
+    bestFor: ['Accounts and finance teams', 'Expense claims', 'Purchase and supplier bills', 'Small business bookkeeping'],
+    thumbnail: '/templates/kagaz.jpg',
+    chrome: 'paper',
+    home: 'ai-automation',
+  },
+  {
+    slug: 'pigeonhole',
+    name: 'Pigeonhole',
+    style: 'Lead triage inbox',
+    summary:
+      'Enquiries are sorted by urgency and type as they arrive, with the reasons shown and a suggested reply ready to send.',
+    bestFor: ['Agencies and studios', 'Home services', 'Sales and support inboxes', 'Any business with a contact form'],
+    thumbnail: '/templates/pigeonhole.jpg',
+    chrome: 'light',
+    home: 'ai-automation',
+  },
 ]
 
 export const getTemplate = (slug) => websiteTemplates.find((t) => t.slug === slug) ?? null
 
+/** The website templates proper, for the all-templates gallery and style choices. */
+export const siteTemplates = websiteTemplates.filter((t) => !t.home)
+
+/** The service page whose gallery a template belongs to. */
+export const templateHome = (slug) => getTemplate(slug)?.home ?? 'websites'
+
 /** Where a template's preview page lives on the site. */
-export const templatePath = (slug) => `/services/websites/templates/${slug}`
+export const templatePath = (slug) => `/services/${templateHome(slug)}/templates/${slug}`
+export const templateRoute = '/services/:service/templates/:slug'
 
 /** Where the template itself is served (its own standalone page). */
 export const templateSource = (slug) => `/templates/${slug}/`

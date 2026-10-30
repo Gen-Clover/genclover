@@ -5,14 +5,15 @@ import Button from '../ui/Button'
 import FinalCTA from '../home/FinalCTA'
 import { TemplateGrid, RedesignCallout, demoLink, useTemplatesAnchor } from '../templates/TemplateGallery'
 import { PRICING_STATEMENT } from '../../data/services'
-import { websiteTemplates, getTemplate } from '../../data/templates'
+import { siteTemplates, getTemplate } from '../../data/templates'
 import { routes } from '../../data/site'
 import { useMotionVariants, revealOnce } from '../../lib/motion'
 import { trackEvent, events } from '../../lib/analytics'
 
 /**
- * A service page led by its templates: /services/websites (all of them) and
- * /services/ecommerce (the shop templates). (Templates)
+ * A service page led by its templates: /services/websites (all the website
+ * templates), /services/ecommerce (the shop ones) and /services/ai-automation
+ * (working demos). (Templates)
  *
  * Screen one is the gallery, so the first thing a visitor sees is what we can
  * build. Screen two condenses the rest of the service (the problems we solve,
@@ -34,7 +35,7 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
   const v = useMotionVariants()
   useTemplatesAnchor()
   const Icon = service.icon
-  const templates = Array.isArray(service.templates) ? service.templates.map(getTemplate).filter(Boolean) : websiteTemplates
+  const templates = Array.isArray(service.templates) ? service.templates.map(getTemplate).filter(Boolean) : siteTemplates
 
   return (
     <>
@@ -67,8 +68,8 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
                 {service.heroHeadline}
               </motion.h1>
               <motion.p variants={v.fadeUp} className="mt-3 max-w-2xl text-base leading-relaxed text-silver-400">
-                Start from one of our templates and open it live, or let us redesign the site you already have. Either
-                way, you see a demo with your own business in it before you commit.
+                {service.galleryIntro ??
+                  'Start from one of our templates and open it live, or let us redesign the site you already have. Either way, you see a demo with your own business in it before you commit.'}
               </motion.p>
             </div>
             <motion.div variants={v.fadeUp} className="flex shrink-0 flex-col gap-3 sm:flex-row">
@@ -88,7 +89,7 @@ const WebsitesLanding = ({ service, detail, relatedIndustries }) => {
           </motion.div>
 
           <TemplateGrid templates={templates} />
-          <RedesignCallout className="mt-6" />
+          {service.redesignDemo !== false && <RedesignCallout className="mt-6" />}
         </div>
       </section>
 

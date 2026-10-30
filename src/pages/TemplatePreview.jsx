@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight } from 'lucide-react'
 import { CloverMark } from '../components/brand/Logo'
 import { demoLink } from '../components/templates/TemplateGallery'
-import { getTemplate, templatePath, templateSource, websiteTemplates } from '../data/templates'
+import { getTemplate, templateHome, templatePath, templateSource, websiteTemplates } from '../data/templates'
 import { routes } from '../data/site'
 import { usePageMeta } from '../lib/seo'
 import { trackEvent, events } from '../lib/analytics'
@@ -20,7 +20,6 @@ import { trackEvent, events } from '../lib/analytics'
  * Noindex: the previews are sample content, for visitors rather than search.
  */
 
-const BACK = `${routes.services}/websites#templates`
 
 /** Dock colours per template. Plain classes so Tailwind keeps them. */
 const CHROME = {
@@ -48,8 +47,10 @@ const CHROME = {
 }
 
 const TemplatePreview = () => {
-  const { slug } = useParams()
+  const { service, slug } = useParams()
   const template = getTemplate(slug)
+  const home = templateHome(slug)
+  const BACK = `${routes.services}/${home}#templates`
   const [ready, setReady] = useState(false)
   const [tucked, setTucked] = useState(false)
 
@@ -57,7 +58,7 @@ const TemplatePreview = () => {
   useEffect(() => setReady(false), [slug])
 
   usePageMeta({
-    title: template ? `${template.name} website template preview | Gen Clover` : undefined,
+    title: template ? `${template.name} ${template.home ? 'demo' : 'website template'} preview | Gen Clover` : undefined,
     description: template?.summary,
     noIndex: true,
   })
@@ -68,8 +69,12 @@ const TemplatePreview = () => {
   }, [template])
 
   if (!template) return <Navigate to={BACK} replace />
+  // old links (and any other service segment) go to the template's own page
+  if (service !== home) return <Navigate to={templatePath(slug)} replace />
   const c = CHROME[template.chrome] ?? CHROME.light
-  const next = websiteTemplates[(websiteTemplates.indexOf(template) + 1) % websiteTemplates.length]
+  // "Next" stays within the same gallery
+  const siblings = websiteTemplates.filter((t) => templateHome(t.slug) === home)
+  const next = siblings[(siblings.indexOf(template) + 1) % siblings.length]
 
   return (
     <div className="relative h-[100dvh] bg-ink-950">

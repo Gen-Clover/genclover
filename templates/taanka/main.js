@@ -2,7 +2,8 @@ import '@fontsource-variable/archivo/wdth.css'
 import '@fontsource-variable/hanken-grotesk/wght.css'
 import './style.css'
 
-const A = (f) => `./assets/${f}.jpg`
+// new URL lets the build copy and hash the photos; a plain './assets/…' string only works in dev
+const A = (f) => new URL(`./assets/${f}.jpg`, import.meta.url).href
 const SIZES = ['S', 'M', 'L', 'XL', '2XL']
 const PRICE = '₹X,XXX'
 const C = { white: '#f4f4f2', black: '#1a1a1a', ash: '#9b9d98', bottle: '#2f4a3c', sky: '#8fb3d9', rust: '#b5532f' }
@@ -345,7 +346,7 @@ $('.spotlight__thumbs').addEventListener('click', (e) => {
   $$('.spotlight__thumbs button').forEach((x) => x.classList.toggle('is-on', x === b))
   spotMain.classList.add('is-fading')
   setTimeout(() => {
-    spotMain.src = b.dataset.src
+    spotMain.src = b.querySelector('img').src // the build rewrites img src, not data-src
     spotMain.classList.remove('is-fading')
   }, reduced ? 0 : 180)
 })
