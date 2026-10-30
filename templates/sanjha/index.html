@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f7f3ec" />
+    <title>Sanjha · One place for your project</title>
+    <meta name="description" content="A demo client portal: project timeline, approvals, shared files and messages between a studio and its client." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%231f1b17'/%3E%3Ccircle cx='13' cy='16' r='6' fill='none' stroke='%23e0673f' stroke-width='2.4'/%3E%3Ccircle cx='19' cy='16' r='6' fill='none' stroke='%23f7f3ec' stroke-width='2.4'/%3E%3C/svg%3E" />
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="logo" href="#top" aria-label="Sanjha, home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="12.5" cy="16" r="7" class="ring ring--a" /><circle cx="19.5" cy="16" r="7" class="ring ring--b" /></svg>
+        Sanjha
+      </a>
+      <div class="parties" aria-label="Project between">
+        <span class="party party--studio">IS</span><span class="party party--client">MO</span>
+        <p><b>Inkpot Studio</b> × Marigold Organics</p>
+      </div>
+      <p class="you"><span class="ava" style="--h:28" aria-hidden="true">NK</span><span>Nisha K.<small>Client</small></span></p>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Project</p>
+          <h1>Packaging &amp; website <em>refresh</em></h1>
+          <p class="hero__sub" id="heroSub"></p>
+        </div>
+        <div class="ring-stat" aria-label="Project progress">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="ring-stat__track" /><circle cx="60" cy="60" r="52" class="ring-stat__bar" id="ringBar" /></svg>
+          <p><b id="pct">0%</b><small>complete</small></p>
+        </div>
+      </section>
+
+      <section class="timeline" aria-label="Project timeline">
+        <div class="timeline__track"><i id="trackFill"></i></div>
+        <ol id="steps"></ol>
+      </section>
+
+      <section class="grid">
+        <div class="pane pane--approvals">
+          <h2>Waiting for you <span id="approvalCount"></span></h2>
+          <div id="approvals" class="approvals"></div>
+        </div>
+
+        <div class="pane pane--files">
+          <h2>Files</h2>
+          <label class="drop" id="drop">
+            <input type="file" id="upload" multiple />
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" /></svg>
+            <span><b>Drop files</b> or click to share with the studio</span>
+          </label>
+          <ul class="files" id="files"></ul>
+        </div>
+
+        <div class="pane pane--chat">
+          <h2>Messages</h2>
+          <ol class="thread" id="thread" aria-live="polite"></ol>
+          <form class="compose" id="compose" autocomplete="off">
+            <input id="msg" maxlength="400" placeholder="Write to the studio…" aria-label="Message" />
+            <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-2.5-6.5z" /></svg></button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <footer class="foot">
+      <p>Sanjha is a demo portal between two made-up companies. Files you add stay in your browser and nothing is sent.</p>
+    </footer>
+  </body>
+</html>

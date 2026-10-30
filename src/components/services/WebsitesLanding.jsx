@@ -12,8 +12,8 @@ import { trackEvent, events } from '../../lib/analytics'
 
 /**
  * A service page led by its templates: /services/websites (all the website
- * templates), /services/ecommerce (the shop ones) and /services/ai-automation
- * (working demos). (Templates)
+ * templates), /services/ecommerce (the shop ones), and working demos on
+ * /services/web-applications and /services/ai-automation. (Templates)
  *
  * Screen one is the gallery, so the first thing a visitor sees is what we can
  * build. Screen two condenses the rest of the service (the problems we solve,
