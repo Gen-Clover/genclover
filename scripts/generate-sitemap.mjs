@@ -43,12 +43,13 @@ try {
     routes.terms,
   ]
 
-  const today = new Date().toISOString().slice(0, 10)
+  // No <lastmod>: a build date on every URL is not a real change date, and
+  // Google ignores the field once it proves unreliable.
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ...paths.map(
-      (path) => `  <url><loc>${site.url}${path === '/' ? '/' : path}</loc><lastmod>${today}</lastmod></url>`
+      (path) => `  <url><loc>${site.url}${path === '/' ? '/' : path}</loc></url>`
     ),
     '</urlset>',
     '',

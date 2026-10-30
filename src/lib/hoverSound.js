@@ -170,12 +170,15 @@ const UNLOCK_EVENTS = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchend
 
 /** State for the header's mute toggle. `locked` = waiting for a first click. */
 export const useSoundSetting = () => {
-  const [on, setOn] = useState(() => (typeof window === 'undefined' ? false : readPref()))
+  // Starts off, like the prerendered header, and reads the saved choice once
+  // mounted: a different first render would make React discard the page HTML.
+  const [on, setOn] = useState(false)
   const [locked, setLocked] = useState(() => !ctx || ctx.state !== 'running')
 
   useEffect(() => {
     listeners.add(setOn)
     lockListeners.add(setLocked)
+    setOn(readPref())
     setLocked(!ctx || ctx.state !== 'running')
     return () => {
       listeners.delete(setOn)

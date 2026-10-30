@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, Paperclip, RotateCcw, Send, ArrowUpRight } from 'lucide-react'
 import CloviBot from './CloviBot'
@@ -259,12 +259,16 @@ const CloviPanel = ({ onClose }) => {
                 )}
                 {m.note && (
                   <p className="text-[11px] leading-snug text-silver-500">
-                    {m.note.replace('Privacy notice', '')}
-                    {m.note.includes('Privacy notice') && (
-                      <Link to={routes.privacy} className="text-accent-400 hover:underline">
-                        Privacy notice
-                      </Link>
-                    )}
+                    {m.note.split('Privacy notice').map((part, j) => (
+                      <Fragment key={j}>
+                        {j > 0 && (
+                          <Link to={routes.privacy} className="text-accent-400 hover:underline">
+                            Privacy notice
+                          </Link>
+                        )}
+                        {part}
+                      </Fragment>
+                    ))}
                   </p>
                 )}
               </div>
