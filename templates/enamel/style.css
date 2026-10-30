@@ -271,6 +271,8 @@ address a { color: var(--porcelain); font-weight: 600; text-decoration: none; }
 fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 legend { margin-bottom: 12px; color: var(--soft); font-size: 14px; font-weight: 600; }
 .chips, .times { display: flex; flex-wrap: wrap; gap: 8px; }
+/* the hidden radios stay inside their label, not out past the scrolling day strip */
+.chips label, .times label, .days label { position: relative; }
 .chips input, .times input, .days input { position: absolute; opacity: 0; pointer-events: none; }
 .chips span, .times span {
   display: inline-flex;

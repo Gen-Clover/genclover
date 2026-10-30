@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Sun, Moon } from 'lucide-react'
 import { useTheme } from '../../lib/theme'
@@ -13,8 +14,14 @@ import { useTheme } from '../../lib/theme'
  * user actually needs from a switch.
  */
 const ThemeToggle = ({ className = '' }) => {
-  const { isDark, toggleTheme } = useTheme()
+  const { isDark: stored, toggleTheme } = useTheme()
   const reduced = useReducedMotion()
+  // Pages are prerendered dark. Showing a light visitor's choice on the very
+  // first render would not match that HTML, and React would then throw the
+  // whole prerendered page away; so it shows once mounted.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const isDark = mounted ? stored : true
 
   const Icon = isDark ? Moon : Sun
 

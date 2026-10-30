@@ -1,6 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/portfolio", "destination": "/work", "permanent": true },
+    { "source": "/portfolio/:slug", "destination": "/work/:slug", "permanent": true },
+    { "source": "/contact", "destination": "/start-a-project", "permanent": true },
+    { "source": "/career", "destination": "/careers", "permanent": true },
+    { "source": "/career/job/:id", "destination": "/careers/:id", "permanent": true },
+    { "source": "/insights", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/).*)",
